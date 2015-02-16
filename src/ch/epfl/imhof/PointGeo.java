@@ -4,7 +4,7 @@ public final class PointGeo {
     private final double longitude;
     private final double latitude;
     
-    PointGeo(double longitude, double latitude) {
+    public PointGeo(double longitude, double latitude) {
         this.longitude = longitude;
         this.latitude = latitude;
     }

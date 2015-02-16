@@ -1,5 +1,6 @@
 package ch.epfl.imhof.projection;
-
+import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.geometry.Point;
 public final class EquirectangularProjection implements Projection {
     
     public Point project(PointGeo point){
