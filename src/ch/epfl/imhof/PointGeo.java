@@ -1,37 +1,47 @@
 package ch.epfl.imhof;
 
+/**
+ * Classe définissant l'objet point en coordonnées sphériques. Celui-ci est
+ * caractérisé par une latitude et par une longitude. On fournit deux méthodes
+ * d'accès aux attributs. La classe est immuable.
+ * 
+ * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ *
+ */
 public final class PointGeo {
     private final double longitude;
     private final double latitude;
-    
-    public PointGeo(double longitude, double latitude) {
+
+    public PointGeo(double longitude, double latitude)
+            throws IllegalArgumentException {
         try {
             if (testLongitude(longitude)) {
-                throw new IllegalArgumentException("La Longitude doit être comprise entre -Pi et Pi");
+                throw new IllegalArgumentException(
+                        "La Longitude doit être comprise entre -Pi et Pi");
             }
             if (testLatitude(latitude)) {
-                throw new IllegalArgumentException("La latitude doit être comprise entre -PI/2 et Pi/2");
+                throw new IllegalArgumentException(
+                        "La latitude doit être comprise entre -PI/2 et Pi/2");
             }
             this.longitude = longitude;
             this.latitude = latitude;
+        } catch (Exception e) {
+            throw e;
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-   }
-    
+    }
+
     public double longitude() {
         return longitude;
     }
-    
+
     public double latitude() {
         return latitude;
     }
-    
+
     private boolean testLongitude(double longitude) {
         return (longitude < -Math.PI || longitude > Math.PI);
     }
-    
+
     private boolean testLatitude(double latitude) {
         return (latitude < -Math.PI / 2 || latitude > Math.PI / 2);
     }
