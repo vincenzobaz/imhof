@@ -15,11 +15,11 @@ public final class PointGeo {
     public PointGeo(double longitude, double latitude)
             throws IllegalArgumentException {
         try {
-            if (testLongitude(longitude)) {
+            if (testCoordonnee(longitude, 1.0)) {
                 throw new IllegalArgumentException(
-                        "La Longitude doit être comprise entre -Π et Π");
+                        "La longitude doit être comprise entre -Π et Π");
             }
-            if (testLatitude(latitude)) {
+            if (testCoordonnee(latitude, 2.0)) {
                 throw new IllegalArgumentException(
                         "La latitude doit être comprise entre -Π/2 et Π/2");
             }
@@ -39,11 +39,7 @@ public final class PointGeo {
         return latitude;
     }
 
-    private boolean testLongitude(double longitude) {
-        return (longitude < -Math.PI || longitude > Math.PI);
-    }
-
-    private boolean testLatitude(double latitude) {
-        return (latitude < -Math.PI / 2 || latitude > Math.PI / 2);
+    private boolean testCoordonnee(double coordonnee, double parametre) {
+        return (coordonnee < -Math.PI / parametre || coordonnee > Math.PI / parametre);
     }
 }
