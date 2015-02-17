@@ -3,22 +3,15 @@ package ch.epfl.imhof.projection;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.PointGeo;
 
-// rendre immuable
-
 /**
- * Convertion des coordonnées sphériques d'un point à la surface de la terre en
+ * Conversion des coordonnées sphériques d'un point à la surface de la Terre en
  * cooronnées cartésiennes et viceversa dans le cadre de la projection CH1903
+ * Cette classe ne contient que des méthodes. La classe est immuable.
  * 
- * @author Vincenzo Bazzucchi (249733)
+ * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * 
  */
 public final class CH1903Projection implements Projection {
-    /**
-     * Méthode returnant un PointGeo (en coordonnées sphériques) à partir d'un
-     * Point (en coordonnées cartésiennes)
-     * 
-     * @param point
-     *            le point en coordonnées cartésiennes
-     */
     public Point project(PointGeo point) {
         double lon = (Math.toDegrees(point.longitude()) * 3600 - 26782.5) / 10000;
         double lat = (Math.toDegrees(point.latitude()) * 3600 - 169028.66) / 10000;
@@ -30,23 +23,15 @@ public final class CH1903Projection implements Projection {
         return new Point(x, y);
     }
 
-    /**
-     * Méthode returnant un Point (en coordonnées cartésiennes) à partir d'un
-     * PointGeo (en coordonnées sphériques)
-     * 
-     * @param point
-     *            le point en coordonnées sphériques
-     */
     public PointGeo inverse(Point point) {
         double x1 = (point.x() - 600000) / (1000000);
         double y1 = (point.y() - 200000) / (1000000);
         double lambda0 = 2.6779094 + 4.728982 * x1 + 0.791484 * x1 * y1
                 + 0.1306 * x1 * Math.pow(y1, 2) - 0.0436 * Math.pow(x1, 3);
-        double phi0 = 16.9023892 + 3.238272 * y1 - 0.270978 * Math.pow(y1, 2)
-                - 0.002528 * Math.pow(y1, 2) - 0.0447 * Math.pow(x1, 2) * y
+        double phi0 = 16.9023892 + 3.238272 * y1 - 0.270978 * Math.pow(x1, 2)
+                - 0.002528 * Math.pow(y1, 2) - 0.0447 * Math.pow(x1, 2) * y1
                 - 0.0140 * Math.pow(y1, 3);
-        return new PointGeo(Math.toRadians(lambda0 * (100 / 36)),
-                Math.toRadians(phi0 * (100 / 36)));
+        return new PointGeo((Math.toRadians(lambda0) * (100 / 36)),
+                (Math.toRadians(phi0) * (100 / 36)));
     }
-
 }
