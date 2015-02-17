@@ -17,15 +17,16 @@ public final class PointGeo {
         try {
             if (testLongitude(longitude)) {
                 throw new IllegalArgumentException(
-                        "La Longitude doit être comprise entre -Pi et Pi");
+                        "La Longitude doit être comprise entre -Π et Π");
             }
             if (testLatitude(latitude)) {
                 throw new IllegalArgumentException(
-                        "La latitude doit être comprise entre -PI/2 et Pi/2");
+                        "La latitude doit être comprise entre -Π/2 et Π/2");
             }
             this.longitude = longitude;
             this.latitude = latitude;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw e;
         }
     }
