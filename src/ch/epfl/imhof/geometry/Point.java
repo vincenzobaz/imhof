@@ -2,7 +2,7 @@ package ch.epfl.imhof.geometry;
 
 /**
  * Classe définissant l'objet point en coordonnées cartésiennes. Celui-ci est
- * caractérisé par une coordonnée horizontale x et une coordonnées verticale y.
+ * caractérisé par une coordonnée horizontale x et une coordonnée verticale y.
  * On fournit deux méthodes d'accès aux attributs. La classe est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
