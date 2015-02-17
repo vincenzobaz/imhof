@@ -29,10 +29,10 @@ public final class PointGeo {
     }
     
     private boolean testLongitude(double longitude) {
-        return (longitude < Math.PI || longitude > Math.PI);
+        return (longitude < -Math.PI || longitude > Math.PI);
     }
     
     private boolean testLatitude(double latitude) {
-        return (latitude < Math.PI / 2 || latitude > Math.PI / 2));
+        return (latitude < -Math.PI / 2 || latitude > Math.PI / 2);
     }
 }
