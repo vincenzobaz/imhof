@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class PointGeoTest {
-    @Test(expected = IllegalArgumentException.class)
+    @Test  (expected = IllegalArgumentException.class)
     public void constructorFailsOnInvalidLongitude() {
         new PointGeo(5.986310, 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void constructorFailsOnInvalidLatitude() {
         new PointGeo(0, 1.962314);
     }
