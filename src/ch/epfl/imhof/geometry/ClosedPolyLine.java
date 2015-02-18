@@ -35,7 +35,10 @@ public final class ClosedPolyLine extends PolyLine {
     private double signedTriangleArea(Point a, Point b, Point c){
         return 0.5*((b.x()- a.x())*(c.y()-a.y())-(c.x()-a.x())*(b.y()-a.y()));
     }
+    
     private Point getVertex(int n) {
         return points().get(floorMod(n, points().size()));
     }
+    
+    public boolean containsPoint(Point p){return false;}
 }
