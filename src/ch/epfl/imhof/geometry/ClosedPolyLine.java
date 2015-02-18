@@ -28,6 +28,13 @@ public final class ClosedPolyLine extends PolyLine {
         return (point1.x() == point2.x() && point1.y() == point2.y());
     }
     
+    private boolean isOnTheLeft (Point p, Point a, Point b){
+        return  (signedTriangleArea(p, a, b)>0);
+    }
+    
+    private double signedTriangleArea(Point a, Point b, Point c){
+        return 0.5*((b.x()- a.x())*(c.y()-a.y())-(c.x()-a.x())*(b.y()-a.y()));
+    }
     private Point getVertex(int n) {
         return points().get(floorMod(n, points().size()));
     }

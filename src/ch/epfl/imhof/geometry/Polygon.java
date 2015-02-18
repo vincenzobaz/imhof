@@ -19,7 +19,7 @@ public final class Polygon {
         return shell;
     }
     
-    public List<PolyLine> holes() {
+    public List<ClosedPolyLine> holes() {
         return holes;
     }
 }
