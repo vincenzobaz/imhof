@@ -6,7 +6,7 @@ public final class ClosedPolyLine extends PolyLine {
     public ClosedPolyLine(List<Point> points) throws IllegalArgumentException {
         super(points);
         try {
-            if (samePoint(this.points().get(0), this.points().get(this.points().size() - 1)) {
+            if (samePoint(this.points().get(0), this.points().get(this.points().size() - 1))) {
                 throw new IllegalArgumentException ("Le 1er point est différent du dernier");
             }
         }
@@ -20,8 +20,8 @@ public final class ClosedPolyLine extends PolyLine {
         return true;
     }
     
-    public double area() {
-        
+    public double area(){
+        Point origine = new Point(0,0);
     }
     
     private boolean samePoint(Point point1, Point point2) {
@@ -37,8 +37,10 @@ public final class ClosedPolyLine extends PolyLine {
     }
     
     private Point getVertex(int n) {
-        return points().get(floorMod(n, points().size()));
+        return points().get(Math.floorMod(n, points().size()));
     }
     
-    public boolean containsPoint(Point p){return false;}
+    public boolean containsPoint(Point p){
+        return false;
+        }
 }
