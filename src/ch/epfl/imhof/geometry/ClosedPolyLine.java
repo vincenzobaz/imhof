@@ -12,12 +12,14 @@ public final class ClosedPolyLine extends PolyLine {
                         "Le 1er point est différent du dernier");
             }
             if (this.points().size() == 2) {
-                throw new IllegalArgumentException("Un segment n'est pas un polygone");
+                throw new IllegalArgumentException(
+                        "Un segment n'est pas un polygone");
             }
-            for (int i = 0; i < this.points().size() - 1; ++i) {
-                for (int j = i + 1; j < this.points().size(); ++j) {
+            for (int i = 0; i < this.points().size() - 2; ++i) {
+                for (int j = i + 1; j < this.points().size() - 1; ++j) {
                     if (samePoint(this.points().get(i), this.points().get(j))) {
-                        throw new IllegalArgumentException("Un polygone ne peut pas avoir 2 fois le même sommet");
+                        throw new IllegalArgumentException(
+                                "Un polygone ne peut pas avoir 2 fois le même sommet");
                     }
                 }
             }
