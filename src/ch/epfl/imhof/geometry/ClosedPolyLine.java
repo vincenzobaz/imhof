@@ -4,7 +4,8 @@ import java.util.List;
 
 /**
  * Classe définissant l'objet polyligne ouvert. On fournit un constructeur
- * public et une méthode fournissant l'aire comprise dans le polyligne.
+ * public et une méthode fournissant l'aire comprise dans le polyligne. La
+ * classe est immuable
  * 
  * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
  * @author Nicolas Phan Van (239293)
@@ -120,6 +121,8 @@ public final class ClosedPolyLine extends PolyLine {
      * fermé
      * 
      * @param p
+     *            le point dont on veut vérifier l'appartenance à la polyligne
+     *            fermée
      * @return True si le point se trouve dans le polyligne, False dans le cas
      *         contraire
      */

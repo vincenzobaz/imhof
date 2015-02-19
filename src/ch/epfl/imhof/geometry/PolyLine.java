@@ -9,7 +9,7 @@ import java.util.List;
  * immuable
  * 
  * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
- *
+ * @author Nicolas Phan Van (239293)
  */
 public abstract class PolyLine {
     private List<Point> points;
@@ -35,12 +35,24 @@ public abstract class PolyLine {
         }
     }
 
+    /**
+     * On impose aux sous-classes de définir une méthode permettant de
+     * déterminer si la polyligne est ouverte ou fermée
+     * 
+     * @return True si la polyligne est ouverte, False dans le cas contraire
+     */
     public abstract boolean isClosed();
-
+/**
+ * accesseur de la liste de points qui constituent la polyligne
+ * @return la liste des points 
+ */
     public List<Point> points() {
         return points;
     }
-
+/**
+ * accesseur du premier point
+ * @return le premier point de la polyligne
+ */
     public Point firstPoint() {
         return points.get(0);
     }
