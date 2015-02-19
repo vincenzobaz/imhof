@@ -2,7 +2,21 @@ package ch.epfl.imhof.geometry;
 
 import java.util.List;
 
+/**
+ * Classe définissant l'objet polyligne ouvert. On fournit un constructeur
+ * public et une méthode fournissant l'aire comprise dans le polyligne.
+ * 
+ * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * @author Nicolas Phan Van (239293)
+ */
 public final class ClosedPolyLine extends PolyLine {
+    /**
+     * 
+     * 
+     * @throws IllegalArgumentException
+     *             On vérifie si la liste de points reçue en argument définit un
+     *             polyligne fermé avant de construire l'objet.
+     */
     public ClosedPolyLine(List<Point> points) throws IllegalArgumentException {
         super(points);
         try {
@@ -42,23 +56,73 @@ public final class ClosedPolyLine extends PolyLine {
         return Math.abs(area);
     }
 
+    /**
+     * Méthode interne utile pour vérifier si deux points ont les mêmes
+     * coordonnées.
+     * 
+     * @param point1
+     *            Le premier point
+     * @param point2
+     *            le deuxième point
+     * @return On returne un boolean: True si les points coincident, faux s'ils
+     *         ont des coordonnées différentes
+     */
     private boolean samePoint(Point point1, Point point2) {
         return (point1.x() == point2.x() && point1.y() == point2.y());
     }
 
+    /**
+     * Méthode interne qui vérifie si un point se trouve à gauche d'un segement
+     * en étudiant le signe de l'aire signée
+     * 
+     * @param p
+     *            Le point dont on veut vérifier la position
+     * @param a
+     *            Le premier point du segment
+     * @param b
+     *            Le deuxième point du segment
+     * @return On returne True si le point se trouve à gauche du segment, false
+     *         s'il est à sa droite
+     */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
         return (signedTriangleArea(p, a, b) > 0);
     }
 
+    /**
+     * Méthode interne qui calcule l'aire signée d'un triangle définit par ses
+     * trois sommets.
+     * 
+     * @param a
+     *            le premier sommet
+     * @param b
+     *            le deuxième sommet
+     * @param c
+     *            le troisième sommet
+     * @return On retourne un double, l'aire signée du triangle
+     */
     private double signedTriangleArea(Point a, Point b, Point c) {
         return 0.5 * ((b.x() - a.x()) * (c.y() - a.y()) - (c.x() - a.x())
                 * (b.y() - a.y()));
     }
 
+    /**
+     * méthode interne fournissant un sommet d'indice généralisé
+     * 
+     * @param n
+     * @return on retourne le point d'indice généralisé n
+     */
     private Point getVertex(int n) {
         return points().get(Math.floorMod(n, points().size()));
     }
 
+    /**
+     * méthode qui permet de vérifier si un point se trouve dans un polyligne
+     * fermé
+     * 
+     * @param p
+     * @return True si le point se trouve dans le polyligne, False dans le cas
+     *         contraire
+     */
     public boolean containsPoint(Point p) {
         int index = 0;
         for (int i = 0; i <= points().size(); i++) {

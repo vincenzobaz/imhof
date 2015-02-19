@@ -4,9 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Classe abstraite définissant l'entité polyligne.
- * On fournit deux getters: l'un pour le premier point et l'autre pour la liste entière.
- * La classe est immuable
+ * Classe abstraite définissant l'entité polyligne. On fournit deux getters:
+ * l'un pour le premier point et l'autre pour la liste entière. La classe est
+ * immuable
+ * 
  * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
  *
  */
@@ -28,8 +29,7 @@ public abstract class PolyLine {
                         "La liste des points est vide");
             }
             this.points = Collections.unmodifiableList(points);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             throw e;
         }
