@@ -7,7 +7,8 @@ import ch.epfl.imhof.PointGeo;
  * Cette interface est utilisée pour la conversion des coordonnées d'un système
  * de coordonnées sphériques à un système de coordonnées cartésiennes.
  * 
- * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
  * 
  */
 public interface Projection {
@@ -19,6 +20,7 @@ public interface Projection {
      *            le point en coordonnées sphériques
      */
     Point project(PointGeo point);
+
     /**
      * Méthode retournant un PointGeo (en coordonnées sphériques) à partir d'un
      * Point (en coordonnées cartésiennes)

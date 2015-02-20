@@ -50,11 +50,10 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * @return true, la polyligne est fermée, les vérifications sont faites dans
-     *         le constructeur
+     * @return true, si la polyligne est fermée, false sinon
      */
     public boolean isClosed() {
-        return true;
+        return (samePoint(firstPoint(), points().get(points().size() - 1)));
     }
 
     /**

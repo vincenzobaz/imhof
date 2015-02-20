@@ -4,19 +4,35 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
 
 /**
- * Conversion des coordonnées sphériques d'un point à la surface de la Terre en coordonnées
- * cartésiennes et viceversa dans le cadre de la projection équirectangulaire.
- * Cette classe ne contient que des méthodes. La classe est immuable.
+ * Conversion des coordonnées sphériques d'un point à la surface de la Terre en
+ * coordonnées cartésiennes et viceversa dans le cadre de la projection
+ * équirectangulaire. Cette classe ne contient que des méthodes. La classe est
+ * immuable.
  * 
- * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
  * 
  */
 public final class EquirectangularProjection implements Projection {
 
+    /**
+     * Convertit un PointGeo en Point
+     * 
+     * @param point
+     *            le point en coordonnées sphériques
+     * @return le point en coordonnées cartésiennes
+     */
     public Point project(PointGeo point) {
         return new Point(point.longitude(), point.latitude());
     }
-    
+
+    /**
+     * Convertit un Point en PointGeo
+     * 
+     * @param point
+     *            le point en coordonnées cartésiennes
+     * @return le point en coordonnées sphériques
+     */
     public PointGeo inverse(Point point) {
         return new PointGeo(point.x(), point.y());
     }
