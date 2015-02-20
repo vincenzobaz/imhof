@@ -37,8 +37,7 @@ public final class PointGeo {
             }
             this.longitude = longitude;
             this.latitude = latitude;
-        } 
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             throw e;
         }

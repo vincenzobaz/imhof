@@ -13,6 +13,7 @@ import ch.epfl.imhof.PointGeo;
 =======
  * @author Vincenzo Bazzucchi (249733) 
 >>>>>>> refs/heads/Etape2
+>>>>>>> branch 'Etape2' of https://github.com/vincenzobaz/imhof.git
  * @author Nicolas Phan Van (239293)
  * 
  */

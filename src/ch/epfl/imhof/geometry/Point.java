@@ -12,16 +12,6 @@ package ch.epfl.imhof.geometry;
 public final class Point {
     private final double x;
     private final double y;
-
-    /**
-     * Construit un point avec les coordonnées données
-     * 
-     * @param x
-     *            la coordonnée horizontale du point
-     * @param y
-     *            la coordonnée verticale du point
-     */
-
 /**
  * Le constructeur de l'entité point. Il prend en argument les coordonnées x et y du point
  * @param x

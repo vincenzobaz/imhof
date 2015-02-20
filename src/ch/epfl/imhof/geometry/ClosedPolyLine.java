@@ -17,44 +17,16 @@ public final class ClosedPolyLine extends PolyLine {
      * 
      * @param points
      *            la liste des points qui constituent la polyligne
-     * @throws IllegalArgumentException
-     *             lève une exception si la polyligne n'est pas fermée (le 1er
-     *             point est différent du dernier), et si les points ne forment
-     *             pas un polygone (seulement 2 points, plusieurs fois le même
-     *             sommet)
      */
-    public ClosedPolyLine(List<Point> points) throws IllegalArgumentException {
+    public ClosedPolyLine(List<Point> points) {
         super(points);
-        /**try {
-            if (!samePoint(this.firstPoint(),
-                    this.points().get(this.points().size() - 1))) {
-                throw new IllegalArgumentException(
-                        "Le 1er point est différent du dernier");
-            }
-            if (this.points().size() == 2) {
-                throw new IllegalArgumentException(
-                        "Un segment n'est pas un polygone");
-            }
-            for (int i = 0; i < this.points().size() - 2; ++i) {
-                for (int j = i + 1; j < this.points().size() - 1; ++j) {
-                    if (samePoint(this.points().get(i), this.points().get(j))) {
-                        throw new IllegalArgumentException(
-                                "Un polygone ne peut pas avoir 2 fois le même sommet");
-                    }
-                }
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            throw e;
-        }**/
     }
 
     /**
-     * @return true, la polyligne est fermée, les vérifications sont faites dans
-     *         le constructeur
+     * @return true, si la polyligne est fermée, false sinon
      */
     public boolean isClosed() {
-        return true;
+        return (samePoint(firstPoint(), points().get(points().size() - 1)));
     }
 
     /**
