@@ -31,11 +31,15 @@ public abstract class PolyLine {
                 throw new IllegalArgumentException(
                         "La liste des points est vide");
             }
-            this.points = Collections.unmodifiableList(points);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             throw e;
         }
+        ArrayList<Point> temp = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++) {
+            temp.add(points.get(i));
+        }
+        this.points = Collections.unmodifiableList(temp);
     }
 
     /**

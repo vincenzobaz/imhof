@@ -26,7 +26,7 @@ public final class ClosedPolyLine extends PolyLine {
      * @return true, si la polyligne est fermée, false sinon
      */
     public boolean isClosed() {
-        return (samePoint(firstPoint(), points().get(points().size() - 1)));
+        return true;
     }
 
     /**
@@ -115,7 +115,7 @@ public final class ClosedPolyLine extends PolyLine {
      */
     public boolean containsPoint(Point p) {
         int index = 0;
-        for (int i = 0; i <= points().size(); i++) {
+        for (int i = 0; i < points().size(); i++) {
             if (getVertex(i).y() <= p.y()) {
                 if (getVertex(i + 1).y() > p.y()
                         && isOnTheLeft(p, getVertex(i), getVertex(i + 1))) {
