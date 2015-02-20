@@ -25,7 +25,7 @@ public final class ClosedPolyLine extends PolyLine {
      */
     public ClosedPolyLine(List<Point> points) throws IllegalArgumentException {
         super(points);
-        try {
+        /**try {
             if (!samePoint(this.firstPoint(),
                     this.points().get(this.points().size() - 1))) {
                 throw new IllegalArgumentException(
@@ -46,7 +46,7 @@ public final class ClosedPolyLine extends PolyLine {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             throw e;
-        }
+        }**/
     }
 
     /**

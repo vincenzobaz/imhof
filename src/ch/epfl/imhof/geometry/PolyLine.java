@@ -2,6 +2,7 @@ package ch.epfl.imhof.geometry;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Classe abstraite définissant l'entité polyligne. On fournit deux getters:
@@ -61,5 +62,43 @@ public abstract class PolyLine {
      */
     public Point firstPoint() {
         return points.get(0);
+    }
+
+    /**
+     * Bâtisseur.
+     * 
+     * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+     * @author Nicolas Phan Van (239293)
+     */
+    public static final class Builder {
+        private List<Point> points = new ArrayList<>();
+
+        /**
+         * On ajoute un point à la polyligne
+         * 
+         * @param newPoint
+         *            le point à ajouter
+         */
+        public void addPoint(Point newPoint) {
+            points.add(newPoint);
+        }
+
+        /**
+         * Construit une polyligne ouverte immuable
+         * 
+         * @return la polyligne ouverte immuable
+         */
+        public OpenPolyLine buildOpen() {
+            return new OpenPolyLine(points);
+        }
+
+        /**
+         * Construit une polyligne ferméle immuable
+         * 
+         * @return la polyligne fermée immuable
+         */
+        public ClosedPolyLine buildClosed() {
+            return new ClosedPolyLine(points);
+        }
     }
 }

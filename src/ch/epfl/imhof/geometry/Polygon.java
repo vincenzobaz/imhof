@@ -1,6 +1,7 @@
 package ch.epfl.imhof.geometry;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -23,8 +24,12 @@ public final class Polygon {
      *            polylignes fermées
      */
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
+        ArrayList<ClosedPolyLine> temp = new ArrayList<>();
+        for (int i=0; i<holes.size(); i++){
+            temp.add(holes.get(i));
+        }
         this.shell = shell;
-        this.holes = Collections.unmodifiableList(holes);
+        this.holes = Collections.unmodifiableList(temp);
     }
 
     /**
@@ -35,6 +40,7 @@ public final class Polygon {
      */
     public Polygon(ClosedPolyLine shell) {
         this.shell = shell;
+        this.holes = new ArrayList<>(); 
     }
 
     /**
