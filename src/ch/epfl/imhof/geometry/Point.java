@@ -12,6 +12,7 @@ package ch.epfl.imhof.geometry;
 public final class Point {
     private final double x;
     private final double y;
+<<<<<<< HEAD
 
     /**
      * Construit un point avec les coordonnées données
@@ -21,25 +22,46 @@ public final class Point {
      * @param y
      *            la coordonnée verticale du point
      */
+=======
+/**
+ * Le constructeur de l'entité point. Il prend en argument les coordonnées x et y du point
+ * @param x
+ * @param y
+ */
+>>>>>>> refs/heads/Etape2
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
+<<<<<<< HEAD
 
     /**
      * Getter pour la coordonnée horizontale
      * 
      * @return l'attribut x du point
      */
+=======
+/** 
+ * Accesseur de la coordonnée x
+ * @return x
+ */
+>>>>>>> refs/heads/Etape2
     public double x() {
         return x;
     }
+<<<<<<< HEAD
 
     /**
      * Getter pour la coordonnée verticale
      * 
      * @return l'attribut y du point
      */
+=======
+/**
+ * Accesseur de la coordonnée y
+ * @return
+ */
+>>>>>>> refs/heads/Etape2
     public double y() {
         return y;
     }
