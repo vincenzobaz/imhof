@@ -25,7 +25,7 @@ public final class Polygon {
      */
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
         ArrayList<ClosedPolyLine> temp = new ArrayList<>();
-        for (int i=0; i<holes.size(); i++){
+        for (int i = 0; i < holes.size(); i++) {
             temp.add(holes.get(i));
         }
         this.shell = shell;
@@ -40,11 +40,11 @@ public final class Polygon {
      */
     public Polygon(ClosedPolyLine shell) {
         this.shell = shell;
-        this.holes = new ArrayList<>(); 
+        this.holes = new ArrayList<>();
     }
 
     /**
-     * Getter de l'enveloppe du polygone
+     * Accesseur de l'enveloppe du polygone
      * 
      * @return l'attribut shell du Polygon
      */
@@ -53,7 +53,7 @@ public final class Polygon {
     }
 
     /**
-     * Getter de la liste des trous du polygone
+     * Accesseur de la liste des trous du polygone
      * 
      * @return l'attribut holes du Polygon
      */

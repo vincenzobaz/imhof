@@ -8,12 +8,7 @@ import ch.epfl.imhof.PointGeo;
  * coordonnées cartésiennes et viceversa dans le cadre de la projection CH1903.
  * Cette classe ne contient que des méthodes. La classe est immuable.
  * 
-<<<<<<< HEAD
  * @author Vincenzo Bazzucchi (249733)
-=======
- * @author Vincenzo Bazzucchi (249733) 
->>>>>>> refs/heads/Etape2
->>>>>>> branch 'Etape2' of https://github.com/vincenzobaz/imhof.git
  * @author Nicolas Phan Van (239293)
  * 
  */

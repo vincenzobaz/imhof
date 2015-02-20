@@ -1,7 +1,7 @@
 package ch.epfl.imhof.projection;
 
-import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
+import ch.epfl.imhof.PointGeo;
 
 /**
  * Conversion des coordonnées sphériques d'un point à la surface de la Terre en

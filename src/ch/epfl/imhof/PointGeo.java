@@ -44,7 +44,7 @@ public final class PointGeo {
     }
 
     /**
-     * Getter pour la longitude
+     * Accesseur de la longitude
      * 
      * @return l'attribut longitude du point
      */
@@ -53,7 +53,7 @@ public final class PointGeo {
     }
 
     /**
-     * Getter pour la latitude
+     * Accesseur de la latitude
      * 
      * @return l'attribut latitude du point
      */
@@ -62,7 +62,7 @@ public final class PointGeo {
     }
 
     /**
-     * Teste si la coordonnée est valide
+     * Teste si la coordonnée fournie est valide
      * 
      * @param coordonnee
      *            coordonnée à tester, en radians

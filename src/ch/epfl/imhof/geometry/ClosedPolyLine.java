@@ -48,10 +48,10 @@ public final class ClosedPolyLine extends PolyLine {
      * coordonnées.
      * 
      * @param point1
-     *            Le premier point
+     *            le premier point
      * @param point2
-     *            Le deuxième point
-     * @return On retourne un boolean: True si les points coincident, False
+     *            le deuxième point
+     * @return On retourne un boolean: true si les points coincident, false
      *         s'ils ont des coordonnées différentes
      */
     private boolean samePoint(Point point1, Point point2) {
@@ -63,12 +63,12 @@ public final class ClosedPolyLine extends PolyLine {
      * en étudiant le signe de l'aire signée
      * 
      * @param p
-     *            Le point dont on veut vérifier la position
+     *            le point dont on veut vérifier la position
      * @param a
-     *            Le premier point du segment
+     *            le premier point du segment
      * @param b
-     *            Le deuxième point du segment
-     * @return On returne True si le point se trouve à gauche du segment, False
+     *            le deuxième point du segment
+     * @return On returne true si le point se trouve à gauche du segment, false
      *         s'il est à sa droite
      */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
@@ -93,10 +93,10 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * méthode interne fournissant un sommet d'indice généralisé
+     * Méthode interne fournissant un sommet d'indice généralisé
      * 
-     * @param n
-     *            , l'indice du point qu'on veut généraliser
+     * @param n l'indice du point qu'on veut généraliser
+     * 
      * @return on retourne le point d'indice généralisé n
      */
     private Point getVertex(int n) {
@@ -104,13 +104,13 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * méthode qui permet de vérifier si un point se trouve dans une polyligne
-     * fermé
+     * Méthode qui permet de vérifier si un point se trouve dans une polyligne
+     * fermée
      * 
      * @param p
      *            le point dont on veut vérifier l'appartenance à la polyligne
      *            fermée
-     * @return True si le point se trouve dans le polyligne, False dans le cas
+     * @return true si le point se trouve dans le polyligne, false dans le cas
      *         contraire
      */
     public boolean containsPoint(Point p) {

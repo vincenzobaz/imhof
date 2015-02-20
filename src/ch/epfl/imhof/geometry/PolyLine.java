@@ -1,8 +1,8 @@
 package ch.epfl.imhof.geometry;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Classe abstraite définissant l'entité polyligne. On fournit deux getters:
@@ -20,7 +20,7 @@ public abstract class PolyLine {
      * Construit une polyligne à partir d'une liste de points
      * 
      * @param points
-     *            La liste des points composant la ligne
+     *            la liste des points composant la ligne
      * 
      * @throws IllegalArgumentException
      *             lancée si la liste passée en paramètre est vide
@@ -46,12 +46,12 @@ public abstract class PolyLine {
      * On impose aux sous-classes de définir une méthode permettant de
      * déterminer si la polyligne est ouverte ou fermée
      * 
-     * @return True si la polyligne est ouverte, False dans le cas contraire
+     * @return true si la polyligne est ouverte, false dans le cas contraire
      */
     public abstract boolean isClosed();
 
     /**
-     * accesseur de la liste de points qui constituent la polyligne
+     * Accesseur de la liste de points qui constituent la polyligne
      * 
      * @return la liste des points
      */
@@ -60,7 +60,7 @@ public abstract class PolyLine {
     }
 
     /**
-     * accesseur du premier point
+     * Accesseur du premier point
      * 
      * @return le premier point de la polyligne
      */
@@ -69,10 +69,11 @@ public abstract class PolyLine {
     }
 
     /**
-     * Bâtisseur.
+     * Bâtisseur
      * 
-     * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+     * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
+     * 
      */
     public static final class Builder {
         private List<Point> points = new ArrayList<>();
@@ -97,7 +98,7 @@ public abstract class PolyLine {
         }
 
         /**
-         * Construit une polyligne ferméle immuable
+         * Construit une polyligne fermée immuable
          * 
          * @return la polyligne fermée immuable
          */
