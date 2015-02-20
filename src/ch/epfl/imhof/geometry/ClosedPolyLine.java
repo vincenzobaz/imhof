@@ -23,10 +23,10 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * @return true, si la polyligne est fermée, false sinon
+     * @return true car la polyligne est fermée
      */
     public boolean isClosed() {
-        return (samePoint(firstPoint(), points().get(points().size() - 1)));
+        return true;
     }
 
     /**
