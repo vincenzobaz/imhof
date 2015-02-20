@@ -3,20 +3,25 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 
 /**
- * Classe définissant l'objet polyligne ouvert. On fournit un constructeur
- * public et une méthode fournissant l'aire comprise dans le polyligne. La
- * classe est immuable
+ * Classe définissant l'objet polyligne fermée. On fournit un constructeur
+ * public et une méthode fournissant l'aire comprise dans la polyligne. La
+ * classe est immuable.
  * 
- * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
+ * 
  */
 public final class ClosedPolyLine extends PolyLine {
     /**
+     * Construit une polyligne fermée à partir d'une liste de points
      * 
-     * 
+     * @param points
+     *            la liste des points qui constituent la polyligne
      * @throws IllegalArgumentException
-     *             On vérifie si la liste de points reçue en argument définit un
-     *             polyligne fermé avant de construire l'objet.
+     *             lève une exception si la polyligne n'est pas fermée (le 1er
+     *             point est différent du dernier), et si les points ne forment
+     *             pas un polygone (seulement 2 points, plusieurs fois le même
+     *             sommet)
      */
     public ClosedPolyLine(List<Point> points) throws IllegalArgumentException {
         super(points);
@@ -44,10 +49,19 @@ public final class ClosedPolyLine extends PolyLine {
         }
     }
 
+    /**
+     * @return true, la polyligne est fermée, les vérifications sont faites dans
+     *         le constructeur
+     */
     public boolean isClosed() {
         return true;
     }
 
+    /**
+     * Calcule l'aire de la polyligne
+     * 
+     * @return l'aire toujours positive de la polyligne
+     */
     public double area() {
         Point origine = new Point(0, 0);
         double area = 0;
@@ -64,16 +78,16 @@ public final class ClosedPolyLine extends PolyLine {
      * @param point1
      *            Le premier point
      * @param point2
-     *            le deuxième point
-     * @return On returne un boolean: True si les points coincident, faux s'ils
-     *         ont des coordonnées différentes
+     *            Le deuxième point
+     * @return On retourne un boolean: True si les points coincident, False
+     *         s'ils ont des coordonnées différentes
      */
     private boolean samePoint(Point point1, Point point2) {
         return (point1.x() == point2.x() && point1.y() == point2.y());
     }
 
     /**
-     * Méthode interne qui vérifie si un point se trouve à gauche d'un segement
+     * Méthode interne qui vérifie si un point se trouve à gauche d'un segment
      * en étudiant le signe de l'aire signée
      * 
      * @param p
@@ -82,7 +96,7 @@ public final class ClosedPolyLine extends PolyLine {
      *            Le premier point du segment
      * @param b
      *            Le deuxième point du segment
-     * @return On returne True si le point se trouve à gauche du segment, false
+     * @return On returne True si le point se trouve à gauche du segment, False
      *         s'il est à sa droite
      */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
@@ -110,6 +124,7 @@ public final class ClosedPolyLine extends PolyLine {
      * méthode interne fournissant un sommet d'indice généralisé
      * 
      * @param n
+     *            , l'indice du point qu'on veut généraliser
      * @return on retourne le point d'indice généralisé n
      */
     private Point getVertex(int n) {
@@ -117,7 +132,7 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * méthode qui permet de vérifier si un point se trouve dans un polyligne
+     * méthode qui permet de vérifier si un point se trouve dans une polyligne
      * fermé
      * 
      * @param p

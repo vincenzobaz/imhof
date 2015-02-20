@@ -6,8 +6,9 @@ import java.util.List;
  * Classe définisssant l'objet Polyligne ouvert. On fournit un constructeur
  * public. La classe est immuable.
  * 
- * @author Vincenzo Bazzucchi (249733), Nicolas Phan Van (239293)
+ * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
+ * 
  */
 public final class OpenPolyLine extends PolyLine {
     /**
@@ -19,9 +20,11 @@ public final class OpenPolyLine extends PolyLine {
     public OpenPolyLine(List<Point> points) {
         super(points);
     }
-/**
- * la méthode renvoie toujours faux car une polyligne ouverte est par définition non-fermée 
- */
+
+    /**
+     * la méthode renvoie toujours faux car une polyligne ouverte est par
+     * définition non-fermée
+     */
     public boolean isClosed() {
         return false;
     }

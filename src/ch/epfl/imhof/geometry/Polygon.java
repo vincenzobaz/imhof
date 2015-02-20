@@ -3,23 +3,54 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 import java.util.Collections;
 
+/**
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class Polygon {
     private ClosedPolyLine shell;
     private List<ClosedPolyLine> holes;
-    
+
+    /**
+     * Construit un polygone avec trous
+     * 
+     * @param shell
+     *            l'enveloppe du polygone, sous forme de polyligne fermée
+     * @param holes
+     *            l'ensemble des trous du polygone, sous forme de liste de
+     *            polylignes fermées
+     */
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
         this.shell = shell;
         this.holes = Collections.unmodifiableList(holes);
     }
-    
+
+    /**
+     * Construit un polygone sans trous
+     * 
+     * @param shell
+     *            l'enveloppe du polygone, sous forme de polyligne fermée
+     */
     public Polygon(ClosedPolyLine shell) {
         this.shell = shell;
     }
-    
+
+    /**
+     * Getter de l'enveloppe du polygone
+     * 
+     * @return l'attribut shell du Polygon
+     */
     public PolyLine shell() {
         return shell;
     }
-    
+
+    /**
+     * Getter de la liste des trous du polygone
+     * 
+     * @return l'attribut holes du Polygon
+     */
     public List<ClosedPolyLine> holes() {
         return holes;
     }
