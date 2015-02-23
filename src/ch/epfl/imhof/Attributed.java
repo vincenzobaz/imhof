@@ -45,10 +45,10 @@ public final class Attributed<T> {
     }
 
     /**
-     * Méthode qui teste si les attribuent incluent une chaîne de caractères
+     * Méthode qui teste si les attributes incluent une chaîne de caractères
      * 
      * @param attributeName
-     *            l'attribut dont on veut verifier l'appartenance à notre
+     *            l'attribut dont on veut vérifier l'appartenance à notre
      *            ensemble d'attributs
      * @return Vrai si et seulement si les attributs incluent l'argument
      */
@@ -59,8 +59,8 @@ public final class Attributed<T> {
     /**
      * 
      * @param attributeName
-     *            l'attribut dont on cherche la valuer
-     * @return la valeur associé à l'attribut reçu en argument
+     *            l'attribut dont on cherche la valeur
+     * @return la valeur associée à l'attribut reçu en argument
      */
     public String attributeValue(String attributeName) {
         return attributes.get(attributeName);
@@ -70,7 +70,7 @@ public final class Attributed<T> {
      * 
      * @param attributeName
      * @param defaultValue
-     * @return la valeur associée à l'attribut donnée ou la valeur par défaut si
+     * @return la valeur associée à l'attribut donné ou la valeur par défaut si
      *         celui-ci n'existe pas
      */
     public String attributeValue(String attributeName, String defaultValue) {
@@ -78,15 +78,14 @@ public final class Attributed<T> {
     }
 
     /**
-     * j
      * 
      * @param attributeName
      * @param defaultValue
-     * @return la valeur associée à l'attribut donnée ou la valeur par défaut si
+     * @return la valeur associée à l'attribut donné ou la valeur par défaut si
      *         celui-ci n'existe pas ou si la valeur qui lui est associée n'est
      *         pas un entier valide
      */
     public int attributeValue(String attributeName, int defaultValue) {
-        attributes.get(attributeName, defaultValue);
+        return attributes.get(attributeName, defaultValue);
     }
 }

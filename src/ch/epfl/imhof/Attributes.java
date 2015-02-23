@@ -1,5 +1,6 @@
 package ch.epfl.imhof;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
@@ -21,7 +22,8 @@ public final class Attributes {
      *            les attributs, sous forme de Map de String
      */
     public Attributes(Map<String, String> attributes) {
-        this.attributes = new HashMap(Map<String, String > attributes);
+        Map<String, String> temp = new HashMap(attributes);
+        this.attributes = Collections.unmodifiableMap(temp);
     }
 
     /**
@@ -40,7 +42,7 @@ public final class Attributes {
      * @return true si la clé appartient à la liste d'attributs, false sinon
      */
     public boolean contains(String key) {
-        return (attributes.containsKey(key) || attributes.containsValue(key));
+        return attributes.containsKey(key);
     }
 
     /**
@@ -81,7 +83,7 @@ public final class Attributes {
     public int get(String key, int defaultValue) {
         try {
             return Integer.parseInt(get(key));
-        } catch (NumberFormatException e) {            
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -95,11 +97,10 @@ public final class Attributes {
      * @return un Attributes, filtré
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
-        Attributes.Builder filteredAttributes = new Builder();
-        for (int i = 0; i < keysToKeep.size(); ++i) {
-            if (contains(keysToKeep.get(i))) {
-                filteredAttributes.put(keysToKeep.get(i),
-                        get(keysToKeep.get(i)));
+        Builder filteredAttributes = new Builder();
+        for (String s : keysToKeep) {
+            if (contains(s)) {
+                filteredAttributes.put(s, get(s));
             }
         }
         return filteredAttributes.build();

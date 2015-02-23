@@ -8,7 +8,8 @@ import java.util.HashMap;
 import org.junit.Test;
 
 public class AttributesTest {
-    public @Test public void isEmptyTest() {
+    @Test
+    public void isEmptyTest() {
         Map<String, String> emptyMap = new HashMap<String,String>();
         assertTrue(isEmpty(new Attributes(emptyMap)));
     }
