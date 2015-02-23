@@ -36,9 +36,10 @@ public abstract class PolyLine {
             throw e;
         }
         ArrayList<Point> temp = new ArrayList<>();
-        for (int i = 0; i < points.size(); i++) {
-            temp.add(points.get(i));
-        }
+        temp.addAll(0, points);
+        // for (int i = 0; i < points.size(); i++) {
+        // temp.add(points.get(i));
+        // }
         this.points = Collections.unmodifiableList(temp);
     }
 
