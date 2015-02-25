@@ -1,13 +1,13 @@
 package ch.epfl.imhof;
 
 /**
- * Cette classe représente une entité de type T dotée d'attributes.
+ * Cette classe représente une entité de type T dotée d'Attributes.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  * @param <T>
- *            Le type de l'entité à laquelle cette classe associe des attributs
+ *            Le type de l'entité à laquelle cette classe associe des attributs.
  */
 public final class Attributed<T> {
     private T value;
@@ -27,7 +27,7 @@ public final class Attributed<T> {
     }
 
     /**
-     * accesseur
+     * Accesseur
      * 
      * @return la valeur à laquelle les attributs sont attachés
      */
@@ -36,7 +36,7 @@ public final class Attributed<T> {
     }
 
     /**
-     * accesseur
+     * Accesseur
      * 
      * @return les attributs attachés à la valeur
      */

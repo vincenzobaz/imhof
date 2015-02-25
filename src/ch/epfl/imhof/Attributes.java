@@ -1,9 +1,8 @@
 package ch.epfl.imhof;
 
-import java.util.Collections;
+import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * 
@@ -19,11 +18,12 @@ public final class Attributes {
      * paramètre
      * 
      * @param attributes
-     *            les attributs, sous forme de Map de String
+     *            les attributs, sous forme de Map de deux String
      */
     public Attributes(Map<String, String> attributes) {
-        Map<String, String> temp = new HashMap(attributes);
-        this.attributes = Collections.unmodifiableMap(temp);
+        HashMap<String, String> temp = new HashMap<String, String>();
+        temp.putAll(attributes);
+        this.attributes = temp;
     }
 
     /**

@@ -95,7 +95,8 @@ public final class ClosedPolyLine extends PolyLine {
     /**
      * Méthode interne fournissant un sommet d'indice généralisé
      * 
-     * @param n l'indice du point qu'on veut généraliser
+     * @param n
+     *            l'indice du point qu'on veut généraliser
      * 
      * @return on retourne le point d'indice généralisé n
      */
