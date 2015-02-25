@@ -1,10 +1,11 @@
 package ch.epfl.imhof.geometry;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
+ * Classe définissant un polygone à trous. La classe est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

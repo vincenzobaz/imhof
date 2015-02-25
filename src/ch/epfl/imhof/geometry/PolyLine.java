@@ -1,8 +1,8 @@
 package ch.epfl.imhof.geometry;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Classe abstraite définissant l'entité polyligne. On fournit deux getters:
