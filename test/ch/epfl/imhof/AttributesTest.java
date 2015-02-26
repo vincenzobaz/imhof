@@ -4,9 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AttributesTest {
     private HashMap<String, String> newHashMap(String... args) {
@@ -22,26 +24,26 @@ public class AttributesTest {
     }
 
     @Test
-    public void returnsTrueForEmptyMap() {
+    public void isEmptyReturnsTrueForEmptyMap() {
         Attributes test = new Attributes(new HashMap<String, String>());
         assertTrue(test.isEmpty());
     }
 
     @Test
-    public void returnsFalseForNotEmptyMap() {
+    public void isEmptyReturnsFalseForNotEmptyMap() {
         Attributes test = newAttributes("name", "Léman");
         assertFalse(test.isEmpty());
     }
 
     @Test
-    public void returnsTrueForKeyPresent() {
+    public void containsReturnsTrueForKeyPresent() {
         Attributes test = newAttributes("name", "Léman", "color", "blue");
         assertTrue(test.contains("name"));
         assertTrue(test.contains("color"));
     }
 
     @Test
-    public void returnsFalseForKeyNotPresent() {
+    public void containsReturnsFalseForKeyNotPresent() {
         Attributes test = newAttributes("name", "Léman", "color", "blue");
         assertFalse(test.contains("jambon"));
         assertFalse(test.contains("pourquoi?"));
@@ -61,5 +63,58 @@ public class AttributesTest {
         Attributes notEmpty = newAttributes("nature", "forest", "highways", "motorway");
         assertTrue(notEmpty.contains( "forest"));
     }
-
+    
+    @Test
+    public void getReturnsCorrectValue() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", ":(");
+        assertEquals("mettre", test.get("quoi"));
+    }
+    
+    @Test
+    public void getReturnsNullForKeyNotValid() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", ":(");
+        assertEquals(null, test.get("rien"));
+    }
+    
+    @Test
+    public void getReturnsCorrectValueBis() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", ":(");
+        assertEquals(":(", test.get("ici", "defaultValue"));
+    }
+    
+    @Test
+    public void getReturnsDefaultValue() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", ":(");
+        assertEquals("defaultValue", test.get("fake", "defaultValue"));
+    }
+    
+    @Test
+    public void getReturnsCorrectInt() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", "2014");
+        assertEquals(2014, test.get("ici", 12));
+    }
+    
+    @Test
+    public void getReturnsDefaultValueBis() {
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", "2014");
+        assertEquals(42, test.get("sais", 42));
+        assertEquals(42, test.get("faaaake", 42));
+    }
+    
+    @Test
+    public void keepOnlyKeysTest() {
+        List<String> list = new ArrayList<>();
+        list.add("sais");
+        list.add("ici");
+        HashSet<String> keysToKeep = new HashSet(list);
+        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi", "mettre", "ici", "2014");
+        test.keepOnlyKeys(keysToKeep);
+        assertFalse(test.isEmpty());
+        assertTrue(test.contains("sais"));
+        assertEquals("pas", test.get("sais"));
+        assertTrue(test.contains("ici"));
+        assertEquals(2014, test.get("ici", 24));
+        assertFalse(test.contains("je"));
+        assertFalse(test.contains("quoi"));
+    }
 }
