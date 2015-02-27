@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * 
  */
 public abstract class PolyLine {
-    private List<Point> points;
+    private final List<Point> points;
 
     /**
      * Construit une polyligne à partir d'une liste de points
@@ -27,7 +27,7 @@ public abstract class PolyLine {
      */
     public PolyLine(List<Point> points) throws IllegalArgumentException {
         try {
-            if (points.size() == 0) {
+            if (points.size() == 0 || points == null) {
                 throw new IllegalArgumentException(
                         "La liste des points est vide");
             }
@@ -37,9 +37,6 @@ public abstract class PolyLine {
         }
         ArrayList<Point> temp = new ArrayList<>();
         temp.addAll(0, points);
-        // for (int i = 0; i < points.size(); i++) {
-        // temp.add(points.get(i));
-        // }
         this.points = Collections.unmodifiableList(temp);
     }
 

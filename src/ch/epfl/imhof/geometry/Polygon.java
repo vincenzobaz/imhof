@@ -12,8 +12,8 @@ import java.util.ArrayList;
  *
  */
 public final class Polygon {
-    private ClosedPolyLine shell;
-    private List<ClosedPolyLine> holes;
+    private final ClosedPolyLine shell;
+    private final List<ClosedPolyLine> holes;
 
     /**
      * Construit un polygone avec trous
@@ -27,9 +27,6 @@ public final class Polygon {
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
         ArrayList<ClosedPolyLine> temp = new ArrayList<>();
         temp.addAll(0, holes);
-        // for (int i = 0; i < holes.size(); i++) {
-        // temp.add(holes.get(i));
-        // }
         this.shell = shell;
         this.holes = Collections.unmodifiableList(temp);
     }
@@ -50,7 +47,7 @@ public final class Polygon {
      * 
      * @return l'attribut shell du Polygon
      */
-    public PolyLine shell() {
+    public ClosedPolyLine shell() {
         return shell;
     }
 
