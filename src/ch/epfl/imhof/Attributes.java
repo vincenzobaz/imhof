@@ -1,5 +1,6 @@
 package ch.epfl.imhof;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.HashMap;
  *
  */
 public final class Attributes {
-    private final HashMap<String, String> attributes;
+    private final Map<String, String> attributes;
 
     /**
      * Construit un nouvel ensemble d'attributs à partir de la table passée en
@@ -22,9 +23,9 @@ public final class Attributes {
      *            les attributs, sous forme de Map de deux String
      */
     public Attributes(Map<String, String> attributes) {
-        HashMap<String, String> temp = new HashMap<String, String>();
-        temp.putAll(attributes);
-        this.attributes = temp;
+        //Map<String, String> temp = new HashMap<>(attributes);
+        //this.attributes = Collections.unmodifiableMap(temp);
+        this.attributes = Collections.unmodifiableMap(new HashMap<>(attributes));
     }
 
     /**

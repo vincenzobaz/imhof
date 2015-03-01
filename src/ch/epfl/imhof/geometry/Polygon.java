@@ -29,6 +29,7 @@ public final class Polygon {
         temp.addAll(0, holes);
         this.shell = shell;
         this.holes = Collections.unmodifiableList(temp);
+        //this.holes = Collections.unmodifiableList(new ArrayList<>(holes));
     }
 
     /**

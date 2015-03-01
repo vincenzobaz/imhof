@@ -38,6 +38,7 @@ public abstract class PolyLine {
         ArrayList<Point> temp = new ArrayList<>();
         temp.addAll(0, points);
         this.points = Collections.unmodifiableList(temp);
+        //this.points = Collections.unmodifiableList(new ArrayList<>(points));
     }
 
     /**
