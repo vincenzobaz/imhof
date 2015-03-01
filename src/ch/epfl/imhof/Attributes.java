@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
+ * Classe représentant un ensemble d'attributs et leurs valeurs associées.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -27,6 +28,7 @@ public final class Attributes {
     }
 
     /**
+     * Retourne vrai si et seulement si l'ensemble d'attributs est vide.
      * 
      * @return true si l'ensemble d'attributs est vide, false sinon
      */
@@ -35,6 +37,7 @@ public final class Attributes {
     }
 
     /**
+     * Retourne vrai si l'ensemble d'attributs contient la clef donnée.
      * 
      * @param key
      *            la clé dont on cherche l'appartenance à l'ensemble
@@ -46,6 +49,8 @@ public final class Attributes {
     }
 
     /**
+     * Retourne la valeur associée à la clef donnée, ou null si la clef n'existe
+     * pas.
      * 
      * @param key
      *            la clé dont on cherche la valeur associée, sous forme de
@@ -58,6 +63,8 @@ public final class Attributes {
     }
 
     /**
+     * Retourne la valeur associée à la clef donnée, ou la valeur par défaut
+     * donnée si aucune valeur ne lui est associée.
      * 
      * @param key
      *            la clé dont on cherche la valeur associée, sous forme de
@@ -72,6 +79,9 @@ public final class Attributes {
     }
 
     /**
+     * Retourne l'entier associé à la clef donnée, ou la valeur par défaut
+     * donnée si aucune valeur ne lui est associée, ou si cette valeur n'est pas
+     * un entier valide.
      * 
      * @param key
      *            la clé dont on cherche l'entier associé, sous forme de String
@@ -89,11 +99,11 @@ public final class Attributes {
     }
 
     /**
-     * Renvoie une version filtrée des attributs, ne contenant que ceux contenus
-     * dans l'ensemble fourni en paramètre
+     * Retourne une version filtrée des attributs ne contenant que ceux dont le
+     * nom figure dans l'ensemble passé.
      * 
      * @param keysToKeep
-     *            les valeurs qu'on veut garder
+     *            les valeurs qu'on veut garder, sous forme de Set
      * @return un Attributes, filtré
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
@@ -129,9 +139,10 @@ public final class Attributes {
         }
 
         /**
-         * Construit le nouvel Attributes
+         * Construit un ensemble d'attributs contenant les associations
+         * clef/valeur ajoutées jusqu'à présent.
          * 
-         * @return
+         * @return l'Attributes en construction
          */
         public Attributes build() {
             return new Attributes(attributes);

@@ -10,8 +10,8 @@ package ch.epfl.imhof;
  *            Le type de l'entité à laquelle cette classe associe des attributs.
  */
 public final class Attributed<T> {
-    private T value;
-    private Attributes attributes;
+    private final T value;
+    private final Attributes attributes;
 
     /**
      * Construit une valeur attribuée.
