@@ -125,7 +125,11 @@ public final class Attributes {
      *
      */
     public static final class Builder {
-        private HashMap<String, String> attributes;
+        private Map<String, String> attributes;
+        
+        public Builder() {
+            this.attributes = new HashMap<>();
+        }
 
         /**
          * Ajoute le couple clé, valeur à l'Attributes en construction

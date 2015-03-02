@@ -75,8 +75,12 @@ public abstract class PolyLine {
      * 
      */
     public static final class Builder {
-        private List<Point> points = new ArrayList<>();
+        private List<Point> points;
 
+        public Builder() {
+            points = new ArrayList<>();
+        }
+        
         /**
          * On ajoute un point à la polyligne
          * 
