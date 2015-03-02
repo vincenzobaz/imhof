@@ -26,21 +26,16 @@ public final class PointGeo {
      */
     public PointGeo(double longitude, double latitude)
             throws IllegalArgumentException {
-        try {
-            if (testCoordonnee(longitude, 1.0)) {
-                throw new IllegalArgumentException(
-                        "La longitude doit être comprise entre -Π et Π");
-            }
-            if (testCoordonnee(latitude, 2.0)) {
-                throw new IllegalArgumentException(
-                        "La latitude doit être comprise entre -Π/2 et Π/2");
-            }
-            this.longitude = longitude;
-            this.latitude = latitude;
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            throw e;
+        if (coordinateIsInvalid(longitude, 1.0)) {
+            throw new IllegalArgumentException(
+                    "La longitude doit être comprise entre -Π et Π");
         }
+        if (coordinateIsInvalid(latitude, 2.0)) {
+            throw new IllegalArgumentException(
+                    "La latitude doit être comprise entre -Π/2 et Π/2");
+        }
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     /**
@@ -64,15 +59,15 @@ public final class PointGeo {
     /**
      * Teste si la coordonnée fournie est valide
      * 
-     * @param coordonnee
+     * @param coordinate
      *            coordonnée à tester, en radians
-     * @param parametre
+     * @param parameter
      *            modificateur d'intervalle, 1.0 pour la longitude, 2.0 pour la
      *            latitude
-     * @return false si la coordonée est valide, true sinon
+     * @return true si la coordonée est invalide, false sinon
      */
-    private boolean testCoordonnee(double coordonnee, double parametre) {
-        return (coordonnee < -Math.PI / parametre || coordonnee > Math.PI
-                / parametre);
+    private boolean coordinateIsInvalid(double coordinate, double parameter) {
+        return (coordinate < -Math.PI / parameter || coordinate > Math.PI
+                / parameter);
     }
 }

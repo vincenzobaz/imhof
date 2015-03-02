@@ -1,8 +1,6 @@
 package ch.epfl.imhof.osm;
 
 import ch.epfl.imhof.Attributes;
-import java.util.Map;
-import java.util.HashMap;
 
 public abstract class OSMEntity {
     private final long id;

@@ -57,6 +57,8 @@ public final class Attributed<T> {
     }
 
     /**
+     * Retourne la valeur associée à l'attribut donné, ou null si celui-ci
+     * n'existe pas.
      * 
      * @param attributeName
      *            l'attribut dont on cherche la valeur
@@ -67,6 +69,7 @@ public final class Attributed<T> {
     }
 
     /**
+     * Retourne la valeur associée à l'attribut donné, ou la valeur par défaut.
      * 
      * @param attributeName
      * @param defaultValue
@@ -78,6 +81,8 @@ public final class Attributed<T> {
     }
 
     /**
+     * Retourne la valeur entière associée à l'attribut donné, ou la valeur par
+     * défaut.
      * 
      * @param attributeName
      * @param defaultValue

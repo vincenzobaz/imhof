@@ -20,6 +20,7 @@ public final class CH1903Projection implements Projection {
      *            le point en coordonnées sphériques
      * @return le point en coordonnées cartésiennes
      */
+    @Override
     public Point project(PointGeo point) {
         double lon = (Math.toDegrees(point.longitude()) * 3600 - 26782.5) / 10000;
         double lat = (Math.toDegrees(point.latitude()) * 3600 - 169028.66) / 10000;
@@ -38,6 +39,7 @@ public final class CH1903Projection implements Projection {
      *            le point en coordonnées cartésiennes
      * @return le point en coordonnées sphériques
      */
+    @Override
     public PointGeo inverse(Point point) {
         double x1 = (point.x() - 600000) / 1000000;
         double y1 = (point.y() - 200000) / 1000000;

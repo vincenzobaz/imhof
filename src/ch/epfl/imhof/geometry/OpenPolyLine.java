@@ -25,6 +25,7 @@ public final class OpenPolyLine extends PolyLine {
      * la méthode renvoie toujours faux car une polyligne ouverte est par
      * définition non-fermée
      */
+    @Override
     public boolean isClosed() {
         return false;
     }

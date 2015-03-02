@@ -23,22 +23,13 @@ public abstract class PolyLine {
      *            la liste des points composant la ligne
      * 
      * @throws IllegalArgumentException
-     *             lancée si la liste passée en paramètre est vide
+     *             lève une exception si la liste passée en paramètre est vide
      */
     public PolyLine(List<Point> points) throws IllegalArgumentException {
-        try {
-            if (points.size() == 0 || points == null) {
-                throw new IllegalArgumentException(
-                        "La liste des points est vide");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            throw e;
+        if (points.size() == 0 || points == null) {
+            throw new IllegalArgumentException("La liste des points est vide");
         }
-        ArrayList<Point> temp = new ArrayList<>();
-        temp.addAll(0, points);
-        this.points = Collections.unmodifiableList(temp);
-        //this.points = Collections.unmodifiableList(new ArrayList<>(points));
+        this.points = Collections.unmodifiableList(new ArrayList<>(points));
     }
 
     /**
@@ -77,10 +68,13 @@ public abstract class PolyLine {
     public static final class Builder {
         private List<Point> points;
 
+        /**
+         * Constructeur par défaut du bâtisseur
+         */
         public Builder() {
             points = new ArrayList<>();
         }
-        
+
         /**
          * On ajoute un point à la polyligne
          * 
