@@ -113,7 +113,7 @@ public class AttributesTest {
         List<String> list = new ArrayList<>();
         list.add("sais");
         list.add("ici");
-        HashSet<String> keysToKeep = new HashSet(list);
+        HashSet<String> keysToKeep = new HashSet<>(list);
         Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi",
                 "mettre", "ici", "2014");
         test.keepOnlyKeys(keysToKeep);
