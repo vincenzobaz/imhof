@@ -27,7 +27,7 @@ public abstract class OSMEntity {
         return attributes.get(key);
     }
 
-    public abstract static class Builder {
+    public static abstract class Builder {
         private final long id;
         private boolean isIncomplete;
         private Attributes.Builder attributesInProgress;

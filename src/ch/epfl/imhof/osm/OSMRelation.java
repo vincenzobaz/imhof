@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import ch.epfl.imhof.osm.OSMEntity;
-import ch.epfl.imhof.osm.OSMEntity.Builder;
 import ch.epfl.imhof.Attributes;
 
 public final class OSMRelation extends OSMEntity {
@@ -12,8 +11,7 @@ public final class OSMRelation extends OSMEntity {
 
     public OSMRelation(long id, List<Member> members, Attributes attributes) {
         super(id, attributes);
-        this.members = Collections.unmodifiableList(new ArrayList<Member>(
-                members));
+        this.members = Collections.unmodifiableList(new ArrayList<>(members));
     }
 
     public List<Member> members() {
@@ -59,12 +57,13 @@ public final class OSMRelation extends OSMEntity {
         }
 
         public void addMember(Member.Type type, String role, OSMEntity newMember) {
-
+            members.add(new Member(type, role, newMember));
         }
 
         public OSMRelation build() {
             if (isIncomplete()) {
-                throw new IllegalStateException();
+                throw new IllegalStateException(
+                        "La relation en cours de construction est incomplète.");
             }
             return new OSMRelation(idBuild(), members, attributesBuild());
         }
