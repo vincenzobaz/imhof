@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import ch.epfl.imhof.osm.OSMEntity;
-import ch.epfl.imhof.osm.OSMEntity.Builder;
 import ch.epfl.imhof.Attributes;
 
 public final class OSMRelation extends OSMEntity {
