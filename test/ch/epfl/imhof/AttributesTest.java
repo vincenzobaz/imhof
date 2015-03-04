@@ -114,9 +114,9 @@ public class AttributesTest {
         list.add("sais");
         list.add("ici");
         HashSet<String> keysToKeep = new HashSet<>(list);
-        Attributes test = newAttributes("je", "ne", "sais", "pas", "quoi",
+        Attributes toFilter = newAttributes("je", "ne", "sais", "pas", "quoi",
                 "mettre", "ici", "2014");
-        test.keepOnlyKeys(keysToKeep);
+        Attributes test = toFilter.keepOnlyKeys(keysToKeep);
         assertFalse(test.isEmpty());
         assertTrue(test.contains("sais"));
         assertEquals("pas", test.get("sais"));

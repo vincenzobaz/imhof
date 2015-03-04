@@ -25,6 +25,7 @@ public final class ClosedPolyLine extends PolyLine {
     /**
      * @return true car la polyligne est fermée
      */
+    @Override
     public boolean isClosed() {
         return true;
     }
@@ -53,10 +54,10 @@ public final class ClosedPolyLine extends PolyLine {
      *            le deuxième point
      * @return On retourne un boolean: true si les points coincident, false
      *         s'ils ont des coordonnées différentes
+     *
+     *         private boolean samePoint(Point point1, Point point2) { return
+     *         (point1.x() == point2.x() && point1.y() == point2.y()); }
      */
-    private boolean samePoint(Point point1, Point point2) {
-        return (point1.x() == point2.x() && point1.y() == point2.y());
-    }
 
     /**
      * Méthode interne qui vérifie si un point se trouve à gauche d'un segment

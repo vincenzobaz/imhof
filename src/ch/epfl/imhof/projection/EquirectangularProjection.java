@@ -22,6 +22,7 @@ public final class EquirectangularProjection implements Projection {
      *            le point en coordonnées sphériques
      * @return le point en coordonnées cartésiennes
      */
+    @Override
     public Point project(PointGeo point) {
         return new Point(point.longitude(), point.latitude());
     }
@@ -33,6 +34,7 @@ public final class EquirectangularProjection implements Projection {
      *            le point en coordonnées cartésiennes
      * @return le point en coordonnées sphériques
      */
+    @Override
     public PointGeo inverse(Point point) {
         return new PointGeo(point.x(), point.y());
     }

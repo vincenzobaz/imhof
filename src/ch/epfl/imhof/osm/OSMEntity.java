@@ -67,6 +67,7 @@ public abstract class OSMEntity {
         return attributes.get(key);
     }
 
+<<<<<<< HEAD
     /**
      * Bâtisseur pour les objets OSMEntity
      * 
@@ -75,6 +76,9 @@ public abstract class OSMEntity {
      *
      */
     public abstract static class Builder {
+=======
+    public static abstract class Builder {
+>>>>>>> 985d06695e5e6060d9f58fdf438b377cf5fa577a
         private final long id;
         private boolean isIncomplete;
         private Attributes.Builder attributesInProgress;
