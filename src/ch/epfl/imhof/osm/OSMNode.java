@@ -39,7 +39,7 @@ public final class OSMNode extends OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe OSMNode
+     * Bâtisseur de la classe OSMNode, héritant du bâtisseur de OSMEntity
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)

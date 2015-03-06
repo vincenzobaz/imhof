@@ -19,7 +19,7 @@ public final class OSMRelation extends OSMEntity {
     /**
      * Le constructeur de la classe. Comme la classe doit être immuable, on fait
      * une copie des objets non-immuables et on la stocke sous forme de vue
-     * non-modifialbe
+     * non-modifiable
      * 
      * @param id
      *            l'identifiant unique de la relation.
@@ -34,8 +34,8 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Accesseur de membres de la realtion. L'objet founri est une vue
-     * non-modifiable, ce qui garantit l'immuabilité de la classe
+     * Accesseur des membres de la relation. L'objet fourni est une vue
+     * non-modifiable, ce qui garantit l'immuabilité de la classe.
      * 
      * @return la liste des membres de la relation
      */
@@ -44,27 +44,27 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Cette classe static imbriquée représente un membre d'une relation OSM. La
-     * classe est immuable
+     * Cette classe statique imbriquée représente un membre d'une relation OSM.
+     * La classe est immuable
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
      *
      */
     public static final class Member {
-        private Type type;
-        private String role;
-        private OSMEntity member;
+        private final Type type;
+        private final String role;
+        private final OSMEntity member;
 
         /**
-         * Le cosntructeur de la classe.
+         * Le constructeur de la classe.
          * 
          * @param type
-         *            l
+         *            le type du membre
          * @param role
-         *            le role du membre
+         *            le rôle du membre
          * @param member
-         *            membre défini comme entité osm
+         *            membre défini comme entité OSM
          */
         public Member(Type type, String role, OSMEntity member) {
             this.type = type;
@@ -73,8 +73,8 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * accesseur du type du membre. La classe Type étant immuable, nous
-         * n'avons pas besoin de copier type avant le renvoyer
+         * Accesseur du type du membre. La classe Type étant immuable, nous
+         * n'avons pas besoin de copier type avant de le renvoyer.
          * 
          * @return le type du membre
          */
@@ -84,17 +84,17 @@ public final class OSMRelation extends OSMEntity {
 
         /**
          * Accesseur de l'attribut role. Comme il s'agit d'un String, immuable
-         * par délfinition, nous n'avons pas besoin de le copier avant de le
-         * renvoyer
+         * par définition, nous n'avons pas besoin de le copier avant de le
+         * renvoyer.
          * 
-         * @return le role du membre.
+         * @return le role du membre
          */
         public String role() {
             return role;
         }
 
         /**
-         * accesseur pour l'entité qu'on veut qualifier en tant que membre
+         * Accesseur pour l'entité qu'on veut qualifier en tant que membre
          * 
          * @return une entité membre
          */
@@ -110,8 +110,8 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe OSMRelation. Il hérité du bâtisseur de la classe
-     * OSMEntity vu que cell-ci hérite de OSMEntity
+     * Bâtisseur de la classe OSMRelation. Il hérite du bâtisseur de la classe
+     * OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -121,11 +121,11 @@ public final class OSMRelation extends OSMEntity {
         private List<Member> members;
 
         /**
-         * le constructeur de la classe. Pour instancier on ne demande qu'un
-         * identificateur unique
+         * Constructeur du bâtisseur. Pour instancier on ne demande qu'un
+         * identifiant unique.
          * 
          * @param id
-         *            l'identificateur unique
+         *            l'identifiant unique
          */
         public Builder(long id) {
             super(id);
@@ -133,15 +133,15 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Cette méthode permet d'ajouter un membre à la rélation en le
+         * Cette méthode permet d'ajouter un membre à la relation en le
          * qualifiant avec des attributs
          * 
          * @param type
-         *            du membre
+         *            le type du membre
          * @param role
          *            le role dans la relation
          * @param newMember
-         *            le membre.
+         *            le membre
          */
         public void addMember(Member.Type type, String role, OSMEntity newMember) {
             members.add(new Member(type, role, newMember));
@@ -154,7 +154,7 @@ public final class OSMRelation extends OSMEntity {
          * 
          * @return la relation
          */
-        public OSMRelation build() {
+        public OSMRelation build() throws IllegalStateException {
             if (isIncomplete()) {
                 throw new IllegalStateException(
                         "La relation en cours de construction est incomplète.");

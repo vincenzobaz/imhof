@@ -14,7 +14,7 @@ public abstract class OSMEntity {
     private final Attributes attributes;
 
     /**
-     * Constructeur.
+     * Constructeur
      * 
      * @param id
      *            identificateur unique d'une entité dans la base de données de
@@ -28,16 +28,16 @@ public abstract class OSMEntity {
     }
 
     /**
-     * accesseur pour l'id de l'entité
+     * Accesseur pour l'id de l'entité
      * 
-     * @return ll'identifiant unique de l'identité
+     * @return l'identifiant unique de l'identité
      */
     public long id() {
         return id;
     }
 
     /**
-     * accesseur pour les attributes de l'entité
+     * Accesseur pour les attributs de l'entité
      * 
      * @return les attributs de l'entité
      */
@@ -46,22 +46,21 @@ public abstract class OSMEntity {
     }
 
     /**
-     * vérifie si l'ensemble des attributs de l'entité contient un attribut
+     * Vérifie si l'ensemble des attributs de l'entité contient un attribut
      * 
      * @param key
-     * @return True si l'attribut est dans la liste, False dans le cas
-     *         contraires
+     * @return True si l'attribut est dans la liste, False dans le cas contraire
      */
     public boolean hasAttribute(String key) {
         return attributes.contains(key);
     }
 
     /**
-     * permet d'acceder à un attribut à partir d'une clé
+     * Retourne la valeur de l'attribut donné
      * 
      * @param key
-     *            la clé de l'attribut rechercé
-     * @return La chaîne de charactères de l'attribut correspondant à la clé
+     *            la clé de l'attribut dont on cherche la valeur
+     * @return la valeur associée à la clé, ou null si elle n'existe pas
      */
     public String attributeValue(String key) {
         return attributes.get(key);
@@ -80,7 +79,7 @@ public abstract class OSMEntity {
         private Attributes.Builder attributesInProgress;
 
         /**
-         * constructeur du bâtisseur. Cet objet s'instancie à partir d'un
+         * Constructeur du bâtisseur. Cet objet s'instancie à partir d'un
          * identifiant unique
          * 
          * @param id
@@ -92,7 +91,8 @@ public abstract class OSMEntity {
         }
 
         /**
-         * ajoute un attribut à la liste des attributs
+         * Ajoute une association clé/valeur à l'attribut de l'entité en
+         * construction
          * 
          * @param key
          *            la clé de l'attribut à ajouter
@@ -112,7 +112,7 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Permet de savoir si le bâtisseur per instancier une OSMEntity
+         * Permet de savoir si le bâtisseur peut instancier une OSMEntity
          * 
          * @return True si OSMEntity ne peut pas être instanciée, False dans le
          *         cas contraire
@@ -122,20 +122,20 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Cette méthode est nécéssaire pour que les classes héritant de
+         * Cette méthode est nécessaire pour que les classes héritant de
          * celle-ci puissent accéder à la liste d'attribut.
          * 
-         * @return Attributes les attributs de l'entité
+         * @return les attributs de l'entité, un Attributes
          */
         protected Attributes attributesBuild() {
             return attributesInProgress.build();
         }
 
         /**
-         * Cette méthode est nécéssaire pour que les classes héritant de
+         * Cette méthode est nécessaire pour que les classes héritant de
          * celle-ci puissent accéder à l'identifiant unique de l'entité
          * 
-         * @return long id l'identifiant unique de l'entité
+         * @return l'identifiant unique de l'entité, un long
          */
         protected long idBuild() {
             return id;
