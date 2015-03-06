@@ -46,7 +46,7 @@ public final class OSMNode extends OSMEntity {
      *
      */
     public static final class Builder extends OSMEntity.Builder {
-        private PointGeo position;
+        private final PointGeo position;
 
         /**
          * Constructeur du bâtisseur

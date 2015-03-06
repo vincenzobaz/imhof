@@ -14,7 +14,7 @@ import ch.epfl.imhof.Attributes;
  *
  */
 public final class OSMRelation extends OSMEntity {
-    private List<Member> members;
+    private final List<Member> members;
 
     /**
      * Le constructeur de la classe. Comme la classe doit être immuable, on fait
@@ -102,7 +102,7 @@ public final class OSMRelation extends OSMEntity {
             return member;
         }
 
-        static class Type {
+        public static class Type {
             enum type {
                 NODE, WAY, RELATION
             };
