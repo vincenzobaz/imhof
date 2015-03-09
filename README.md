@@ -22,12 +22,13 @@
 	- [ ] code
 	- [ ] doc
 	- [ ] test
+	- [ ] Réparer constructeur (la copie n'est pas asset profonde)
 - OSMMap
-	- [ ] code
+	- [x] code
 	- [ ] doc
 	- [ ] test
 - OSMMap.Builder
-	- [ ] code
+	- [x] code
 	- [ ] doc
 	- [ ] test
 - OSMMapReader
