@@ -11,7 +11,7 @@
 ## [Étape 4](http://cs108.epfl.ch/p04_osm-entities.html)
 - [x] code
 - [ ] documentation
-- [ ] test
+- [x] test
 
 	À faire:
 - protected dans OSMEntity.Builder?
