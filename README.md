@@ -11,11 +11,26 @@
 ## [Étape 4](http://cs108.epfl.ch/p04_osm-entities.html)
 - [x] code
 - [ ] documentation
-- [x] test
+- [ ] test
 
 	À faire:
 - protected dans OSMEntity.Builder?
-- remplacer ArrayList par ArrayDeque dans OSMWay?
 - énumération dans OSMRelation!!
 
-## Étape 5 - inconnue
+## [Étape 5](http://cs108.epfl.ch/p05_osm-reading.html)
+- OSMGraph
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+- OSMMap
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+- OSMMap.Builder
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+- OSMMapReader
+	- [ ] code
+	- [ ] doc
+	- [ ] test
