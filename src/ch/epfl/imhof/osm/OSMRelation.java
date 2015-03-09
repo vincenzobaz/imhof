@@ -102,11 +102,9 @@ public final class OSMRelation extends OSMEntity {
             return member;
         }
 
-        public static class Type {
-            enum type {
+        public static enum Type {
                 NODE, WAY, RELATION
-            };
-        }
+        };
     }
 
     /**
