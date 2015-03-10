@@ -23,7 +23,8 @@ public final class Attributes {
      *            les attributs, sous forme de Map de deux String
      */
     public Attributes(Map<String, String> attributes) {
-        this.attributes = Collections.unmodifiableMap(new HashMap<>(attributes));
+        this.attributes = Collections
+                .unmodifiableMap(new HashMap<>(attributes));
     }
 
     /**
@@ -129,7 +130,7 @@ public final class Attributes {
          * Constructeur par défaut du bâtisseur
          */
         public Builder() {
-            this.attributes = new HashMap<>();
+            attributes = new HashMap<>();
         }
 
         /**
