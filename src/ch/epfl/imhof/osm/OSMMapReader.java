@@ -18,7 +18,11 @@ public final class OSMMapReader {
             throws IOException, SAXException {
         try (InputStream i = new FileInputStream(fileName)) {
             XMLReader r = XMLReaderFactory.createXMLReader();
-            r.setContentHandler(new DefaultHandler());
+            r.setContentHandler(new DefaultHandler()
+		    {
+			private 
+		    }
+		    );
         }
     }
 }
