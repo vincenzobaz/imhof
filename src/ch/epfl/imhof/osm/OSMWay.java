@@ -99,9 +99,10 @@ public final class OSMWay extends OSMEntity {
      * @return true si le chemin est fermé, false sinon
      */
     public boolean isClosed() {
-        return (firstNode().position().latitude() == lastNode().position()
+        /*return (firstNode().position().latitude() == lastNode().position()
                 .latitude() && firstNode().position().longitude() == lastNode()
-                .position().longitude());
+                .position().longitude());*/
+        return (firstNode().equals(lastNode()));
     }
 
     /**

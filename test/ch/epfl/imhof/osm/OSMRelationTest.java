@@ -1,5 +1,8 @@
 package ch.epfl.imhof.osm;
 
-public final class OSMRelationTest {
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class OSMRelationTest {
     
 }
