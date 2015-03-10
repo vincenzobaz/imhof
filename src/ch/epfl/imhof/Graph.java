@@ -10,7 +10,12 @@ public final class Graph<N> {
     private final Map<N, Set<N>> neighbors;
 
     public Graph(Map<N, Set<N>> neighbors) {
-        this.neighbors = Collections.unmodifiableMap(new HashMap<>(neighbors));
+        Map<N, Set<N>> temp = new HashMap<>();
+        for (Map.Entry<N, Set<N>> m : neighbors.entrySet()) {
+            temp.put(m.getKey(),
+                    Collections.unmodifiableSet(new HashSet<>(m.getValue())));
+        }
+        this.neighbors = Collections.unmodifiableMap(new HashMap<>(temp));
     }
 
     public Set<N> nodes() {
@@ -29,12 +34,12 @@ public final class Graph<N> {
         private Map<N, Set<N>> neighbors;
 
         public Builder() {
-            this.neighbors = new HashMap<>();
+            neighbors = new HashMap<>();
         }
 
         public void addNode(N n) {
             if (!neighbors.containsKey(n)) {
-                neighbors.put(n, null);
+                neighbors.put(n, new HashSet<>());
             }
         }
 
@@ -43,21 +48,10 @@ public final class Graph<N> {
                 throw new IllegalArgumentException(
                         "Au moins un des deux nœuds n'appartient pas au graphe en cours de construction");
             }
-            mixItUp(n1, n2);
-            mixItUp(n2, n1);
+            neighbors.get(n1).add(n2);
+            neighbors.get(n2).add(n1);
         }
-        
-        private void mixItUp(N n1, N n2) {
-            Set<N> temp;
-            if (neighbors.get(n1) == null) {
-                temp = new HashSet<>();
-            } else {
-                temp = new HashSet<>(neighbors.get(n1));
-            }
-            temp.add(n2);
-            neighbors.put(n1, temp);
-        }
-        
+
         public Graph<N> build() {
             return new Graph<>(neighbors);
         }
