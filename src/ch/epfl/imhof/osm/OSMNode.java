@@ -1,4 +1,4 @@
-jpackage ch.epfl.imhof.osm;
+package ch.epfl.imhof.osm;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Attributes;
