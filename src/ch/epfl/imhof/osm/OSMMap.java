@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 // un ensemble de chemins et relations PAS DE NOEUDS (il servent seulement  à construire des chemins
 
