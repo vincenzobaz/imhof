@@ -20,7 +20,7 @@ public final class OSMMapReader {
             XMLReader r = XMLReaderFactory.createXMLReader();
             r.setContentHandler(new DefaultHandler()
 		    {
-			private 
+                
 		    }
 		    );
         }

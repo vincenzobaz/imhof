@@ -9,13 +9,30 @@
 - [x] Rendu
 
 ## [Étape 4](http://cs108.epfl.ch/p04_osm-entities.html)
-- [x] code
-- [ ] documentation
-- [ ] test
+- [ ] OSMEntity
+    - [x] code
+    - [x] documentation
+    - [ ] test
+- [ ] OSMNode
+    - [x] code
+    - [x] documentation
+    - [ ] test
+- [ ] OSMWay
+    - [x] code
+    - [x] documentation
+    - [ ] test
+- [ ] OSMRelation
+    - [x] code
+    - [x] documentation
+    - [ ] test
+- [ ] OSMRelation.Member
+    - [x] code
+    - [x] documentation
+    - [ ] test
 
 	À faire:
-- protected dans OSMEntity.Builder?
-- énumération dans OSMRelation!!
+- protected dans OSMEntity.Builder? Je pense que on peut le garder.
+- [x] énumération dans OSMRelation!!
 
 ## [Étape 5](http://cs108.epfl.ch/p05_osm-reading.html)
 - OSMGraph
