@@ -26,7 +26,7 @@ public abstract class PolyLine {
      *             lève une exception si la liste passée en paramètre est vide
      */
     public PolyLine(List<Point> points) throws IllegalArgumentException {
-        if (points.size() == 0 || points == null) {
+        if (points == null || points.size() == 0) {
             throw new IllegalArgumentException("La liste des points est vide");
         }
         this.points = Collections.unmodifiableList(new ArrayList<>(points));
