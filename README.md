@@ -39,7 +39,7 @@
 	- [ ] code
 	- [ ] doc
 	- [ ] test
-	- [ ] Réparer constructeur (la copie n'est pas asset profonde)
+	- [x] Réparer constructeur (la copie n'est pas asset profonde)
 - OSMMap
 	- [x] code
 	- [ ] doc
