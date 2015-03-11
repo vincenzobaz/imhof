@@ -32,7 +32,7 @@ public final class Graph<N> {
             temp.put(m.getKey(),
                     Collections.unmodifiableSet(new HashSet<>(m.getValue())));
         }
-        this.neighbors = Collections.unmodifiableMap(new HashMap<>(temp));
+        this.neighbors = Collections.unmodifiableMap(temp);
     }
 
     /**
