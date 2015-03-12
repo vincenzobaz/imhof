@@ -36,17 +36,17 @@
 
 ## [Étape 5](http://cs108.epfl.ch/p05_osm-reading.html)
 - OSMGraph
-	- [ ] code
-	- [ ] doc
+	- [x] code
+	- [x] doc
 	- [ ] test
 	- [x] Réparer constructeur (la copie n'est pas asset profonde)
 - OSMMap
 	- [x] code
-	- [ ] doc
+	- [x] doc
 	- [ ] test
 - OSMMap.Builder
 	- [x] code
-	- [ ] doc
+	- [x] doc
 	- [ ] test
 - OSMMapReader
 	- [ ] code
