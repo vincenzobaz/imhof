@@ -37,9 +37,9 @@ public final class OSMMapReader {
                     switch (qName) {
                     case "node":
                         newNode = new OSMNode.Builder(Long.parseLong(atts
-                                .getValue("id")), new PointGeo(Double
-                                .parseDouble(atts.getValue("lon")), Double
-                                .parseDouble(atts.getValue("lat"))));
+                                .getValue("id")), new PointGeo(Math.toRadians(Double
+                                .parseDouble(atts.getValue("lon"))), Math.toRadians(Double
+                                .parseDouble(atts.getValue("lat")))));
                         break;
                     case "way":
                         newWay = new OSMWay.Builder(Long.parseLong(atts
