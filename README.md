@@ -49,6 +49,6 @@
 	- [x] doc
 	- [ ] test
 - OSMMapReader
-	- [ ] code
+	- [x] code (trop moche!!!!!)
 	- [ ] doc
 	- [ ] test
