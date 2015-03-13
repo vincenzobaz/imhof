@@ -20,18 +20,17 @@ public final class OSMMapReader {
     private OSMMapReader() {
     }
 
-    public static OSMMap readOSMFile(String fileName, boolean unGZip) throws IOException, SAXException {
-        
+    public static OSMMap readOSMFile(String fileName, boolean unGZip)
+            throws IOException, SAXException {
+
+        OSMMap.Builder mapToBe = new OSMMap.Builder();
         try (InputStream i = new FileInputStream(fileName)) {
             XMLReader r = XMLReaderFactory.createXMLReader();
-            OSMMap.Builder mapToBe = new OSMMap.Builder();
-            OSMNode.Builder newNode;
-            OSMWay.Builder newWay;
-            OSMRelation.Builder newRelation;
-            OSMRelation.Member newMember;
-            
             r.setContentHandler(new DefaultHandler() {
-                
+                OSMNode.Builder newNode;
+                OSMWay.Builder newWay = null;
+                OSMRelation.Builder newRelation = null;
+
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
@@ -41,35 +40,96 @@ public final class OSMMapReader {
                                 .getValue("id")), new PointGeo(Double
                                 .parseDouble(atts.getValue("lon")), Double
                                 .parseDouble(atts.getValue("lat"))));
-                        mapToBe.addNode(newNode.build());
+                        break;
                     case "way":
                         newWay = new OSMWay.Builder(Long.parseLong(atts
                                 .getValue("id")));
+                        break;
                     case "nd":
-                        newWay.addNode(mapToBe.nodeForId(Long.parseLong(atts
-                                .getValue("ref"))));
+                        if (mapToBe.nodeForId(Long.parseLong(atts
+                                .getValue("ref"))) == null) {
+                            newWay.setIncomplete();
+                        } else {
+                            newWay.addNode(mapToBe.nodeForId(Long
+                                    .parseLong(atts.getValue("ref"))));
+                        }
+                        break;
                     case "relation":
                         newRelation = new OSMRelation.Builder(Long
                                 .parseLong(atts.getValue("id")));
+                        break;
                     case "member":
-                        if (atts.getValue("type").equals("way")) {
-                            newMember = new OSMRelation.Member(
-                                    OSMRelation.Member.Type.WAY, atts
-                                            .getValue("role"), member);
-                        } else if (atts.getValue("type").equals("node")) {
-                            newMember = new OSMRelation.Member(
-                                    OSMRelation.Member.Type.NODE, atts
-                                            .getValue("role"), member);
-                        } else {
-                            newMember = new OSMRelation.Member(
-                                    OSMRelation.Member.Type.RELATION, atts
-                                            .getValue("role"), member);
+                        switch (atts.getValue("type")) {
+                        case "node":
+                            if (mapToBe.nodeForId(Long.parseLong(atts
+                                    .getValue("ref"))) == null) {
+                                newRelation.setIncomplete();
+                            } else {
+                                newRelation.addMember(
+                                        OSMRelation.Member.Type.NODE, atts
+                                                .getValue("role"), mapToBe
+                                                .nodeForId(Long.parseLong(atts
+                                                        .getValue("ref"))));
+                            }
+                            break;
+                        case "way":
+                            if (mapToBe.wayForId(Long.parseLong(atts
+                                    .getValue("ref"))) == null) {
+                                newRelation.setIncomplete();
+                            } else {
+                                newRelation.addMember(
+                                        OSMRelation.Member.Type.WAY, atts
+                                                .getValue("role"), mapToBe
+                                                .wayForId(Long.parseLong(atts
+                                                        .getValue("ref"))));
+                            }
+                            break;
+                        case "relation":
+                            if (mapToBe.relationForId(Long.parseLong(atts
+                                    .getValue("ref"))) == null) {
+                                newRelation.setIncomplete();
+                            } else {
+                                newRelation.addMember(
+                                        OSMRelation.Member.Type.RELATION,
+                                        atts.getValue("role"),
+                                        mapToBe.relationForId(Long
+                                                .parseLong(atts.getValue("ref"))));
+                            }
+                            break;
+                        default:
+                            throw new SAXException(
+                                    " le type de member rencontré n'est pas défini");
                         }
                     case "tag":
-
-                    default:
+                        if (newWay == null && newRelation != null) {
+                            newRelation.setAttribute(atts.getValue("k"),
+                                    atts.getValue("v"));
+                        } else if (newWay != null && newRelation == null) {
+                            newWay.setAttribute(atts.getValue("k"),
+                                    atts.getValue("v"));
+                        }
                         break;
                     }
+                }
+
+                @Override
+                public void endElement(String uri, String lName, String qName) {
+                    switch (qName) {
+                    case "node":
+                        mapToBe.addNode(newNode.build());
+                        break;
+                    case "way":
+                        if (!newWay.isIncomplete()) {
+                            mapToBe.addWay(newWay.build());
+                        }
+                        break;
+                    case "relation":
+                        if (!newRelation.isIncomplete()) {
+                            mapToBe.addRelation(newRelation.build());
+                        }
+                        break;
+                    }
+
                 }
             });
             if (unGZip) {
@@ -77,6 +137,7 @@ public final class OSMMapReader {
             } else {
                 r.parse(new InputSource(i));
             }
+            return mapToBe.build();
         }
     }
 }

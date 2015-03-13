@@ -104,20 +104,6 @@ public final class OSMRelation extends OSMEntity {
 
         public static enum Type {
             NODE, WAY, RELATION;
-
-            public Type parseType(String s) throws IllegalArgumentException {
-                switch (s) {
-                case "node":
-                    return NODE;
-                case "way":
-                    return WAY;
-                case "relation":
-                    return RELATION;
-                default:
-                    throw new IllegalArgumentException(
-                            "Cette String ne correspond à aucun type");
-                }
-            }
         }
     }
 
