@@ -17,7 +17,8 @@ import org.xml.sax.Attributes;
 import ch.epfl.imhof.PointGeo;
 
 /**
- * Classe non-instanciable permettant de construire une carte OpenStreetMap à partir de données stockées dans un fichier au format OSM.
+ * Classe non-instanciable permettant de construire une carte OpenStreetMap à
+ * partir de données stockées dans un fichier au format OSM.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -28,13 +29,20 @@ public final class OSMMapReader {
     }
 
     /**
-     * Méthode statique qui lit un fichier OSM et construit une OSMMap à partir de celui-ci
+     * Méthode statique qui lit un fichier OSM et construit une OSMMap à partir
+     * de celui-ci
      * 
-     * @param fileName le nom du fichier OSM à lire
-     * @param unGZip booléen, true si et seulement si le fichier OSM est sous forme d'archive à décompresser
+     * @param fileName
+     *            le nom du fichier OSM à lire
+     * @param unGZip
+     *            booléen, true si et seulement si le fichier OSM est sous forme
+     *            d'archive à décompresser
      * @return la nouvelle Map, construite à partir du fichier OSM donné
-     * @throws IOException lève une exception en cas d'erreur d'entrée/sortie
-     * @throws SAXException lève une exception en cas d'erreur dans le format du fichier XML contenant la carte
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée/sortie
+     * @throws SAXException
+     *             lève une exception en cas d'erreur dans le format du fichier
+     *             XML contenant la carte
      */
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws IOException, SAXException {
@@ -50,66 +58,59 @@ public final class OSMMapReader {
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
+                    Long id = Long.parseLong(atts.getValue("id"));
+                    Long ref = Long.parseLong(atts.getValue("ref"));
                     switch (qName) {
                     case "node":
-                        newNode = new OSMNode.Builder(Long.parseLong(atts
-                                .getValue("id")), new PointGeo(Math.toRadians(Double
-                                .parseDouble(atts.getValue("lon"))), Math.toRadians(Double
-                                .parseDouble(atts.getValue("lat")))));
+                        newNode = new OSMNode.Builder(id, new PointGeo(Math
+                                .toRadians(Double.parseDouble(atts
+                                        .getValue("lon"))), Math
+                                .toRadians(Double.parseDouble(atts
+                                        .getValue("lat")))));
                         break;
                     case "way":
-                        newWay = new OSMWay.Builder(Long.parseLong(atts
-                                .getValue("id")));
+                        newWay = new OSMWay.Builder(id);
                         break;
                     case "nd":
-                        if (mapToBe.nodeForId(Long.parseLong(atts
-                                .getValue("ref"))) == null) {
+                        if (mapToBe.nodeForId(ref) == null) {
                             newWay.setIncomplete();
                         } else {
-                            newWay.addNode(mapToBe.nodeForId(Long
-                                    .parseLong(atts.getValue("ref"))));
+                            newWay.addNode(mapToBe.nodeForId(ref));
                         }
                         break;
                     case "relation":
-                        newRelation = new OSMRelation.Builder(Long
-                                .parseLong(atts.getValue("id")));
+                        newRelation = new OSMRelation.Builder(id);
                         break;
                     case "member":
                         switch (atts.getValue("type")) {
                         case "node":
-                            if (mapToBe.nodeForId(Long.parseLong(atts
-                                    .getValue("ref"))) == null) {
+                            if (mapToBe.nodeForId(ref) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.NODE, atts
                                                 .getValue("role"), mapToBe
-                                                .nodeForId(Long.parseLong(atts
-                                                        .getValue("ref"))));
+                                                .nodeForId(ref));
                             }
                             break;
                         case "way":
-                            if (mapToBe.wayForId(Long.parseLong(atts
-                                    .getValue("ref"))) == null) {
+                            if (mapToBe.wayForId(ref) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.WAY, atts
                                                 .getValue("role"), mapToBe
-                                                .wayForId(Long.parseLong(atts
-                                                        .getValue("ref"))));
+                                                .wayForId(ref));
                             }
                             break;
                         case "relation":
-                            if (mapToBe.relationForId(Long.parseLong(atts
-                                    .getValue("ref"))) == null) {
+                            if (mapToBe.relationForId(ref) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION,
                                         atts.getValue("role"),
-                                        mapToBe.relationForId(Long
-                                                .parseLong(atts.getValue("ref"))));
+                                        mapToBe.relationForId(ref));
                             }
                             break;
                         default:
