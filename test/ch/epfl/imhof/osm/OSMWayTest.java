@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class OSMWayTest {
-    public Attributes newAttributes(String... args) {
+    private Attributes newAttributes(String... args) {
         Map<String, String> newHashMap = new HashMap<>();
         for (int i = 0; i < args.length - 1; ++i) {
             newHashMap.put(args[i], args[i + 1]);

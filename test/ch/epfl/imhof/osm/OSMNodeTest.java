@@ -10,23 +10,26 @@ import ch.epfl.imhof.Attributes;
 
 public final class OSMNodeTest {
     @Test
-    public void positionReturnsRightValues(){
-        OSMNode prova = new OSMNode(123456789, new PointGeo(Math.PI/3, Math.PI/3), genereAttribuz("il cane", "il gatto", "il topo", "l'elefante", "nicolas", "maxime" ));
-       assertTrue(Math.PI/3 == prova.position().latitude()); 
-       assertTrue(Math.PI/3 == prova.position().longitude());
+    public void positionReturnsRightValues() {
+        OSMNode prova = new OSMNode(123456789, new PointGeo(Math.PI / 3,
+                Math.PI / 3), genereAttribuz("il cane", "il gatto", "il topo",
+                "l'elefante", "nicolas", "maxime"));
+        assertTrue(Math.PI / 3 == prova.position().latitude());
+        assertTrue(Math.PI / 3 == prova.position().longitude());
     }
 
-    public Attributes genereAttribuz(String... args) {    
+    private Attributes genereAttribuz(String... args) {
         Map<String, String> newHashMap = new HashMap<>();
-            for (int i = 0; i < args.length - 1; ++i) {
-                newHashMap.put(args[i], args[i + 1]);
-            }
-            return new Attributes(newHashMap);
+        for (int i = 0; i < args.length - 1; ++i) {
+            newHashMap.put(args[i], args[i + 1]);
         }
-    
+        return new Attributes(newHashMap);
+    }
+
     @Test
     public void builderAndNodeTest() {
-        OSMNode.Builder nodeInConstruction = new OSMNode.Builder(1234, new PointGeo(Math.toRadians(50), Math.toRadians(40)));
+        OSMNode.Builder nodeInConstruction = new OSMNode.Builder(1234,
+                new PointGeo(Math.toRadians(50), Math.toRadians(40)));
         nodeInConstruction.setAttribute("clé", "valeur");
         nodeInConstruction.setAttribute("point", "test");
         OSMNode newNode = nodeInConstruction.build();
@@ -39,10 +42,11 @@ public final class OSMNodeTest {
         assertTrue(newNode.attributeValue("clé") == "valeur");
         assertTrue(newNode.attributeValue("point") == "test");
     }
-    
-    @Test (expected = IllegalStateException.class)
+
+    @Test(expected = IllegalStateException.class)
     public void builderFailsIfIncomplete() {
-        OSMNode.Builder nodeInConstruction = new OSMNode.Builder(1234, new PointGeo(1, 1));
+        OSMNode.Builder nodeInConstruction = new OSMNode.Builder(1234,
+                new PointGeo(1, 1));
         nodeInConstruction.setIncomplete();
         assertTrue(nodeInConstruction.isIncomplete());
         nodeInConstruction.build();

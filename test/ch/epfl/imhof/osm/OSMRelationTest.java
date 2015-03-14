@@ -10,7 +10,7 @@ import java.util.Map;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Attributes;
 
-public class OSMRelationTest {   
+public class OSMRelationTest {
     @Test
     public void builderTest() {
         OSMRelation.Builder relationInConstruction = new OSMRelation.Builder(
@@ -23,16 +23,16 @@ public class OSMRelationTest {
         relationInConstruction.addMember(OSMRelation.Member.Type.RELATION, "relation", relation);
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void builderFailsWhenSetIncompleteIsCalled() {
         OSMRelation.Builder relationInConstruction = new OSMRelation.Builder(
                 1234);
         relationInConstruction.addMember(OSMRelation.Member.Type.NODE, "role",
                 new OSMNode(01, new PointGeo(0, 0), new Attributes(
                         new HashMap<>())));
-        
-       relationInConstruction.setIncomplete();
-       assertTrue(relationInConstruction.isIncomplete());
-       relationInConstruction.build();
+
+        relationInConstruction.setIncomplete();
+        assertTrue(relationInConstruction.isIncomplete());
+        relationInConstruction.build();
     }
 }
