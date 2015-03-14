@@ -12,23 +12,23 @@
 - [ ] OSMEntity
     - [x] code
     - [x] documentation
-    - [ ] test
+    - [x] test
 - [ ] OSMNode
     - [x] code
     - [x] documentation
-    - [ ] test
+    - [x] test
 - [ ] OSMWay
     - [x] code
     - [x] documentation
-    - [ ] test
+    - [x] test
 - [ ] OSMRelation
     - [x] code
     - [x] documentation
-    - [ ] test
+    - [x] test
 - [ ] OSMRelation.Member
     - [x] code
     - [x] documentation
-    - [ ] test
+    - [x] test
 
 	À faire:
 - protected dans OSMEntity.Builder? Je pense que on peut le garder.

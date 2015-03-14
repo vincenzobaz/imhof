@@ -13,9 +13,9 @@ public class ReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-            // String file = getClass().getResource("/lausanne.osm").getFile();
+            String fileALire = "/data/berne.osm.gz";
             long preTime = System.currentTimeMillis();
-            System.out.println("Debut lecture fichier, temps " + preTime);
+            System.out.println("Debut lecture du fichier "+fileALire);
             OSMMap fileMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz",
                     true);
             long endTime = System.currentTimeMillis();
