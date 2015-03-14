@@ -13,24 +13,34 @@ public class ReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-//            String file = getClass().getResource("/lausanne.osm").getFile();
-            OSMMap fileMap = OSMMapReader.readOSMFile("data/lc.osm", false);
+            // String file = getClass().getResource("/lausanne.osm").getFile();
+            long preTime = System.currentTimeMillis();
+            System.out.println("Debut lecture fichier, temps " + preTime);
+            OSMMap fileMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz",
+                    true);
+            long endTime = System.currentTimeMillis();
+            System.out.println("La lecture du fichier osm a durée: "
+                    + (endTime - preTime) + " ms, approximativement "
+                    + ((endTime - preTime) / 1000) + " secondes ");
             List<OSMRelation> relations = fileMap.relations();
             List<OSMWay> ways = fileMap.ways();
 
             // temps de outputter sur fichier de texte tous les ways.:
             PrintWriter debug = new PrintWriter("Debugging.txt");
-            for (OSMWay way : ways){
-                debug.println("Way, ID: "+way.id());
-                for (OSMNode node : way.nodes()){
-                    debug.println("    Node, ID: "+node.id()+ " lat: "+Math.toDegrees(node.position().latitude())+" lon: "+Math.toDegrees(node.position().longitude()));
+            for (OSMWay way : ways) {
+                debug.println("Way, ID: " + way.id());
+                for (OSMNode node : way.nodes()) {
+                    debug.println("    Node, ID: " + node.id() + " lat: "
+                            + Math.toDegrees(node.position().latitude())
+                            + " lon: "
+                            + Math.toDegrees(node.position().longitude()));
                 }
             }
             debug.println();
-            //temps de printer sur fichier de texte les relations
-            for (OSMRelation relation : relations){
-                debug.println("Relation, ID:"+relation.id());
-                for (OSMRelation.Member member : relation.members()){
+            // temps de printer sur fichier de texte les relations
+            for (OSMRelation relation : relations) {
+                debug.println("Relation, ID:" + relation.id());
+                for (OSMRelation.Member member : relation.members()) {
                     String type = "";
                     switch (member.type()) {
                     case WAY:
@@ -43,15 +53,14 @@ public class ReaderTest {
                         type = "relation";
                         break;
                     }
-                    debug.println("Type: "+type+ " role: "+member.role());
+                    debug.println("Type: " + type + " role: " + member.role());
                 }
             }
             debug.close();
         } catch (IOException e) {
             System.out.println("Exception catchée!!!");
             System.out.println("Message de l'exception: " + e.getMessage());
-        }
-        catch (SAXException e){
+        } catch (SAXException e) {
             System.out.println("Exception SAX");
         }
     }
