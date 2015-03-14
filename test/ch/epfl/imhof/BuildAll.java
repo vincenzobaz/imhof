@@ -8,6 +8,7 @@ import java.util.HashMap;
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.osm.OSMNode;
 import ch.epfl.imhof.osm.OSMWay;
+import ch.epfl.imhof.osm.OSMRelation;
 
 public final class BuildAll {
     private BuildAll() {
@@ -35,5 +36,17 @@ public final class BuildAll {
                 "value02")));
 
         return new OSMWay(id, nodes, newAttributes("key", "value"));
+    }
+
+    public static OSMRelation newRelation(long id) {
+        OSMRelation.Builder relationInConstruction = new OSMRelation.Builder(id);
+        relationInConstruction.addMember(OSMRelation.Member.Type.NODE, "node",
+                new OSMNode(000, new PointGeo(-1, -1), newAttributes()));
+        relationInConstruction.addMember(OSMRelation.Member.Type.WAY, "way",
+                newWay(001));
+        relationInConstruction.addMember(OSMRelation.Member.Type.RELATION,
+                "relation", null);
+
+        return relationInConstruction.build();
     }
 }
