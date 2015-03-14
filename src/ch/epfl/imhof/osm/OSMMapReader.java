@@ -58,59 +58,62 @@ public final class OSMMapReader {
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
-                    Long id = Long.parseLong(atts.getValue("id"));
-                    Long ref = Long.parseLong(atts.getValue("ref"));
                     switch (qName) {
                     case "node":
-                        newNode = new OSMNode.Builder(id, new PointGeo(Math
+                        Long idNode = Long.parseLong(atts.getValue("id"));
+                        newNode = new OSMNode.Builder(idNode, new PointGeo(Math
                                 .toRadians(Double.parseDouble(atts
                                         .getValue("lon"))), Math
                                 .toRadians(Double.parseDouble(atts
                                         .getValue("lat")))));
                         break;
                     case "way":
-                        newWay = new OSMWay.Builder(id);
+                        Long idWay = Long.parseLong(atts.getValue("id"));
+                        newWay = new OSMWay.Builder(idWay);
                         break;
                     case "nd":
-                        if (mapToBe.nodeForId(ref) == null) {
+                        Long refNd = Long.parseLong(atts.getValue("ref"));
+                        if (mapToBe.nodeForId(refNd) == null) {
                             newWay.setIncomplete();
                         } else {
-                            newWay.addNode(mapToBe.nodeForId(ref));
+                            newWay.addNode(mapToBe.nodeForId(refNd));
                         }
                         break;
                     case "relation":
-                        newRelation = new OSMRelation.Builder(id);
+                        Long idRelation = Long.parseLong(atts.getValue("id"));
+                        newRelation = new OSMRelation.Builder(idRelation);
                         break;
                     case "member":
+                        Long refMembre = Long.parseLong(atts.getValue("ref"));
                         switch (atts.getValue("type")) {
                         case "node":
-                            if (mapToBe.nodeForId(ref) == null) {
+                            if (mapToBe.nodeForId(refMembre) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.NODE,
                                         atts.getValue("role"),
-                                        mapToBe.nodeForId(ref));
+                                        mapToBe.nodeForId(refMembre));
                             }
                             break;
                         case "way":
-                            if (mapToBe.wayForId(ref) == null) {
+                            if (mapToBe.wayForId(refMembre) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.WAY,
                                         atts.getValue("role"),
-                                        mapToBe.wayForId(ref));
+                                        mapToBe.wayForId(refMembre));
                             }
                             break;
                         case "relation":
-                            if (mapToBe.relationForId(ref) == null) {
+                            if (mapToBe.relationForId(refMembre) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION,
                                         atts.getValue("role"),
-                                        mapToBe.relationForId(ref));
+                                        mapToBe.relationForId(refMembre));
                             }
                             break;
                         default:
