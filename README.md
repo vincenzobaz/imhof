@@ -3,7 +3,7 @@
 	- [x] code
 	- [x] doc
 	- [ ] test
-	- [x] Réparer constructeur (la copie n'est pas asset profonde)
+	- [x] Réparer constructeur (la copie n'est pas assez profonde)
 - OSMMap
 	- [x] code
 	- [x] doc
@@ -13,7 +13,7 @@
 	- [x] doc
 	- [ ] test
 - OSMMapReader
-	- [x] code (trop moche!!!!!)
-	- [ ] doc
+	- [x] code (trop moche!!!!!) (mais non)
+	- [x] doc
 	- [x] test
 		Le test crée un fichier `Debugging.txt` dans le fichier principal du projet (pour moi `Eclipse-Workspace/imhof`)
