@@ -88,9 +88,9 @@ public final class OSMMapReader {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
-                                        OSMRelation.Member.Type.NODE, atts
-                                                .getValue("role"), mapToBe
-                                                .nodeForId(ref));
+                                        OSMRelation.Member.Type.NODE,
+                                        atts.getValue("role"),
+                                        mapToBe.nodeForId(ref));
                             }
                             break;
                         case "way":
@@ -98,9 +98,9 @@ public final class OSMMapReader {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
-                                        OSMRelation.Member.Type.WAY, atts
-                                                .getValue("role"), mapToBe
-                                                .wayForId(ref));
+                                        OSMRelation.Member.Type.WAY,
+                                        atts.getValue("role"),
+                                        mapToBe.wayForId(ref));
                             }
                             break;
                         case "relation":
@@ -115,7 +115,7 @@ public final class OSMMapReader {
                             break;
                         default:
                             throw new SAXException(
-                                    " le type de member rencontré n'est pas défini");
+                                    "Le type de member rencontré n'est pas défini.");
                         }
                     case "tag":
                         if (newWay == null && newRelation != null) {
@@ -136,12 +136,12 @@ public final class OSMMapReader {
                         mapToBe.addNode(newNode.build());
                         break;
                     case "way":
-                        if (!newWay.isIncomplete()) {
+                        if (newWay != null && !newWay.isIncomplete()) {
                             mapToBe.addWay(newWay.build());
                         }
                         break;
                     case "relation":
-                        if (!newRelation.isIncomplete()) {
+                        if (newRelation != null && !newRelation.isIncomplete()) {
                             mapToBe.addRelation(newRelation.build());
                         }
                         break;
