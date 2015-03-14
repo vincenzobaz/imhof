@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
-// un ensemble de chemins et relations PAS DE NOEUDS (il servent seulement  à construire des chemins
-
 /**
  * Classe représentant une carte OpenStreetMap. Elle est immuable.
  * 

@@ -16,10 +16,26 @@ import org.xml.sax.Attributes;
 
 import ch.epfl.imhof.PointGeo;
 
+/**
+ * Classe non-instanciable permettant de construire une carte OpenStreetMap à partir de données stockées dans un fichier au format OSM.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class OSMMapReader {
     private OSMMapReader() {
     }
 
+    /**
+     * Méthode statique qui lit un fichier OSM et construit une OSMMap à partir de celui-ci
+     * 
+     * @param fileName le nom du fichier OSM à lire
+     * @param unGZip booléen, true si et seulement si le fichier OSM est sous forme d'archive à décompresser
+     * @return la nouvelle Map, construite à partir du fichier OSM donné
+     * @throws IOException lève une exception en cas d'erreur d'entrée/sortie
+     * @throws SAXException lève une exception en cas d'erreur dans le format du fichier XML contenant la carte
+     */
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws IOException, SAXException {
 
