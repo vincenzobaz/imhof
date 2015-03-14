@@ -1,9 +1,12 @@
 package ch.epfl.imhof.osm;
 
 import java.util.List;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.junit.Test;
+import org.xml.sax.SAXException;
+
 import static org.junit.Assert.*;
 
 public class ReaderTest {
@@ -43,16 +46,13 @@ public class ReaderTest {
                     debug.println("Type: "+type+ " role: "+member.role());
                 }
             }
-            
-            
-            
-            
-            
-            
             debug.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Exception catchée!!!");
-            System.out.println(e.getMessage());
+            System.out.println("Message de l'exception: " + e.getMessage());
+        }
+        catch (SAXException e){
+            System.out.println("Exception SAX");
         }
     }
 }
