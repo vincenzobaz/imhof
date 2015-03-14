@@ -1,18 +1,19 @@
 package ch.epfl.imhof.osm;
 
-import java.io.IOException;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.zip.GZIPInputStream;
-import java.lang.Long;
-import java.lang.Double;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.Attributes;
+
+import java.lang.Long;
+import java.lang.Double;
 
 import ch.epfl.imhof.PointGeo;
 
@@ -25,6 +26,10 @@ import ch.epfl.imhof.PointGeo;
  *
  */
 public final class OSMMapReader {
+    /**
+     * Constructeur par défaut de OSMMapReader, privé et vide car la classe
+     * n'est pas instanciable
+     */
     private OSMMapReader() {
     }
 
@@ -46,10 +51,11 @@ public final class OSMMapReader {
      */
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws IOException, SAXException {
-
         OSMMap.Builder mapToBe = new OSMMap.Builder();
+
         try (InputStream i = new FileInputStream(fileName)) {
             XMLReader r = XMLReaderFactory.createXMLReader();
+
             r.setContentHandler(new DefaultHandler() {
                 OSMNode.Builder newNode;
                 OSMWay.Builder newWay = null;
@@ -58,62 +64,63 @@ public final class OSMMapReader {
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
+                    Long idOrRef = null;
+                    if (!(atts.getValue("id") == null && atts.getValue("ref") == null)) {
+                        idOrRef = (atts.getValue("ref") == null) ? Long
+                                .parseLong(atts.getValue("id")) : Long
+                                .parseLong(atts.getValue("ref"));
+                    }
                     switch (qName) {
                     case "node":
-                        Long idNode = Long.parseLong(atts.getValue("id"));
-                        newNode = new OSMNode.Builder(idNode, new PointGeo(Math
-                                .toRadians(Double.parseDouble(atts
+                        newNode = new OSMNode.Builder(idOrRef, new PointGeo(
+                                Math.toRadians(Double.parseDouble(atts
                                         .getValue("lon"))), Math
-                                .toRadians(Double.parseDouble(atts
-                                        .getValue("lat")))));
+                                        .toRadians(Double.parseDouble(atts
+                                                .getValue("lat")))));
                         break;
                     case "way":
-                        Long idWay = Long.parseLong(atts.getValue("id"));
-                        newWay = new OSMWay.Builder(idWay);
+                        newWay = new OSMWay.Builder(idOrRef);
                         break;
                     case "nd":
-                        Long refNd = Long.parseLong(atts.getValue("ref"));
-                        if (mapToBe.nodeForId(refNd) == null) {
+                        if (mapToBe.nodeForId(idOrRef) == null) {
                             newWay.setIncomplete();
                         } else {
-                            newWay.addNode(mapToBe.nodeForId(refNd));
+                            newWay.addNode(mapToBe.nodeForId(idOrRef));
                         }
                         break;
                     case "relation":
-                        Long idRelation = Long.parseLong(atts.getValue("id"));
-                        newRelation = new OSMRelation.Builder(idRelation);
+                        newRelation = new OSMRelation.Builder(idOrRef);
                         break;
                     case "member":
-                        Long refMembre = Long.parseLong(atts.getValue("ref"));
                         switch (atts.getValue("type")) {
                         case "node":
-                            if (mapToBe.nodeForId(refMembre) == null) {
+                            if (mapToBe.nodeForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.NODE,
                                         atts.getValue("role"),
-                                        mapToBe.nodeForId(refMembre));
+                                        mapToBe.nodeForId(idOrRef));
                             }
                             break;
                         case "way":
-                            if (mapToBe.wayForId(refMembre) == null) {
+                            if (mapToBe.wayForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.WAY,
                                         atts.getValue("role"),
-                                        mapToBe.wayForId(refMembre));
+                                        mapToBe.wayForId(idOrRef));
                             }
                             break;
                         case "relation":
-                            if (mapToBe.relationForId(refMembre) == null) {
+                            if (mapToBe.relationForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION,
                                         atts.getValue("role"),
-                                        mapToBe.relationForId(refMembre));
+                                        mapToBe.relationForId(idOrRef));
                             }
                             break;
                         default:
@@ -152,6 +159,7 @@ public final class OSMMapReader {
 
                 }
             });
+
             if (unGZip) {
                 r.parse(new InputSource(new GZIPInputStream(i)));
             } else {
