@@ -13,8 +13,8 @@ public class ReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-            String file = getClass().getResource("/bc.osm").getFile();
-            OSMMap fileMap = OSMMapReader.readOSMFile(file, false);
+//            String file = getClass().getResource("/lausanne.osm").getFile();
+            OSMMap fileMap = OSMMapReader.readOSMFile("data/lc.osm", false);
             List<OSMRelation> relations = fileMap.relations();
             List<OSMWay> ways = fileMap.ways();
 
