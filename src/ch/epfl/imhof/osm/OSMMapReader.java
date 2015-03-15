@@ -57,7 +57,7 @@ public final class OSMMapReader {
             XMLReader r = XMLReaderFactory.createXMLReader();
 
             r.setContentHandler(new DefaultHandler() {
-                OSMNode.Builder newNode;
+                OSMNode.Builder newNode = null;
                 OSMWay.Builder newWay = null;
                 OSMRelation.Builder newRelation = null;
 
@@ -133,14 +133,17 @@ public final class OSMMapReader {
                                     "Le type de member rencontré n'est pas défini.");
                         }
                     case "tag":
-                        if (newWay == null && newRelation != null) {
-                            newRelation.setAttribute(atts.getValue("k"),
+                        if (newNode != null && newWay.equals(newRelation)) {
+                            newNode.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
-                        } else if (newWay != null && newRelation == null) {
+                        } else if (newWay != null
+                                && newRelation.equals(newNode)) {
                             newWay.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
-                        } else {
-                            newNode.setAttribute(atts.getValue("k"), atts.getValue("v"));
+                        } else if (newRelation != null
+                                && newNode.equals(newWay)) {
+                            newRelation.setAttribute(atts.getValue("k"),
+                                    atts.getValue("v"));
                         }
                         break;
                     }
