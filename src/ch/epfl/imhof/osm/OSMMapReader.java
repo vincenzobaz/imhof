@@ -61,6 +61,11 @@ public final class OSMMapReader {
                 OSMWay.Builder newWay = null;
                 OSMRelation.Builder newRelation = null;
 
+                /**
+                 * Redéfinition de la méthode startElement du gestionnaire de
+                 * contenu qui va créer les différents éléments constituant la
+                 * carte en construction.
+                 */
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
@@ -141,6 +146,11 @@ public final class OSMMapReader {
                     }
                 }
 
+                /**
+                 * Redéfinition de la méthode endElement du gestionnaire de
+                 * contenu qui va ajouter les éléments créés par startElement à
+                 * la carte en construction, s'ils sont complets.
+                 */
                 @Override
                 public void endElement(String uri, String lName, String qName) {
                     switch (qName) {

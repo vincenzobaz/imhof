@@ -39,8 +39,8 @@ public final class OSMNodeTest {
         assertTrue(newNode.hasAttribute("clé"));
         assertTrue(newNode.hasAttribute("point"));
         assertTrue(newNode.id() == 1234);
-        assertTrue(newNode.attributeValue("clé") == "valeur");
-        assertTrue(newNode.attributeValue("point") == "test");
+        assertTrue(newNode.attributeValue("clé").equals("valeur"));
+        assertTrue(newNode.attributeValue("point").equals("test"));
     }
 
     @Test(expected = IllegalStateException.class)
