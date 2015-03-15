@@ -139,6 +139,8 @@ public final class OSMMapReader {
                         } else if (newWay != null && newRelation == null) {
                             newWay.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
+                        } else {
+                            newNode.setAttribute(atts.getValue("k"), atts.getValue("v"));
                         }
                         break;
                     }
