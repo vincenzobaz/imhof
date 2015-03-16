@@ -133,15 +133,13 @@ public final class OSMMapReader {
                                     "Le type de member rencontré n'est pas défini.");
                         }
                     case "tag":
-                        if (newNode != null && newWay.equals(newRelation)) {
+                        if (newNode != null) {
                             newNode.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
-                        } else if (newWay != null
-                                && newRelation.equals(newNode)) {
+                        } else if (newWay != null) {
                             newWay.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
-                        } else if (newRelation != null
-                                && newNode.equals(newWay)) {
+                        } else if (newRelation != null) {
                             newRelation.setAttribute(atts.getValue("k"),
                                     atts.getValue("v"));
                         }
