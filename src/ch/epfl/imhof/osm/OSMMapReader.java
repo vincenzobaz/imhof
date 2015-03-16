@@ -97,14 +97,14 @@ public final class OSMMapReader {
                         newRelation = new OSMRelation.Builder(idOrRef);
                         break;
                     case "member":
+                        String role = atts.getValue("role");
                         switch (atts.getValue("type")) {
                         case "node":
                             if (mapToBe.nodeForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
-                                        OSMRelation.Member.Type.NODE,
-                                        atts.getValue("role"),
+                                        OSMRelation.Member.Type.NODE, role,
                                         mapToBe.nodeForId(idOrRef));
                             }
                             break;
@@ -113,8 +113,7 @@ public final class OSMMapReader {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
-                                        OSMRelation.Member.Type.WAY,
-                                        atts.getValue("role"),
+                                        OSMRelation.Member.Type.WAY, role,
                                         mapToBe.wayForId(idOrRef));
                             }
                             break;
@@ -123,8 +122,7 @@ public final class OSMMapReader {
                                 newRelation.setIncomplete();
                             } else {
                                 newRelation.addMember(
-                                        OSMRelation.Member.Type.RELATION,
-                                        atts.getValue("role"),
+                                        OSMRelation.Member.Type.RELATION, role,
                                         mapToBe.relationForId(idOrRef));
                             }
                             break;
@@ -156,7 +154,9 @@ public final class OSMMapReader {
                 public void endElement(String uri, String lName, String qName) {
                     switch (qName) {
                     case "node":
-                        mapToBe.addNode(newNode.build());
+                        if (newNode != null && !newNode.isIncomplete()) {
+                            mapToBe.addNode(newNode.build());
+                        }
                         break;
                     case "way":
                         if (newWay != null && !newWay.isIncomplete()) {

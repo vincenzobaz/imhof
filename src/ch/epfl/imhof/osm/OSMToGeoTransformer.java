@@ -27,7 +27,6 @@ public final class OSMToGeoTransformer {
         String[] tab3 = { "building", "landuse", "layer", "leisure", "natural",
                 "waterway" };
 
-        closedWayAttributes = new ArrayList(Arrays.asList(tab1));
         surfaceAttributes = new ArrayList(Arrays.asList(tab1));
         polyLineAttributes = new ArrayList<>(Arrays.asList(tab2));
         polygonAttributes = new ArrayList<>(Arrays.asList(tab3));
@@ -36,6 +35,7 @@ public final class OSMToGeoTransformer {
 
     public Map transform(OSMMap map) {
     }
+    
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         List<ClosedPolyLine> ringsforRole = new ArrayList<>();
         for (Member m : relation.members()) {
