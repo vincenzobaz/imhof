@@ -53,7 +53,7 @@ public class ReaderTest {
                         type = "relation";
                         break;
                     }
-                    debug.println("Type: " + type + " role: " + member.role());
+                    debug.println("    Member, Type: " + type + " role: " + member.role());
                 }
             }
             debug.close();
