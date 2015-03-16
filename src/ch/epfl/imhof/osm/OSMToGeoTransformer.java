@@ -13,7 +13,7 @@ import ch.epfl.imhof.projection.Projection;
 
 public final class OSMToGeoTransformer {
     private final Projection projection;
-    private final List<String> closedWayAttributes;
+    private final List<String> surfaceAttributes;
     private final List<String> polyLineAttributes;
     private final List<String> polygonAttributes;
 
@@ -28,20 +28,20 @@ public final class OSMToGeoTransformer {
                 "waterway" };
 
         closedWayAttributes = new ArrayList(Arrays.asList(tab1));
+        surfaceAttributes = new ArrayList(Arrays.asList(tab1));
         polyLineAttributes = new ArrayList<>(Arrays.asList(tab2));
         polygonAttributes = new ArrayList<>(Arrays.asList(tab3));
         this.projection = projection;
     }
 
-    public Map transform(OSMMap map) {}
-
+    public Map transform(OSMMap map) {
+    }
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         List<ClosedPolyLine> ringsforRole = new ArrayList<>();
-        List<Member> membresRelation = relation.members();
         for (Member m : relation.members()) {
             if (m.role().equals(role)
                     && m.type() == OSMRelation.Member.Type.WAY) {
-                ringsforRole.add(OSMWayToPolyLine((OSMWay) m.member()));
+                ringsforRole.add((ClosedPolyLine)OSMWayToPolyLine((OSMWay) m.member()));
             }
         }
         return ringsforRole;
@@ -52,10 +52,9 @@ public final class OSMToGeoTransformer {
 
     }
 
-    private PolyLine OSMWayProjection(OSMWay way) {
+    private PolyLine OSMWayToPolyLine(OSMWay way) {
         PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
         List<OSMNode> nodesList = way.nonRepeatingNodes();
-
         for (OSMNode nodeToAdd : nodesList) {
             polylineInConstruction.addPoint(projection.project(nodeToAdd
                     .position()));
@@ -67,4 +66,18 @@ public final class OSMToGeoTransformer {
         }
     }
 
+    private boolean OSMWayIsASurface(OSMWay way) {
+        String area = way.attributeValue("area");
+        if (area.equals("yes") || area.equals("1") || area.equals("true")) {
+            return true;
+        } else {
+            int index = 0;
+            boolean hasSurfaceAttribute = false;
+            while (!hasSurfaceAttribute && index < surfaceAttributes.size()) {
+                hasSurfaceAttribute = way.hasAttribute(surfaceAttributes.get(index));
+                ++index;
+            }
+            return hasSurfaceAttribute;
+        }        
+    }
 }
