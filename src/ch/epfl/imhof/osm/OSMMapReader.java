@@ -89,7 +89,7 @@ public final class OSMMapReader {
                     case "nd":
                         if (mapToBe.nodeForId(idOrRef) == null) {
                             newWay.setIncomplete();
-                        } else {
+                        } else if (!newWay.isIncomplete()) {
                             newWay.addNode(mapToBe.nodeForId(idOrRef));
                         }
                         break;
@@ -102,7 +102,7 @@ public final class OSMMapReader {
                         case "node":
                             if (mapToBe.nodeForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
-                            } else {
+                            } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.NODE, role,
                                         mapToBe.nodeForId(idOrRef));
@@ -111,7 +111,7 @@ public final class OSMMapReader {
                         case "way":
                             if (mapToBe.wayForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
-                            } else {
+                            } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.WAY, role,
                                         mapToBe.wayForId(idOrRef));
@@ -120,7 +120,7 @@ public final class OSMMapReader {
                         case "relation":
                             if (mapToBe.relationForId(idOrRef) == null) {
                                 newRelation.setIncomplete();
-                            } else {
+                            } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION, role,
                                         mapToBe.relationForId(idOrRef));
