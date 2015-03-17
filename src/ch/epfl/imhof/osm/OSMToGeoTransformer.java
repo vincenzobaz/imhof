@@ -44,7 +44,7 @@ public final class OSMToGeoTransformer {
 
         for (OSMWay wayToConvert : map.ways()) {
             Attributes newAttributes = filteredAttributes(wayToConvert);
-            
+
             if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
                 mapInConstruction.addPolyLine(new Attributed<>(
                         OSMWayToPolyLine(wayToConvert), newAttributes));
@@ -54,24 +54,19 @@ public final class OSMToGeoTransformer {
                         OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
             }
         }
-
-        List<ClosedPolyLine> innerRings = new ArrayList<>();
-        List<ClosedPolyLine> outerRings = new ArrayList<>();
-
-        for (OSMRelation relation : map.relations()) {
-            innerRings.addAll(ringsForRole(relation, "inner"));
-        }
-        for (OSMRelation relation : map.relations()) {
-            outerRings.addAll(ringsForRole(relation, "outer"));
-        }
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         List<ClosedPolyLine> ringsForRole = new ArrayList<>();
+        List<PolyLine> roleWays = new ArrayList<>();
+
         for (Member m : relation.members()) {
-            if (m.role().equals(role)
-                    && m.type() == OSMRelation.Member.Type.WAY) {
-                ringsForRole.add(OSMWayToClosedPolyLine((OSMWay) m.member()));
+            if (m.role().equals(role)) {
+                if (m.type() == OSMRelation.Member.Type.WAY) {
+                    roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
+                } else if (m.type() == OSMRelation.Member.Type.RELATION) {
+
+                }
             }
         }
         return ringsForRole;
