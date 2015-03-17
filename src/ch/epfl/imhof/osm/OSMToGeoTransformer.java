@@ -35,31 +35,27 @@ public final class OSMToGeoTransformer {
 
     public Map transform(OSMMap map) {
         List<Polygon> surfaces = new ArrayList<>();
-        List<OpenPolyLine> polylines = new ArrayList<>();
-        
+        List<PolyLine> polylines = new ArrayList<>();
+
         for (OSMWay wayToConvert : map.ways()) {
-            if (wayToConvert.isClosed() && OSMWayIsASurface(wayToConvert)) {
+            if (!wayToConvert.isClosed()) {
+                polylines.add(OSMWayToOpenPolyLine(wayToConvert));
+            } else if (OSMWayIsASurface(wayToConvert)) {
                 surfaces.add(new Polygon(OSMWayToClosedPolyLine(wayToConvert)));
             } else {
-                polylines.add(OSMWayToOpenPolyLine(wayToConvert));
+                polylines.add(OSMWayToClosedPolyLine(wayToConvert));
             }
         }
-        
+
         List<ClosedPolyLine> innerRings = new ArrayList<>();
         List<ClosedPolyLine> outerRings = new ArrayList<>();
+        
         for (OSMRelation relation : map.relations()) {
             innerRings.addAll(ringsForRole(relation, "inner"));
         }
-        
-        
         for (OSMRelation relation : map.relations()) {
             outerRings.addAll(ringsForRole(relation, "outer"));
         }
-        
-        
-        +
-        
-        
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
