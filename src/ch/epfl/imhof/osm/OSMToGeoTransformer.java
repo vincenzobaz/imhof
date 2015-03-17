@@ -54,6 +54,8 @@ public final class OSMToGeoTransformer {
                         OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
             }
         }
+
+        return mapInConstruction.build();
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
@@ -64,11 +66,14 @@ public final class OSMToGeoTransformer {
             if (m.role().equals(role)) {
                 if (m.type() == OSMRelation.Member.Type.WAY) {
                     roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
-                } else if (m.type() == OSMRelation.Member.Type.RELATION) {
 
+                    // est-ce qu'on doit récupérer les chemins de la relation à
+                    // l'intérieur de la relation
+                } else if (m.type() == OSMRelation.Member.Type.RELATION) {
                 }
             }
         }
+
         return ringsForRole;
     }
 
