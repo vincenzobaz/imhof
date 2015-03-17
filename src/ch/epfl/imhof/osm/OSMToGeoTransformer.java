@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
+import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.*;
 import ch.epfl.imhof.osm.OSMRelation.Member;
 import ch.epfl.imhof.projection.Projection;
@@ -39,16 +40,44 @@ public final class OSMToGeoTransformer {
     }
 
     public Map transform(OSMMap map) {
-        List<Polygon> surfaces = new ArrayList<>();
-        List<Attributed<PolyLine>> polylines = new ArrayList<>();
+        Map.Builder mapInConstruction = new Map.Builder();
 
         for (OSMWay wayToConvert : map.ways()) {
-            if (!wayToConvert.isClosed()) {
-                polylines.add(OSMWayToOpenPolyLine(wayToConvert));
+            /*if (!wayToConvert.isClosed()) {
+                mapInConstruction.addPolyLine(new Attributed<>(
+                        OSMWayToOpenPolyLine(wayToConvert), filteredAttributes(
+                                wayToConvert, "polyline")));
             } else if (OSMWayIsASurface(wayToConvert)) {
-                surfaces.add(new Polygon(OSMWayToClosedPolyLine(wayToConvert)));
+                mapInConstruction.addPolygon(new Attributed<>(new Polygon(
+                        OSMWayToClosedPolyLine(wayToConvert)),
+                        filteredAttributes(wayToConvert, "polygon")));
             } else {
-                polylines.add(OSMWayToClosedPolyLine(wayToConvert));
+                mapInConstruction.addPolyLine(new Attributed<>(
+                        OSMWayToClosedPolyLine(wayToConvert),
+                        filteredAttributes(wayToConvert, "polyline")));
+            }*/
+
+            if (!OSMWayIsASurface(wayToConvert)) {
+                Attributes polyLineAttributes = filteredAttributes(
+                        wayToConvert, "polyline");
+                if (!(wayToConvert.isClosed() || polyLineAttributes.isEmpty())) {
+                    mapInConstruction.addPolyLine(new Attributed<>(
+                            OSMWayToOpenPolyLine(wayToConvert),
+                            polyLineAttributes));
+                } else if (wayToConvert.isClosed()
+                        && !polyLineAttributes.isEmpty()) {
+                    mapInConstruction.addPolyLine(new Attributed<>(
+                            OSMWayToClosedPolyLine(wayToConvert),
+                            polyLineAttributes));
+                }
+            } else {
+                Attributes polygonAttributes = filteredAttributes(wayToConvert,
+                        "polygon");
+                if (wayToConvert.isClosed() && !polygonAttributes.isEmpty()) {
+                    mapInConstruction.addPolygon(new Attributed<>(new Polygon(
+                            OSMWayToClosedPolyLine(wayToConvert)),
+                            polygonAttributes));
+                }
             }
         }
 
@@ -61,6 +90,19 @@ public final class OSMToGeoTransformer {
         for (OSMRelation relation : map.relations()) {
             outerRings.addAll(ringsForRole(relation, "outer"));
         }
+    }
+
+    private Attributes filteredAttributes(OSMEntity entity, String type) {
+        Attributes filteredAttributes = null;
+        switch (type) {
+        case "polyline":
+            filteredAttributes = entity.attributes().keepOnlyKeys(
+                    POLYLINE_ATTRIBUTES);
+        case "polygon":
+            filteredAttributes = entity.attributes().keepOnlyKeys(
+                    POLYGON_ATTRIBUTES);
+        }
+        return filteredAttributes;
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
