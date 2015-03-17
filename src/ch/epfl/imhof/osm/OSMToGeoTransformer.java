@@ -43,41 +43,15 @@ public final class OSMToGeoTransformer {
         Map.Builder mapInConstruction = new Map.Builder();
 
         for (OSMWay wayToConvert : map.ways()) {
-            /*if (!wayToConvert.isClosed()) {
+            Attributes newAttributes = filteredAttributes(wayToConvert);
+            
+            if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
                 mapInConstruction.addPolyLine(new Attributed<>(
-                        OSMWayToOpenPolyLine(wayToConvert), filteredAttributes(
-                                wayToConvert, "polyline")));
-            } else if (OSMWayIsASurface(wayToConvert)) {
+                        OSMWayToPolyLine(wayToConvert), newAttributes));
+            } else if (OSMWayIsASurface(wayToConvert)
+                    && wayToConvert.isClosed() && !newAttributes.isEmpty()) {
                 mapInConstruction.addPolygon(new Attributed<>(new Polygon(
-                        OSMWayToClosedPolyLine(wayToConvert)),
-                        filteredAttributes(wayToConvert, "polygon")));
-            } else {
-                mapInConstruction.addPolyLine(new Attributed<>(
-                        OSMWayToClosedPolyLine(wayToConvert),
-                        filteredAttributes(wayToConvert, "polyline")));
-            }*/
-
-            if (!OSMWayIsASurface(wayToConvert)) {
-                Attributes polyLineAttributes = filteredAttributes(
-                        wayToConvert, "polyline");
-                if (!(wayToConvert.isClosed() || polyLineAttributes.isEmpty())) {
-                    mapInConstruction.addPolyLine(new Attributed<>(
-                            OSMWayToOpenPolyLine(wayToConvert),
-                            polyLineAttributes));
-                } else if (wayToConvert.isClosed()
-                        && !polyLineAttributes.isEmpty()) {
-                    mapInConstruction.addPolyLine(new Attributed<>(
-                            OSMWayToClosedPolyLine(wayToConvert),
-                            polyLineAttributes));
-                }
-            } else {
-                Attributes polygonAttributes = filteredAttributes(wayToConvert,
-                        "polygon");
-                if (wayToConvert.isClosed() && !polygonAttributes.isEmpty()) {
-                    mapInConstruction.addPolygon(new Attributed<>(new Polygon(
-                            OSMWayToClosedPolyLine(wayToConvert)),
-                            polygonAttributes));
-                }
+                        OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
             }
         }
 
@@ -90,19 +64,6 @@ public final class OSMToGeoTransformer {
         for (OSMRelation relation : map.relations()) {
             outerRings.addAll(ringsForRole(relation, "outer"));
         }
-    }
-
-    private Attributes filteredAttributes(OSMEntity entity, String type) {
-        Attributes filteredAttributes = null;
-        switch (type) {
-        case "polyline":
-            filteredAttributes = entity.attributes().keepOnlyKeys(
-                    POLYLINE_ATTRIBUTES);
-        case "polygon":
-            filteredAttributes = entity.attributes().keepOnlyKeys(
-                    POLYGON_ATTRIBUTES);
-        }
-        return filteredAttributes;
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
@@ -119,6 +80,26 @@ public final class OSMToGeoTransformer {
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
             Attributes attributes) {
 
+    }
+
+    private Attributes filteredAttributes(OSMWay way) {
+        Attributes filteredAttributes;
+        if (!OSMWayIsASurface(way)) {
+            filteredAttributes = way.attributes().keepOnlyKeys(
+                    POLYLINE_ATTRIBUTES);
+        } else {
+            filteredAttributes = way.attributes().keepOnlyKeys(
+                    POLYGON_ATTRIBUTES);
+        }
+        return filteredAttributes;
+    }
+
+    private PolyLine OSMWayToPolyLine(OSMWay way) {
+        if (way.isClosed()) {
+            return OSMWayToClosedPolyLine(way);
+        } else {
+            return OSMWayToOpenPolyLine(way);
+        }
     }
 
     private OpenPolyLine OSMWayToOpenPolyLine(OSMWay way) {
