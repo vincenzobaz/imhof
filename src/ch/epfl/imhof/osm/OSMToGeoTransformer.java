@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
@@ -12,30 +15,32 @@ import ch.epfl.imhof.osm.OSMRelation.Member;
 import ch.epfl.imhof.projection.Projection;
 
 public final class OSMToGeoTransformer {
+    public static final String[] SURFACE_VALUES = new String[] { "aeroway",
+            "amenity", "building", "harbour", "historic", "landuse", "leisure",
+            "man_made", "military", "natural", "office", "place", "power",
+            "public_transport", "shop", "sport", "tourism", "water",
+            "waterway", "wetland" };
+    public static final String[] POLYLINE_VALUES = new String[] { "bridge",
+            "highway", "layer", "man_made", "railway", "tunnel", "waterway" };
+    public static final String[] POLYGON_VALUES = new String[] { "building",
+            "landuse", "layer", "leisure", "natural", "waterway" };
+
+    public static final Set<String> SURFACE_ATTRIBUTES = new HashSet<>(
+            Arrays.asList(SURFACE_VALUES));
+    public static final Set<String> POLYLINE_ATTRIBUTES = new HashSet<>(
+            Arrays.asList(POLYLINE_VALUES));
+    public static final Set<String> POLYGON_ATTRIBUTES = new HashSet<>(
+            Arrays.asList(POLYGON_VALUES));
+
     private final Projection projection;
-    private final List<String> surfaceAttributes;
-    private final List<String> polyLineAttributes;
-    private final List<String> polygonAttributes;
 
     public OSMToGeoTransformer(Projection projection) {
-        String[] tab1 = { "aeroway", "amenity", "building", "harbour",
-                "historic", "landuse", "leisure", "man_made", "military",
-                "natural", "office", "place", "power", "public_transport",
-                "shop", "sport", "tourism", "water", "waterway", "wetland" };
-        String[] tab2 = { "bridge", "highway", "layer", "man_made", "railway",
-                "tunnel", "waterway" };
-        String[] tab3 = { "building", "landuse", "layer", "leisure", "natural",
-                "waterway" };
-
-        surfaceAttributes = new ArrayList<>(Arrays.asList(tab1));
-        polyLineAttributes = new ArrayList<>(Arrays.asList(tab2));
-        polygonAttributes = new ArrayList<>(Arrays.asList(tab3));
         this.projection = projection;
     }
 
     public Map transform(OSMMap map) {
         List<Polygon> surfaces = new ArrayList<>();
-        List<PolyLine> polylines = new ArrayList<>();
+        List<Attributed<PolyLine>> polylines = new ArrayList<>();
 
         for (OSMWay wayToConvert : map.ways()) {
             if (!wayToConvert.isClosed()) {
@@ -49,7 +54,7 @@ public final class OSMToGeoTransformer {
 
         List<ClosedPolyLine> innerRings = new ArrayList<>();
         List<ClosedPolyLine> outerRings = new ArrayList<>();
-        
+
         for (OSMRelation relation : map.relations()) {
             innerRings.addAll(ringsForRole(relation, "inner"));
         }
@@ -97,12 +102,10 @@ public final class OSMToGeoTransformer {
         if (area.equals("yes") || area.equals("1") || area.equals("true")) {
             return true;
         } else {
-            int index = 0;
             boolean hasSurfaceAttribute = false;
-            while (!hasSurfaceAttribute && index < surfaceAttributes.size()) {
-                hasSurfaceAttribute = way.hasAttribute(surfaceAttributes
-                        .get(index));
-                ++index;
+            Iterator<String> iterator = SURFACE_ATTRIBUTES.iterator();
+            while (!hasSurfaceAttribute && iterator.hasNext()) {
+                hasSurfaceAttribute = way.hasAttribute(iterator.next());
             }
             return hasSurfaceAttribute;
         }
