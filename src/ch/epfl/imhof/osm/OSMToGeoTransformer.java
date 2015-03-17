@@ -27,24 +27,50 @@ public final class OSMToGeoTransformer {
         String[] tab3 = { "building", "landuse", "layer", "leisure", "natural",
                 "waterway" };
 
-        surfaceAttributes = new ArrayList(Arrays.asList(tab1));
+        surfaceAttributes = new ArrayList<>(Arrays.asList(tab1));
         polyLineAttributes = new ArrayList<>(Arrays.asList(tab2));
         polygonAttributes = new ArrayList<>(Arrays.asList(tab3));
         this.projection = projection;
     }
 
     public Map transform(OSMMap map) {
+        List<Polygon> surfaces = new ArrayList<>();
+        List<OpenPolyLine> polylines = new ArrayList<>();
+        
+        for (OSMWay wayToConvert : map.ways()) {
+            if (wayToConvert.isClosed() && OSMWayIsASurface(wayToConvert)) {
+                surfaces.add(new Polygon(OSMWayToClosedPolyLine(wayToConvert)));
+            } else {
+                polylines.add(OSMWayToOpenPolyLine(wayToConvert));
+            }
+        }
+        
+        List<ClosedPolyLine> innerRings = new ArrayList<>();
+        List<ClosedPolyLine> outerRings = new ArrayList<>();
+        for (OSMRelation relation : map.relations()) {
+            innerRings.addAll(ringsForRole(relation, "inner"));
+        }
+        
+        
+        for (OSMRelation relation : map.relations()) {
+            outerRings.addAll(ringsForRole(relation, "outer"));
+        }
+        
+        
+        +
+        
+        
     }
-    
+
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        List<ClosedPolyLine> ringsforRole = new ArrayList<>();
+        List<ClosedPolyLine> ringsForRole = new ArrayList<>();
         for (Member m : relation.members()) {
             if (m.role().equals(role)
                     && m.type() == OSMRelation.Member.Type.WAY) {
-                ringsforRole.add((ClosedPolyLine)OSMWayToPolyLine((OSMWay) m.member()));
+                ringsForRole.add(OSMWayToClosedPolyLine((OSMWay) m.member()));
             }
         }
-        return ringsforRole;
+        return ringsForRole;
     }
 
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
@@ -52,18 +78,22 @@ public final class OSMToGeoTransformer {
 
     }
 
-    private PolyLine OSMWayToPolyLine(OSMWay way) {
-        PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
-        List<OSMNode> nodesList = way.nonRepeatingNodes();
-        for (OSMNode nodeToAdd : nodesList) {
-            polylineInConstruction.addPoint(projection.project(nodeToAdd
-                    .position()));
+    private OpenPolyLine OSMWayToOpenPolyLine(OSMWay way) {
+        PolyLine.Builder openPolylineInConstruction = new PolyLine.Builder();
+        for (OSMNode nodeToConvert : way.nodes()) {
+            openPolylineInConstruction.addPoint(projection
+                    .project(nodeToConvert.position()));
         }
-        if (way.isClosed()) {
-            return polylineInConstruction.buildClosed();
-        } else {
-            return polylineInConstruction.buildOpen();
+        return openPolylineInConstruction.buildOpen();
+    }
+
+    private ClosedPolyLine OSMWayToClosedPolyLine(OSMWay way) {
+        PolyLine.Builder closedPolyLineInConstruction = new PolyLine.Builder();
+        for (OSMNode nodeToConvert : way.nonRepeatingNodes()) {
+            closedPolyLineInConstruction.addPoint(projection
+                    .project(nodeToConvert.position()));
         }
+        return closedPolyLineInConstruction.buildClosed();
     }
 
     private boolean OSMWayIsASurface(OSMWay way) {
@@ -74,10 +104,11 @@ public final class OSMToGeoTransformer {
             int index = 0;
             boolean hasSurfaceAttribute = false;
             while (!hasSurfaceAttribute && index < surfaceAttributes.size()) {
-                hasSurfaceAttribute = way.hasAttribute(surfaceAttributes.get(index));
+                hasSurfaceAttribute = way.hasAttribute(surfaceAttributes
+                        .get(index));
                 ++index;
             }
             return hasSurfaceAttribute;
-        }        
+        }
     }
 }
