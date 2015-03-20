@@ -17,6 +17,14 @@ import ch.epfl.imhof.geometry.*;
 import ch.epfl.imhof.osm.OSMRelation.Member;
 import ch.epfl.imhof.projection.Projection;
 
+/**
+ * Classe représentant un convertisseur de données OSM en carte. Elle est
+ * immuable.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class OSMToGeoTransformer {
     public static final String[] SURFACE_VALUES = new String[] { "aeroway",
             "amenity", "building", "harbour", "historic", "landuse", "leisure",
@@ -88,6 +96,14 @@ public final class OSMToGeoTransformer {
         return mapInConstruction.build();
     }
 
+    /**
+     * Retourne l'ensemble des anneaux de la relation donnée ayant le rôle
+     * spécifié
+     * 
+     * @param relation
+     * @param role
+     * @return
+     */
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         List<PolyLine> roleWays = new ArrayList<>();
 
@@ -107,13 +123,19 @@ public final class OSMToGeoTransformer {
         java.util.Map<Point, Boolean> visitedNodes = new HashMap<>();
     }
 
+    /**
+     * Retourne la liste des polygones attribués de la relation donnée, en leur
+     * attachant les attributs donnés
+     * 
+     * @param relation
+     * @param attributes
+     * @return
+     */
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
             Attributes attributes) {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
-        
-        return
     }
 
     /**
