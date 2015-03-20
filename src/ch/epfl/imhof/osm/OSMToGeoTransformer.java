@@ -57,11 +57,24 @@ public final class OSMToGeoTransformer {
             }
         }
 
+        for (OSMRelation relationToConvert : map.relations()) {
+            Attributes newAttributes = relationToConvert.attributes()
+                    .keepOnlyKeys(POLYGON_ATTRIBUTES);
+            if ("multipolygon".equals(relationToConvert.attributeValue("type"))
+                    && !newAttributes.isEmpty()) {
+
+                // performance: copie ou mise en mémoire
+                for (Attributed<Polygon> polygon : assemblePolygon(
+                        relationToConvert, newAttributes)) {
+                    mapInConstruction.addPolygon(polygon);
+                }
+            }
+        }
+
         return mapInConstruction.build();
     }
 
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        List<ClosedPolyLine> ringsForRole = new ArrayList<>();
         List<PolyLine> roleWays = new ArrayList<>();
 
         for (Member m : relation.members()) {
@@ -72,16 +85,18 @@ public final class OSMToGeoTransformer {
         }
 
         Graph<Point> nonOrientedGraph = graphCreator(roleWays);
-        
+
         if (!everyNodeHasTwoNeighbors(nonOrientedGraph)) {
             return Collections.emptyList();
         }
-        
+
         java.util.Map<Point, Boolean> visitedNodes = new HashMap<>();
     }
 
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
             Attributes attributes) {
+        List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
+        List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
     }
 
@@ -150,7 +165,9 @@ public final class OSMToGeoTransformer {
 
     private boolean OSMWayIsASurface(OSMWay way) {
         String area = way.attributeValue("area");
-        if (area.equals("yes") || area.equals("1") || area.equals("true")) {
+        if (area != null
+                && (area.equals("yes") || area.equals("1") || area
+                        .equals("true"))) {
             return true;
         } else {
             boolean hasSurfaceAttribute = false;
