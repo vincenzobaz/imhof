@@ -23,6 +23,7 @@
 	- [x] code
 	- [x] doc
 	- [ ] test
+	- Déclarer le constructeur en final?
 - OSMToGeoTransformer
 	- [ ] code
 	- [ ] doc
