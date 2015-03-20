@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
+import ch.epfl.imhof.Graph;
 import ch.epfl.imhof.geometry.*;
 import ch.epfl.imhof.osm.OSMRelation.Member;
 import ch.epfl.imhof.projection.Projection;
@@ -63,23 +65,49 @@ public final class OSMToGeoTransformer {
         List<PolyLine> roleWays = new ArrayList<>();
 
         for (Member m : relation.members()) {
-            if (m.role().equals(role)) {
-                if (m.type() == OSMRelation.Member.Type.WAY) {
-                    roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
-
-                    // est-ce qu'on doit récupérer les chemins de la relation à
-                    // l'intérieur de la relation
-                } else if (m.type() == OSMRelation.Member.Type.RELATION) {
-                }
+            if (m.role().equals(role)
+                    && m.type() == OSMRelation.Member.Type.WAY) {
+                roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
             }
         }
 
-        return ringsForRole;
+        Graph<Point> nonOrientedGraph = graphCreator(roleWays);
+        
+        if (!everyNodeHasTwoNeighbors(nonOrientedGraph)) {
+            return Collections.emptyList();
+        }
+        
+        java.util.Map<Point, Boolean> visitedNodes = new HashMap<>();
     }
 
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
             Attributes attributes) {
 
+    }
+
+    private boolean everyNodeHasTwoNeighbors(Graph<Point> nonOrientedGraph) {
+        boolean everyNodeHasTwoNeighbors = true;
+        Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
+        while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
+            everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
+                    iterator.next()).size() == 2);
+        }
+        return everyNodeHasTwoNeighbors;
+    }
+
+    private Graph<Point> graphCreator(List<PolyLine> roleWays) {
+        Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
+        for (PolyLine polyline : roleWays) {
+            List<Point> pointList = polyline.points();
+            for (int i = 0; i < pointList.size(); ++i) {
+                graphInConstruction.addNode(pointList.get(i));
+                if (i != 0) {
+                    graphInConstruction.addEdge(pointList.get(i),
+                            pointList.get(i - 1));
+                }
+            }
+        }
+        return graphInConstruction.build();
     }
 
     private Attributes filteredAttributes(OSMWay way) {
