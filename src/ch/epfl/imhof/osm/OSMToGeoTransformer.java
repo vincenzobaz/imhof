@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Comparator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
@@ -136,6 +137,14 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
+        outerRings.sort(new Comparator<ClosedPolyLine>() {
+            @Override
+            public int compare(ClosedPolyLine line1, ClosedPolyLine line2) {
+                return (int) Math.signum(line1.area() - line2.area());
+            }
+        });
+        
+        
     }
 
     /**
