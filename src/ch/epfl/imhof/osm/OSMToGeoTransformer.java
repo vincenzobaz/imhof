@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Comparator;
 
+import javax.xml.transform.ErrorListener;
+
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
@@ -86,7 +88,7 @@ public final class OSMToGeoTransformer {
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
                     && !newAttributes.isEmpty()) {
 
-                // performance: copie ou mise en mémoire
+// performance: copie ou mise en mémoire
                 for (Attributed<Polygon> polygon : assemblePolygon(
                         relationToConvert, newAttributes)) {
                     mapInConstruction.addPolygon(polygon);
@@ -134,6 +136,7 @@ public final class OSMToGeoTransformer {
      */
     private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
             Attributes attributes) {
+        List<Attributed<Polygon>> relationPolygons = new ArrayList<>();
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
@@ -143,8 +146,26 @@ public final class OSMToGeoTransformer {
                 return (int) Math.signum(line1.area() - line2.area());
             }
         });
+
+        for (ClosedPolyLine outerRing : outerRings) {
+            List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
+            for (ClosedPolyLine innerRing : innerRings) {
+                if (outerRing.containsPoint(innerRing.firstPoint())) {
+                    attachedInnerRings.add(innerRing);
+// est-ce que ça marche???
+                    innerRings.remove(innerRing);
+                }
+            }
+            if (attachedInnerRings.isEmpty()) {
+                relationPolygons.add(new Attributed<>(new Polygon(outerRing),
+                        attributes));
+            } else {
+                relationPolygons.add(new Attributed<>(new Polygon(outerRing,
+                        attachedInnerRings), attributes));
+            }
+        }
         
-        
+        return relationPolygons;
     }
 
     /**
