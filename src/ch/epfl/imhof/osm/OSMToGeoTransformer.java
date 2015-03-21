@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Comparator;
 
-import javax.xml.transform.ErrorListener;
-
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
