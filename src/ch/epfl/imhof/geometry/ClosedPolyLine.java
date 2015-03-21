@@ -36,8 +36,8 @@ public final class ClosedPolyLine extends PolyLine {
      * @return l'aire toujours positive de la polyligne
      */
     public double area() {
-        Point origine = new Point(0, 0);
-        double area = 0;
+        Point origine = new Point(0.0, 0.0);
+        double area = 0.0;
         for (int i = 0; i < points().size(); i++) {
             area += signedTriangleArea(origine, getVertex(i), getVertex(i + 1));
         }
@@ -73,7 +73,7 @@ public final class ClosedPolyLine extends PolyLine {
      *         s'il est à sa droite
      */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
-        return (signedTriangleArea(p, a, b) > 0);
+        return (signedTriangleArea(p, a, b) > 0.0);
     }
 
     /**

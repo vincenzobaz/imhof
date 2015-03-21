@@ -9,7 +9,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.*;
 
-public class ReaderTest {
+public class OSMMapReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {

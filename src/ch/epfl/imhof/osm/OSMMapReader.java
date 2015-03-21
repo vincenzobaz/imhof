@@ -87,10 +87,11 @@ public final class OSMMapReader {
                         newWay = new OSMWay.Builder(idOrRef);
                         break;
                     case "nd":
-                        if (mapToBe.nodeForId(idOrRef) == null) {
+                        OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
+                        if (nodeOfWay == null) {
                             newWay.setIncomplete();
                         } else if (!newWay.isIncomplete()) {
-                            newWay.addNode(mapToBe.nodeForId(idOrRef));
+                            newWay.addNode(nodeOfWay);
                         }
                         break;
                     case "relation":
@@ -100,46 +101,49 @@ public final class OSMMapReader {
                         String role = atts.getValue("role");
                         switch (atts.getValue("type")) {
                         case "node":
-                            if (mapToBe.nodeForId(idOrRef) == null) {
+                            OSMNode nodeOfRelation = mapToBe.nodeForId(idOrRef);
+                            if (nodeOfRelation == null) {
                                 newRelation.setIncomplete();
                             } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.NODE, role,
-                                        mapToBe.nodeForId(idOrRef));
+                                        nodeOfRelation);
                             }
                             break;
                         case "way":
-                            if (mapToBe.wayForId(idOrRef) == null) {
+                            OSMWay wayOfRelation = mapToBe.wayForId(idOrRef);
+                            if (wayOfRelation == null) {
                                 newRelation.setIncomplete();
                             } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.WAY, role,
-                                        mapToBe.wayForId(idOrRef));
+                                        wayOfRelation);
                             }
                             break;
                         case "relation":
-                            if (mapToBe.relationForId(idOrRef) == null) {
+                            OSMRelation relationOfRelation = mapToBe
+                                    .relationForId(idOrRef);
+                            if (relationOfRelation == null) {
                                 newRelation.setIncomplete();
                             } else if (!newRelation.isIncomplete()) {
                                 newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION, role,
-                                        mapToBe.relationForId(idOrRef));
+                                        relationOfRelation);
                             }
                             break;
                         default:
                             throw new SAXException(
-                                    "Le type de member rencontré n'est pas défini.");
+                                    "Le type de membre rencontré n'est pas défini.");
                         }
                     case "tag":
+                        String key = atts.getValue("k");
+                        String value = atts.getValue("v");
                         if (newNode != null) {
-                            newNode.setAttribute(atts.getValue("k"),
-                                    atts.getValue("v"));
+                            newNode.setAttribute(key, value);
                         } else if (newWay != null) {
-                            newWay.setAttribute(atts.getValue("k"),
-                                    atts.getValue("v"));
+                            newWay.setAttribute(key, value);
                         } else if (newRelation != null) {
-                            newRelation.setAttribute(atts.getValue("k"),
-                                    atts.getValue("v"));
+                            newRelation.setAttribute(key, value);
                         }
                         break;
                     }
