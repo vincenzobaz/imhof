@@ -141,7 +141,8 @@ public final class OSMToGeoTransformer {
         Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
         for (Point point : nonVisitedNodes) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
-            makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes, point);
+            makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
+                    point);
             ringsList.add(polylineInConstruction.buildClosed());
         }
 
@@ -162,12 +163,15 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
-        outerRings.sort(new Comparator<ClosedPolyLine>() {
-            @Override
-            public int compare(ClosedPolyLine line1, ClosedPolyLine line2) {
-                return (int) Math.signum(line1.area() - line2.area());
-            }
-        });
+        /*
+         * outerRings.sort(new Comparator<ClosedPolyLine>() {
+         * @Override public int compare(ClosedPolyLine line1, ClosedPolyLine
+         * line2)
+         * { return (int) Math.signum(line1.area() - line2.area()); } });
+         */
+
+        outerRings.sort((line1, line2) -> (int) Math.signum(line1.area()
+                - line2.area()));
 
         for (ClosedPolyLine outerRing : outerRings) {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
@@ -196,7 +200,7 @@ public final class OSMToGeoTransformer {
         Set<Point> neighbors = new HashSet<>(
                 nonOrientedGraph.neighborsOf(currentPoint));
         neighbors.retainAll(nonVisitedNodes);
-        
+
         if (neighbors.isEmpty()) {
             return;
         } else {
