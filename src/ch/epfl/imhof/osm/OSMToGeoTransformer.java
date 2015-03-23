@@ -86,7 +86,6 @@ public final class OSMToGeoTransformer {
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
                     && !newAttributes.isEmpty()) {
 
-// performance: copie ou mise en mémoire
                 for (Attributed<Polygon> polygon : assemblePolygon(
                         relationToConvert, newAttributes)) {
                     mapInConstruction.addPolygon(polygon);
@@ -109,7 +108,7 @@ public final class OSMToGeoTransformer {
         List<PolyLine> roleWays = new ArrayList<>();
 
         for (Member m : relation.members()) {
-            if (m.role().equals(role)
+            if (role.equals(m.role())
                     && m.type() == OSMRelation.Member.Type.WAY) {
                 roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
             }
@@ -121,7 +120,47 @@ public final class OSMToGeoTransformer {
             return Collections.emptyList();
         }
 
-        java.util.Map<Point, Boolean> visitedNodes = new HashMap<>();
+        List<ClosedPolyLine> ringsForRole = new ArrayList<>();
+      /*  java.util.Map<Point, Boolean> visitedNodes = new HashMap<>();
+        int nonVisitedNodesRemaining = nonOrientedGraph.nodes().size();
+        for (Point point : nonOrientedGraph.nodes()) {
+            visitedNodes.put(point, false);
+        }
+
+        for (java.util.Map.Entry<Point, Boolean> e : visitedNodes.entrySet()) {
+            if (nonVisitedNodesRemaining > 0 && e.getValue() == false) {
+                PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
+                polylineInConstruction.addPoint(e.getKey());
+                e.setValue(true);
+                --nonVisitedNodesRemaining;
+                for (java.util.Map.Entry<Point, Boolean> f : visitedNodes
+                        .entrySet()) {
+                    if (f.getValue() == false
+                            && nonOrientedGraph.neighborsOf(e.getKey())
+                                    .contains(f.getKey())) {
+                        polylineInConstruction.addPoint(f.getKey());
+                        f.setValue(true);
+                        --nonVisitedNodesRemaining;
+                    }
+                }
+                ringsForRole.add(polylineInConstruction.buildClosed());
+            }
+        }*/
+        
+        
+        Set<Point> nonVisitedNodes = nonOrientedGraph.nodes();
+        int nonVisitedNodesRemaining = nonVisitedNodes.size();
+        for (Point point : nonVisitedNodes) {
+            PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
+            Point firstPoint = point;
+            polylineInConstruction.addPoint(firstPoint);
+            nonVisitedNodes.remove(point);
+            --nonVisitedNodesRemaining;
+        }
+        
+        
+        
+        return ringsForRole;
     }
 
     /**
@@ -150,7 +189,7 @@ public final class OSMToGeoTransformer {
             for (ClosedPolyLine innerRing : innerRings) {
                 if (outerRing.containsPoint(innerRing.firstPoint())) {
                     attachedInnerRings.add(innerRing);
-// est-ce que ça marche???
+                    // est-ce que ça marche???
                     innerRings.remove(innerRing);
                 }
             }
@@ -162,7 +201,7 @@ public final class OSMToGeoTransformer {
                         attachedInnerRings), attributes));
             }
         }
-        
+
         return relationPolygons;
     }
 
