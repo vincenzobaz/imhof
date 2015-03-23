@@ -139,6 +139,7 @@ public final class OSMToGeoTransformer {
          */
 
         Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
+        //problème aussi: faire copie du set + retainAll?, makering return un set
         for (Point point : nonVisitedNodes) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
             makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
@@ -175,11 +176,10 @@ public final class OSMToGeoTransformer {
 
         for (ClosedPolyLine outerRing : outerRings) {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
-            for (ClosedPolyLine innerRing : innerRings) {
-                if (outerRing.containsPoint(innerRing.firstPoint())) {
-                    attachedInnerRings.add(innerRing);
-                    // est-ce que ça marche???
-                    innerRings.remove(innerRing);
+            for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator.hasNext();) {
+                if (outerRing.containsPoint(iterator.next().firstPoint())) {
+                    attachedInnerRings.add(iterator.next());
+                    iterator.remove();
                 }
             }
             if (attachedInnerRings.isEmpty()) {
@@ -205,6 +205,7 @@ public final class OSMToGeoTransformer {
             return;
         } else {
             polylineInConstruction.addPoint(currentPoint);
+            //problème
             nonVisitedNodes.remove(currentPoint);
             makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
                     neighbors.iterator().next());
