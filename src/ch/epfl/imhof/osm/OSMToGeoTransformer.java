@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Comparator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
@@ -119,7 +118,6 @@ public final class OSMToGeoTransformer {
             return Collections.emptyList();
         }
 
-        List<ClosedPolyLine> ringsList = new ArrayList<>();
         /*
          * java.util.Map<Point, Boolean> visitedNodes = new HashMap<>(); int
          * nonVisitedNodesRemaining = nonOrientedGraph.nodes().size(); for
@@ -138,12 +136,12 @@ public final class OSMToGeoTransformer {
          * ringsForRole.add(polylineInConstruction.buildClosed()); } }
          */
 
+        List<ClosedPolyLine> ringsList = new ArrayList<>();
         Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
-        //problème aussi: faire copie du set + retainAll?, makering return un set
-        for (Point point : nonVisitedNodes) {
+        while (nonVisitedNodes.size() > 0) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
             makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
-                    point);
+                    nonVisitedNodes.iterator().next());
             ringsList.add(polylineInConstruction.buildClosed());
         }
 
@@ -166,9 +164,9 @@ public final class OSMToGeoTransformer {
 
         /*
          * outerRings.sort(new Comparator<ClosedPolyLine>() {
+         * 
          * @Override public int compare(ClosedPolyLine line1, ClosedPolyLine
-         * line2)
-         * { return (int) Math.signum(line1.area() - line2.area()); } });
+         * line2) { return (int) Math.signum(line1.area() - line2.area()); } });
          */
 
         outerRings.sort((line1, line2) -> (int) Math.signum(line1.area()
@@ -176,7 +174,8 @@ public final class OSMToGeoTransformer {
 
         for (ClosedPolyLine outerRing : outerRings) {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
-            for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator.hasNext();) {
+            for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
+                    .hasNext();) {
                 if (outerRing.containsPoint(iterator.next().firstPoint())) {
                     attachedInnerRings.add(iterator.next());
                     iterator.remove();
@@ -194,6 +193,15 @@ public final class OSMToGeoTransformer {
         return relationPolygons;
     }
 
+    /**
+     * Méthode récursive ajoutant tous les noeuds d'un anneau à la polyligne en
+     * construction
+     * 
+     * @param nonOrientedGraph
+     * @param polylineInConstruction
+     * @param nonVisitedNodes
+     * @param currentPoint
+     */
     private void makeRing(Graph<Point> nonOrientedGraph,
             PolyLine.Builder polylineInConstruction,
             Set<Point> nonVisitedNodes, Point currentPoint) {
@@ -205,7 +213,6 @@ public final class OSMToGeoTransformer {
             return;
         } else {
             polylineInConstruction.addPoint(currentPoint);
-            //problème
             nonVisitedNodes.remove(currentPoint);
             makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
                     neighbors.iterator().next());
