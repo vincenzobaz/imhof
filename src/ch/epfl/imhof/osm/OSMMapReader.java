@@ -75,6 +75,7 @@ public final class OSMMapReader {
                                 .parseLong(atts.getValue("id")) : Long
                                 .parseLong(atts.getValue("ref"));
                     }
+
                     switch (qName) {
                     case "node":
                         newNode = new OSMNode.Builder(idOrRef, new PointGeo(
@@ -99,6 +100,7 @@ public final class OSMMapReader {
                         break;
                     case "member":
                         String role = atts.getValue("role");
+
                         switch (atts.getValue("type")) {
                         case "node":
                             OSMNode nodeOfRelation = mapToBe.nodeForId(idOrRef);
@@ -138,6 +140,7 @@ public final class OSMMapReader {
                     case "tag":
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
+
                         if (newNode != null) {
                             newNode.setAttribute(key, value);
                         } else if (newWay != null) {

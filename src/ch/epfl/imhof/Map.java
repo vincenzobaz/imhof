@@ -16,7 +16,6 @@ import ch.epfl.imhof.geometry.Polygon;
  *
  */
 public final class Map {
-
     private final List<Attributed<PolyLine>> polyLines;
     private final List<Attributed<Polygon>> polygons;
 

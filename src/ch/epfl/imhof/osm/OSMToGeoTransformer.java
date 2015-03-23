@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
@@ -140,8 +141,8 @@ public final class OSMToGeoTransformer {
         Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
         while (nonVisitedNodes.size() > 0) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
-            makeRing(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
-                    nonVisitedNodes.iterator().next());
+            theRingMaker(nonOrientedGraph, polylineInConstruction,
+                    nonVisitedNodes, nonVisitedNodes.iterator().next());
             ringsList.add(polylineInConstruction.buildClosed());
         }
 
@@ -202,7 +203,7 @@ public final class OSMToGeoTransformer {
      * @param nonVisitedNodes
      * @param currentPoint
      */
-    private void makeRing(Graph<Point> nonOrientedGraph,
+    private void theRingMaker(Graph<Point> nonOrientedGraph,
             PolyLine.Builder polylineInConstruction,
             Set<Point> nonVisitedNodes, Point currentPoint) {
         Set<Point> neighbors = new HashSet<>(
@@ -249,11 +250,12 @@ public final class OSMToGeoTransformer {
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
 
-            for (int i = 0; i < pointList.size(); ++i) {
-                graphInConstruction.addNode(pointList.get(i));
-                if (i != 0) {
-                    graphInConstruction.addEdge(pointList.get(i),
-                            pointList.get(i - 1));
+            for (ListIterator<Point> iterator = pointList.listIterator(); iterator
+                    .hasNext();) {
+                graphInConstruction.addNode(iterator.next());
+                if (iterator.hasPrevious()) {
+                    graphInConstruction.addEdge(iterator.next(),
+                            iterator.previous());
                 }
             }
         }
@@ -337,6 +339,7 @@ public final class OSMToGeoTransformer {
             return true;
         } else {
             boolean hasSurfaceAttribute = false;
+
             Iterator<String> iterator = SURFACE_ATTRIBUTES.iterator();
             while (!hasSurfaceAttribute && iterator.hasNext()) {
                 hasSurfaceAttribute = way.hasAttribute(iterator.next());
