@@ -122,7 +122,7 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> ringsList = new ArrayList<>();
         Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
 
-        while (nonVisitedNodes.size() > 0) {
+        while (!nonVisitedNodes.isEmpty()) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
             theRingMaker(nonOrientedGraph, polylineInConstruction,
                     nonVisitedNodes, nonVisitedNodes.iterator().next());
