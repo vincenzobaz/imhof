@@ -72,8 +72,9 @@ public final class OSMToGeoTransformer {
             if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
                 mapInConstruction.addPolyLine(new Attributed<>(
                         OSMWayToPolyLine(wayToConvert), newAttributes));
-            } else if (OSMWayIsASurface(wayToConvert)
-                    && wayToConvert.isClosed() && !newAttributes.isEmpty()) {
+            } else if (wayToConvert.isClosed()
+                    && OSMWayIsASurface(wayToConvert)
+                    && !newAttributes.isEmpty()) {
                 mapInConstruction.addPolygon(new Attributed<>(new Polygon(
                         OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
             }
@@ -146,8 +147,8 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
         // tester si outerRings est vide?
-        outerRings.sort((line1, line2) -> (int) Math.signum(line1.area()
-                - line2.area()));
+        outerRings.sort((ring1, ring2) -> (int) Math.signum(ring1.area()
+                - ring2.area()));
 
         List<Attributed<Polygon>> relationPolygons = new ArrayList<>();
 
@@ -207,7 +208,7 @@ public final class OSMToGeoTransformer {
      */
     private boolean everyNodeHasTwoNeighbors(Graph<Point> nonOrientedGraph) {
         boolean everyNodeHasTwoNeighbors = true;
-    
+
         Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
         while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
             everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(

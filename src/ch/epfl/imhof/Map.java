@@ -59,7 +59,7 @@ public final class Map {
      * @author Nicolas Phan Van (239293)
      *
      */
-    public static class Builder {
+    public static final class Builder {
         List<Attributed<PolyLine>> polyLines;
         List<Attributed<Polygon>> polygons;
 
