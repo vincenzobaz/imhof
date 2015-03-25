@@ -314,7 +314,8 @@ public final class OSMToGeoTransformer {
      */
     private boolean OSMWayIsASurface(OSMWay way) {
         String area = way.attributeValue("area");
-        if ("yes".equals(area) || "1".equals(area) || "true".equals(area)) {
+        int n = way.attributes().get(area, 0);
+        if ("yes".equals(area) || n == 1 || "true".equals(area)) {
             return true;
         } else {
             boolean hasSurfaceAttribute = false;
