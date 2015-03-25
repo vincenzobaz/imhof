@@ -207,7 +207,7 @@ public final class OSMToGeoTransformer {
      */
     private boolean everyNodeHasTwoNeighbors(Graph<Point> nonOrientedGraph) {
         boolean everyNodeHasTwoNeighbors = true;
-
+    
         Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
         while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
             everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(

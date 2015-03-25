@@ -91,7 +91,7 @@ public final class OSMMapReader {
                         OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
                         if (nodeOfWay == null) {
                             newWay.setIncomplete();
-                        } else if (!newWay.isIncomplete()) {
+                        } else  {
                             newWay.addNode(nodeOfWay);
                         }
                         break;
