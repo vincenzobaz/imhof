@@ -116,6 +116,10 @@ public final class OSMToGeoTransformer {
                 roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
             }
         }
+        
+        if (roleWays.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         Graph<Point> nonOrientedGraph = graphCreator(roleWays);
 
@@ -149,6 +153,9 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
         List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
 
+        if (outerRings.isEmpty()) {
+            return Collections.emptyList();
+        }
         // tester si outerRings est vide?
         outerRings.sort((ring1, ring2) -> (int) Math.signum(ring1.area()
                 - ring2.area()));
@@ -159,8 +166,9 @@ public final class OSMToGeoTransformer {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
             for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
                     .hasNext();) {
-                if (outerRing.containsPoint(iterator.next().firstPoint())) {
-                    attachedInnerRings.add(iterator.next());
+                ClosedPolyLine nextPolyLine = iterator.next();
+                if (outerRing.containsPoint(nextPolyLine.firstPoint())) {
+                    attachedInnerRings.add(nextPolyLine);
                     iterator.remove();
                 }
             }
@@ -226,6 +234,7 @@ public final class OSMToGeoTransformer {
      * @param roleWays
      * @return
      */
+    //erreurs
     private Graph<Point> graphCreator(List<PolyLine> roleWays) {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
 
@@ -234,9 +243,10 @@ public final class OSMToGeoTransformer {
 
             for (ListIterator<Point> iterator = pointList.listIterator(); iterator
                     .hasNext();) {
-                graphInConstruction.addNode(iterator.next());
+                Point nextPoint = iterator.next();
+                graphInConstruction.addNode(nextPoint);
                 if (iterator.hasPrevious()) {
-                    graphInConstruction.addEdge(iterator.next(),
+                    graphInConstruction.addEdge(nextPoint,
                             iterator.previous());
                 }
             }

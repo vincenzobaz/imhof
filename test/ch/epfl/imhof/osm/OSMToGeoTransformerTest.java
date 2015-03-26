@@ -9,13 +9,13 @@ import ch.epfl.imhof.Map;
 import ch.epfl.imhof.projection.*;
 
 public class OSMToGeoTransformerTest {
-    /**@Test
+    @Test
     public void transformerMarche() {
-        String fileALire = "data/lausanne.osm";
+        String fileALire = "data/lausanne.osm.gz";
         OSMMap fileMap = null;
         System.out.println("Debut lecture du fichier " + fileALire);
         try {
-            fileMap = OSMMapReader.readOSMFile(fileALire, false);
+            fileMap = OSMMapReader.readOSMFile(fileALire, true);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -31,10 +31,9 @@ public class OSMToGeoTransformerTest {
         Map prova = convertisseur.transform(fileMap);
         System.out.println("Nombre de polyline " + prova.polyLines().size());
         System.out.println("Nombre de polygons " + prova.polygons().size());
-    }**/
+    }
 
-    public 
-    @Test
+/**    @Test
     public void conversionDesCheminsMarche() {
         String fileALire = "data/lausanne.osm";
         OSMMap fileMap = null;
@@ -52,5 +51,5 @@ public class OSMToGeoTransformerTest {
         Map provina = convertisseur.mapToBe.build()   ;
         System.out.println("Nombre de polyline " + provina.polyLines().size());
         System.out.println("Nombre de polygons " + provina.polygons().size());
-    }
+    }*/
 }
