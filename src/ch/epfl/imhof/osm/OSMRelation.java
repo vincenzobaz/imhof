@@ -157,7 +157,7 @@ public final class OSMRelation extends OSMEntity {
                 throw new IllegalStateException(
                         "La relation en cours de construction est incomplète.");
             }
-            return new OSMRelation(idBuild(), members, attributesBuild());
+            return new OSMRelation(this.id, members, this.attributesInProgress.build());
         }
     }
 }

@@ -74,9 +74,9 @@ public abstract class OSMEntity {
      *
      */
     public abstract static class Builder {
-        private final long id;
+        protected final long id;
         private boolean isIncomplete;
-        private Attributes.Builder attributesInProgress;
+        protected Attributes.Builder attributesInProgress;
 
         /**
          * Constructeur du bâtisseur. Cet objet s'instancie à partir d'un
@@ -126,7 +126,7 @@ public abstract class OSMEntity {
          * celle-ci puissent accéder à la liste d'attribut.
          * 
          * @return les attributs de l'entité, un Attributes
-         */
+         *
         protected Attributes attributesBuild() {
             return attributesInProgress.build();
         }
@@ -136,9 +136,10 @@ public abstract class OSMEntity {
          * celle-ci puissent accéder à l'identifiant unique de l'entité
          * 
          * @return l'identifiant unique de l'entité, un long
-         */
+         *
         protected long idBuild() {
             return id;
         }
+        */ 
     }
 }
