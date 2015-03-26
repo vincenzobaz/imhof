@@ -17,13 +17,6 @@ public class OSMToGeoTransformerTest {
         System.out.println("Debut lecture du fichier " + fileALire);
         try {
             return OSMMapReader.readOSMFile(fileALire, false);
-        } catch (IOException | SAXException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * @Test public void conversionDesCheminsMarche() { OSMMap fileMap =
      *       readFile(fichier); OSMToGeoTransformer convertisseur = new
@@ -60,4 +53,35 @@ public class OSMToGeoTransformerTest {
         System.out.println("Nombre de polyline " + mappa.polyLines().size());
         System.out.println("Nombre de polygons " + mappa.polygons().size());
     }
+        System.out.println("Chemins dans le OSMMap " + fileMap.ways().size());
+        System.out.println("Relations dans le Map "
+                + fileMap.relations().size());
+        System.out.println("L'attribut de polygon est present? "
+                + fileMap.relations().get(0).hasAttribute("type"));
+        OSMToGeoTransformer convertisseur = new OSMToGeoTransformer(
+                new CH1903Projection());
+        Map prova = convertisseur.transform(fileMap);
+        System.out.println("Nombre de polyline " + prova.polyLines().size());
+        System.out.println("Nombre de polygons " + prova.polygons().size());
+    }
+
+/**    @Test
+    public void conversionDesCheminsMarche() {
+        String fileALire = "data/lausanne.osm";
+        OSMMap fileMap = null;
+        System.out.println("Debut lecture du fichier " + fileALire);
+        try {
+            fileMap = OSMMapReader.readOSMFile(fileALire, false);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        OSMToGeoTransformer convertisseur = new OSMToGeoTransformer(
+                new CH1903Projection());
+        convertisseur.conversionChemins(fileMap.ways());
+        System.out.println(fileMap.ways().size());
+        Map provina = convertisseur.mapToBe.build()   ;
+        System.out.println("Nombre de polyline " + provina.polyLines().size());
+        System.out.println("Nombre de polygons " + provina.polygons().size());
+    }*/
 }

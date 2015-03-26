@@ -25,14 +25,16 @@ public class AttributesTest {
 
     @Test
     public void containsReturnsTrueForKeyPresent() {
-        Attributes test = BuildAll.newAttributes("name", "Léman", "color", "blue");
+        Attributes test = BuildAll.newAttributes("name", "Léman", "color",
+                "blue");
         assertTrue(test.contains("name"));
         assertTrue(test.contains("color"));
     }
 
     @Test
     public void containsReturnsFalseForKeyNotPresent() {
-        Attributes test = BuildAll.newAttributes("name", "Léman", "color", "blue");
+        Attributes test = BuildAll.newAttributes("name", "Léman", "color",
+                "blue");
         assertFalse(test.contains("jambon"));
         assertFalse(test.contains("pourquoi?"));
     }
@@ -48,50 +50,50 @@ public class AttributesTest {
 
     @Test
     public void containsTest() {
-        Attributes notEmpty = BuildAll.newAttributes("nature", "forest", "highways",
-                "motorway");
+        Attributes notEmpty = BuildAll.newAttributes("nature", "forest",
+                "highways", "motorway");
         assertTrue(notEmpty.contains("forest"));
     }
 
     @Test
     public void getReturnsCorrectValue() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", ":(");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", ":(");
         assertEquals("mettre", test.get("quoi"));
     }
 
     @Test
     public void getReturnsNullForKeyNotValid() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", ":(");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", ":(");
         assertEquals(null, test.get("rien"));
     }
 
     @Test
     public void getReturnsCorrectValueBis() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", ":(");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", ":(");
         assertEquals(":(", test.get("ici", "defaultValue"));
     }
 
     @Test
     public void getReturnsDefaultValue() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", ":(");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", ":(");
         assertEquals("defaultValue", test.get("fake", "defaultValue"));
     }
 
     @Test
     public void getReturnsCorrectInt() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", "2014");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", "2014");
         assertEquals(2014, test.get("ici", 12));
     }
 
     @Test
     public void getReturnsDefaultValueBis() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", "2014");
+        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", "2014");
         assertEquals(42, test.get("sais", 42));
         assertEquals(42, test.get("faaaake", 42));
     }
@@ -102,8 +104,8 @@ public class AttributesTest {
         list.add("sais");
         list.add("ici");
         HashSet<String> keysToKeep = new HashSet<>(list);
-        Attributes toFilter = BuildAll.newAttributes("je", "ne", "sais", "pas", "quoi",
-                "mettre", "ici", "2014");
+        Attributes toFilter = BuildAll.newAttributes("je", "ne", "sais", "pas",
+                "quoi", "mettre", "ici", "2014");
         Attributes test = toFilter.keepOnlyKeys(keysToKeep);
         assertFalse(test.isEmpty());
         assertTrue(test.contains("sais"));
@@ -112,5 +114,18 @@ public class AttributesTest {
         assertEquals(2014, test.get("ici", 24));
         assertFalse(test.contains("je"));
         assertFalse(test.contains("quoi"));
+    }
+
+    @Test
+    public void builderTest() {
+        Attributes.Builder newBuilder = new Attributes.Builder();
+        newBuilder.put("test1", "valeur1");
+        newBuilder.put("test2", "valeur2");
+        Attributes newAttributes = newBuilder.build();
+        assertTrue(newAttributes.contains("test1"));
+        assertTrue(newAttributes.get("test1").equals("valeur1"));
+        assertTrue(newAttributes.contains("test2"));
+        assertTrue(newAttributes.get("test2").equals("valeur2"));
+        assertFalse(newAttributes.contains("nope"));
     }
 }

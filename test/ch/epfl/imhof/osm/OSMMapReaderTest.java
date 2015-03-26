@@ -13,15 +13,15 @@ public class OSMMapReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-            String fileALire = "data/lc.osm";
+            String fileALire = "data/lausanne.osm.gz";
             long preTime = System.currentTimeMillis();
-            System.out.println("Debut lecture du fichier " + fileALire);
-            OSMMap fileMap = OSMMapReader.readOSMFile(fileALire, false);
+            System.out.println("Debut lecture du fichier "+fileALire);
+            OSMMap fileMap = OSMMapReader.readOSMFile(fileALire,
+                    true);
             long endTime = System.currentTimeMillis();
             System.out.println("La lecture du fichier osm a durée: "
                     + (endTime - preTime) + " ms, approximativement "
-                    + ((endTime - preTime) / 1000) + " secondes , "
-                    + "\uD83D\uDC4D");
+                    + ((endTime - preTime) / 1000) + " secondes , "+"\uD83D\uDC4D");
             List<OSMRelation> relations = fileMap.relations();
             List<OSMWay> ways = fileMap.ways();
 
@@ -63,7 +63,6 @@ public class OSMMapReaderTest {
                             + relation.hasAttribute("type"));
                 }
             }
-
             debug.close();
         } catch (IOException e) {
             System.out.println("Exception catchée!!!");
