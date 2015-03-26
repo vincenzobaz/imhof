@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
@@ -243,14 +242,20 @@ public final class OSMToGeoTransformer {
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
 
-            for (ListIterator<Point> iterator = pointList.listIterator(); iterator
+            for (int i = 0; i < pointList.size(); ++i) {
+                graphInConstruction.addNode(pointList.get(i));
+                if (i > 0) {
+                    graphInConstruction.addEdge(pointList.get(i), pointList.get(i - 1));
+                }
+            }
+            /*for (ListIterator<Point> iterator = pointList.listIterator(); iterator
                     .hasNext();) {
                 Point nextPoint = iterator.next();
                 graphInConstruction.addNode(nextPoint);
                 if (iterator.hasPrevious()) {
                     graphInConstruction.addEdge(nextPoint, iterator.previous());
                 }
-            }
+            }*/
         }
         return graphInConstruction.build();
     }
