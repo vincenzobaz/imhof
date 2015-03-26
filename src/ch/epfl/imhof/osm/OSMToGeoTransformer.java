@@ -44,7 +44,7 @@ public final class OSMToGeoTransformer {
             Arrays.asList(POLYGON_VALUES));
 
     private final Projection projection;
-    private  Map.Builder mapToBe;
+    private Map.Builder mapToBe;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
@@ -66,14 +66,14 @@ public final class OSMToGeoTransformer {
      * @return la carte projetée, une Map
      */
     public Map transform(OSMMap map) {
-        conversionChemins(map.ways());
+        waysConversion(map.ways());
+        relationsConversion(map.relations());
 
-        conversionRelations(map.relations()) ;
         return mapToBe.build();
     }
 
-    private void conversionRelations(List<OSMRelation> relations){
-                for (OSMRelation relationToConvert : relations) {
+    private void relationsConversion(List<OSMRelation> relations) {
+        for (OSMRelation relationToConvert : relations) {
             Attributes newAttributes = relationToConvert.attributes()
                     .keepOnlyKeys(POLYGON_ATTRIBUTES);
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
@@ -85,7 +85,8 @@ public final class OSMToGeoTransformer {
             }
         }
     }
-    private void conversionChemins(List<OSMWay> ways) {
+
+    private void waysConversion(List<OSMWay> ways) {
         for (OSMWay wayToConvert : ways) {
             Attributes newAttributes = filteredAttributes(wayToConvert);
             if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
@@ -117,7 +118,7 @@ public final class OSMToGeoTransformer {
                 roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
             }
         }
-        
+
         if (roleWays.isEmpty()) {
             return Collections.emptyList();
         }
@@ -235,7 +236,7 @@ public final class OSMToGeoTransformer {
      * @param roleWays
      * @return
      */
-    //erreurs
+    // erreurs
     private Graph<Point> graphCreator(List<PolyLine> roleWays) {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
 
@@ -247,8 +248,7 @@ public final class OSMToGeoTransformer {
                 Point nextPoint = iterator.next();
                 graphInConstruction.addNode(nextPoint);
                 if (iterator.hasPrevious()) {
-                    graphInConstruction.addEdge(nextPoint,
-                            iterator.previous());
+                    graphInConstruction.addEdge(nextPoint, iterator.previous());
                 }
             }
         }
@@ -328,8 +328,7 @@ public final class OSMToGeoTransformer {
      */
     private boolean OSMWayIsASurface(OSMWay way) {
         String area = way.attributeValue("area");
-        int n = way.attributes().get(area, 0);
-        if ("yes".equals(area) || n == 1 || "true".equals(area)) {
+        if ("yes".equals(area) || "1".equals(area) || "true".equals(area)) {
             return true;
         } else {
             boolean hasSurfaceAttribute = false;

@@ -21,7 +21,7 @@ public class OSMToGeoTransformerTest {
      * @Test public void conversionDesCheminsMarche() { OSMMap fileMap =
      *       readFile(fichier); OSMToGeoTransformer convertisseur = new
      *       OSMToGeoTransformer( new CH1903Projection());
-     *       convertisseur.conversionChemins(fileMap.ways());
+     *       convertisseur.waysConversion(fileMap.ways());
      *       System.out.println(fileMap.ways().size()); Map provina =
      *       convertisseur.mapToBe.build();
      *       System.out.println("Nombre de polyline " +
@@ -34,7 +34,7 @@ public class OSMToGeoTransformerTest {
      * @Test public void conversionDesRelationsMarche() { OSMMap fileMap =
      *       readFile(fichier); OSMToGeoTransformer convertisseur = new
      *       OSMToGeoTransformer( new CH1903Projection());
-     *       convertisseur.conversionChemins(fileMap.ways());
+     *       convertisseur.waysConversion(fileMap.ways());
      *       System.out.println(fileMap.relations().size()); Map provina =
      *       convertisseur.mapToBe.build();
      *       System.out.println("Nombre de polyline " +
@@ -78,7 +78,7 @@ public class OSMToGeoTransformerTest {
         }
         OSMToGeoTransformer convertisseur = new OSMToGeoTransformer(
                 new CH1903Projection());
-        convertisseur.conversionChemins(fileMap.ways());
+        convertisseur.waysConversion(fileMap.ways());
         System.out.println(fileMap.ways().size());
         Map provina = convertisseur.mapToBe.build()   ;
         System.out.println("Nombre de polyline " + provina.polyLines().size());
