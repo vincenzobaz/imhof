@@ -71,10 +71,17 @@ public final class OSMToGeoTransformer {
         return mapToBe.build();
     }
 
+    /**
+     * Méthode convertissant les relations de l'OSMMap et les ajoutant à la Map
+     * en construction.
+     * 
+     * @param relations
+     */
     private void relationsConversion(List<OSMRelation> relations) {
         for (OSMRelation relationToConvert : relations) {
             Attributes newAttributes = relationToConvert.attributes()
                     .keepOnlyKeys(POLYGON_ATTRIBUTES);
+
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
                     && !newAttributes.isEmpty()) {
                 for (Attributed<Polygon> polygon : assemblePolygon(
@@ -85,9 +92,16 @@ public final class OSMToGeoTransformer {
         }
     }
 
+    /**
+     * Méthode convertissant les chemins de l'OSMMap et les ajoutant à la Map en
+     * construction.
+     * 
+     * @param ways
+     */
     private void waysConversion(List<OSMWay> ways) {
         for (OSMWay wayToConvert : ways) {
             Attributes newAttributes = filteredAttributes(wayToConvert);
+
             if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
                 mapToBe.addPolyLine(new Attributed<>(
                         OSMWayToPolyLine(wayToConvert), newAttributes));
@@ -245,17 +259,17 @@ public final class OSMToGeoTransformer {
             for (int i = 0; i < pointList.size(); ++i) {
                 graphInConstruction.addNode(pointList.get(i));
                 if (i > 0) {
-                    graphInConstruction.addEdge(pointList.get(i), pointList.get(i - 1));
+                    graphInConstruction.addEdge(pointList.get(i),
+                            pointList.get(i - 1));
                 }
             }
-            /*for (ListIterator<Point> iterator = pointList.listIterator(); iterator
-                    .hasNext();) {
-                Point nextPoint = iterator.next();
-                graphInConstruction.addNode(nextPoint);
-                if (iterator.hasPrevious()) {
-                    graphInConstruction.addEdge(nextPoint, iterator.previous());
-                }
-            }*/
+            /*
+             * for (ListIterator<Point> iterator = pointList.listIterator();
+             * iterator .hasNext();) { Point nextPoint = iterator.next();
+             * graphInConstruction.addNode(nextPoint); if
+             * (iterator.hasPrevious()) { graphInConstruction.addEdge(nextPoint,
+             * iterator.previous()); } }
+             */
         }
         return graphInConstruction.build();
     }
