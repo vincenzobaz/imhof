@@ -123,19 +123,7 @@ public final class OSMToGeoTransformer {
      * @return
      */
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        List<PolyLine> roleWays = new ArrayList<>();
-
-        for (Member m : relation.members()) {
-            if (role.equals(m.role())
-                    && m.type() == OSMRelation.Member.Type.WAY) {
-                roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
-            }
-        }
-
-        if (roleWays.isEmpty()) {
-            return Collections.emptyList();
-        }
-
+        List<PolyLine> roleWays = filterMembers(relation.members(), role);
         Graph<Point> nonOrientedGraph = graphCreator(roleWays);
 
         if (!everyNodeHasTwoNeighbors(nonOrientedGraph)) {
@@ -153,6 +141,26 @@ public final class OSMToGeoTransformer {
         }
 
         return ringsList;
+    }
+
+    /**
+     * Retourne une liste contenant uniquement les chemins de la relation donnée
+     * ayant le role donné.
+     * 
+     * @param members
+     * @param role
+     * @return
+     */
+    private List<PolyLine> filterMembers(List<Member> members, String role) {
+        List<PolyLine> roleWays = new ArrayList<>();
+
+        for (Member m : members) {
+            if (role.equals(m.role())
+                    && m.type() == OSMRelation.Member.Type.WAY) {
+                roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
+            }
+        }
+        return roleWays;
     }
 
     /**
@@ -233,14 +241,18 @@ public final class OSMToGeoTransformer {
      * @return
      */
     private boolean everyNodeHasTwoNeighbors(Graph<Point> nonOrientedGraph) {
-        boolean everyNodeHasTwoNeighbors = true;
+        if (nonOrientedGraph.nodes().isEmpty()) {
+            return false;
+        } else {
+            boolean everyNodeHasTwoNeighbors = true;
 
-        Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
-        while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
-            everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
-                    iterator.next()).size() == 2);
+            Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
+            while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
+                everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
+                        iterator.next()).size() == 2);
+            }
+            return everyNodeHasTwoNeighbors;
         }
-        return everyNodeHasTwoNeighbors;
     }
 
     /**
