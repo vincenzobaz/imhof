@@ -168,11 +168,13 @@ public final class OSMMapReader {
                     case "way":
                         if (newWay != null && !newWay.isIncomplete()) {
                             mapToBe.addWay(newWay.build());
+                            entityType = -1;
                         }
                         break;
                     case "relation":
                         if (newRelation != null && !newRelation.isIncomplete()) {
                             mapToBe.addRelation(newRelation.build());
+                            entityType = -1;
                         }
                         break;
                     }
