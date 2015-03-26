@@ -13,11 +13,11 @@ public class OSMMapReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-            String fileALire = "data/lausanne.osm.gz";
+            String fileALire = "data/lc.osm";
             long preTime = System.currentTimeMillis();
             System.out.println("Debut lecture du fichier "+fileALire);
             OSMMap fileMap = OSMMapReader.readOSMFile(fileALire,
-                    true);
+                    false);
             long endTime = System.currentTimeMillis();
             System.out.println("La lecture du fichier osm a durée: "
                     + (endTime - preTime) + " ms, approximativement "

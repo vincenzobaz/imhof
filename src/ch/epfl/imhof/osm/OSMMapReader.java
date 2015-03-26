@@ -148,7 +148,6 @@ public final class OSMMapReader {
                         } else if (entityType == 1) {
                             newRelation.setAttribute(key, value);
                         }
-                        entityType = -1;
                         break;
                     }
                 }
