@@ -57,9 +57,10 @@ public final class OSMMapReader {
             XMLReader r = XMLReaderFactory.createXMLReader();
 
             r.setContentHandler(new DefaultHandler() {
-                OSMNode.Builder newNode = null;
-                OSMWay.Builder newWay = null;
-                OSMRelation.Builder newRelation = null;
+                OSMNode.Builder newNode;
+                OSMWay.Builder newWay ;
+                OSMRelation.Builder newRelation;
+                int index = 0;
 
                 /**
                  * Redéfinition de la méthode startElement du gestionnaire de
@@ -86,6 +87,7 @@ public final class OSMMapReader {
                         break;
                     case "way":
                         newWay = new OSMWay.Builder(idOrRef);
+                        index = 1;
                         break;
                     case "nd":
                         OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
@@ -97,10 +99,10 @@ public final class OSMMapReader {
                         break;
                     case "relation":
                         newRelation = new OSMRelation.Builder(idOrRef);
+                        index = 2;
                         break;
                     case "member":
                         String role = atts.getValue("role");
-
                         switch (atts.getValue("type")) {
                         case "node":
                             OSMNode nodeOfRelation = mapToBe.nodeForId(idOrRef);
@@ -140,12 +142,9 @@ public final class OSMMapReader {
                     case "tag":
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
-
-                        if (newNode != null) {
-                            newNode.setAttribute(key, value);
-                        } else if (newWay != null) {
+                        if (index ==1) {
                             newWay.setAttribute(key, value);
-                        } else if (newRelation != null) {
+                        } else if (index == 2) {
                             newRelation.setAttribute(key, value);
                         }
                         break;

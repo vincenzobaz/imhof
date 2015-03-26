@@ -35,6 +35,10 @@ public class OSMMapReaderTest {
                             + " lon: "
                             + Math.toDegrees(node.position().longitude()));
                 }
+                debug.println("   hasAttribute(layer) "
+                        + way.hasAttribute("layer"));
+                debug.println("   hasAttribute(source) "
+                        + way.hasAttribute("source"));
             }
             debug.println();
             // temps de printer sur fichier de texte les relations
@@ -53,7 +57,10 @@ public class OSMMapReaderTest {
                         type = "relation";
                         break;
                     }
-                    debug.println("    Member, Type: " + type + " role: " + member.role());
+                    debug.println("    Member, Type: " + type + " role: "
+                            + member.role());
+                    debug.println("   hasAttribute(type) "
+                            + relation.hasAttribute("type"));
                 }
             }
             debug.close();
