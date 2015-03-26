@@ -58,7 +58,7 @@ public final class OSMMapReader {
 
             r.setContentHandler(new DefaultHandler() {
                 OSMNode.Builder newNode;
-                OSMWay.Builder newWay ;
+                OSMWay.Builder newWay;
                 OSMRelation.Builder newRelation;
                 int index = 0;
 
@@ -93,7 +93,7 @@ public final class OSMMapReader {
                         OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
                         if (nodeOfWay == null) {
                             newWay.setIncomplete();
-                        } else  {
+                        } else {
                             newWay.addNode(nodeOfWay);
                         }
                         break;
@@ -142,7 +142,8 @@ public final class OSMMapReader {
                     case "tag":
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
-                        if (index ==1) {
+
+                        if (index == 1) {
                             newWay.setAttribute(key, value);
                         } else if (index == 2) {
                             newRelation.setAttribute(key, value);
