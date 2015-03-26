@@ -60,7 +60,7 @@ public final class OSMMapReader {
                 OSMNode.Builder newNode;
                 OSMWay.Builder newWay;
                 OSMRelation.Builder newRelation;
-                int index = 0;
+                int entityType = -1;
 
                 /**
                  * Redéfinition de la méthode startElement du gestionnaire de
@@ -87,7 +87,7 @@ public final class OSMMapReader {
                         break;
                     case "way":
                         newWay = new OSMWay.Builder(idOrRef);
-                        index = 1;
+                        entityType = 0;
                         break;
                     case "nd":
                         OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
@@ -99,7 +99,7 @@ public final class OSMMapReader {
                         break;
                     case "relation":
                         newRelation = new OSMRelation.Builder(idOrRef);
-                        index = 2;
+                        entityType = 1;
                         break;
                     case "member":
                         String role = atts.getValue("role");
@@ -143,11 +143,12 @@ public final class OSMMapReader {
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
 
-                        if (index == 1) {
+                        if (entityType == 0) {
                             newWay.setAttribute(key, value);
-                        } else if (index == 2) {
+                        } else if (entityType == 1) {
                             newRelation.setAttribute(key, value);
                         }
+                        entityType = -1;
                         break;
                     }
                 }
