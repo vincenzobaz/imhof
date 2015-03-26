@@ -13,15 +13,15 @@ public class OSMMapReaderTest {
     @Test
     public void readOSMFileWorks() {
         try {
-            String fileALire = "data/lausanne.osm";
+            String fileALire = "data/lc.osm";
             long preTime = System.currentTimeMillis();
-            System.out.println("Debut lecture du fichier "+fileALire);
-            OSMMap fileMap = OSMMapReader.readOSMFile(fileALire,
-                    false);
+            System.out.println("Debut lecture du fichier " + fileALire);
+            OSMMap fileMap = OSMMapReader.readOSMFile(fileALire, false);
             long endTime = System.currentTimeMillis();
             System.out.println("La lecture du fichier osm a durée: "
                     + (endTime - preTime) + " ms, approximativement "
-                    + ((endTime - preTime) / 1000) + " secondes , "+"\uD83D\uDC4D");
+                    + ((endTime - preTime) / 1000) + " secondes , "
+                    + "\uD83D\uDC4D");
             List<OSMRelation> relations = fileMap.relations();
             List<OSMWay> ways = fileMap.ways();
 
@@ -35,6 +35,10 @@ public class OSMMapReaderTest {
                             + " lon: "
                             + Math.toDegrees(node.position().longitude()));
                 }
+                debug.println("   hasAttribute(layer) "
+                        + way.hasAttribute("layer"));
+                debug.println("   hasAttribute(source) "
+                        + way.hasAttribute("source"));
             }
             debug.println();
             // temps de printer sur fichier de texte les relations
@@ -53,9 +57,13 @@ public class OSMMapReaderTest {
                         type = "relation";
                         break;
                     }
-                    debug.println("    Member, Type: " + type + " role: " + member.role());
+                    debug.println("    Member, Type: " + type + " role: "
+                            + member.role());
+                    debug.println("   hasAttribute(type) "
+                            + relation.hasAttribute("type"));
                 }
             }
+
             debug.close();
         } catch (IOException e) {
             System.out.println("Exception catchée!!!");
