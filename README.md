@@ -8,5 +8,5 @@
 	- [ ] code
 	- [ ] doc
 	- [ ] test
-	- Pour réussir à comprendre quelques chose à cette classe il faudrait la documenter au fur et à mesure
 	- Trucs à vérifier: modification d'éléments immuables, validité des données/conditions, performances, ConcurrentModificationException
+	- La creation des polygons ne marche pas. addEdge de Graphe lance une illegalargumentexception.

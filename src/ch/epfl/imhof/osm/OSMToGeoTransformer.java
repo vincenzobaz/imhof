@@ -44,7 +44,7 @@ public final class OSMToGeoTransformer {
             Arrays.asList(POLYGON_VALUES));
 
     private final Projection projection;
-    protected  Map.Builder mapToBe;
+    private  Map.Builder mapToBe;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
@@ -68,10 +68,14 @@ public final class OSMToGeoTransformer {
     public Map transform(OSMMap map) {
         conversionChemins(map.ways());
 
-        for (OSMRelation relationToConvert : map.relations()) {
+        conversionRelations(map.relations()) ;
+        return mapToBe.build();
+    }
+
+    private void conversionRelations(List<OSMRelation> relations){
+                for (OSMRelation relationToConvert : relations) {
             Attributes newAttributes = relationToConvert.attributes()
                     .keepOnlyKeys(POLYGON_ATTRIBUTES);
-
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
                     && !newAttributes.isEmpty()) {
                 for (Attributed<Polygon> polygon : assemblePolygon(
@@ -80,11 +84,8 @@ public final class OSMToGeoTransformer {
                 }
             }
         }
-
-        return mapToBe.build();
     }
-
-    protected void conversionChemins(List<OSMWay> ways) {
+    private void conversionChemins(List<OSMWay> ways) {
         for (OSMWay wayToConvert : ways) {
             Attributes newAttributes = filteredAttributes(wayToConvert);
             if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
