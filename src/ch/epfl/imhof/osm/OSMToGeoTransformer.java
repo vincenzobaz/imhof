@@ -44,6 +44,7 @@ public final class OSMToGeoTransformer {
             Arrays.asList(POLYGON_VALUES));
 
     private final Projection projection;
+    protected  Map.Builder mapToBe;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
@@ -54,6 +55,7 @@ public final class OSMToGeoTransformer {
      */
     public OSMToGeoTransformer(Projection projection) {
         this.projection = projection;
+        mapToBe = new Map.Builder();
     }
 
     /**
@@ -64,21 +66,7 @@ public final class OSMToGeoTransformer {
      * @return la carte projetée, une Map
      */
     public Map transform(OSMMap map) {
-        Map.Builder mapInConstruction = new Map.Builder();
-
-        for (OSMWay wayToConvert : map.ways()) {
-            Attributes newAttributes = filteredAttributes(wayToConvert);
-
-            if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
-                mapInConstruction.addPolyLine(new Attributed<>(
-                        OSMWayToPolyLine(wayToConvert), newAttributes));
-            } else if (wayToConvert.isClosed()
-                    && OSMWayIsASurface(wayToConvert)
-                    && !newAttributes.isEmpty()) {
-                mapInConstruction.addPolygon(new Attributed<>(new Polygon(
-                        OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
-            }
-        }
+        conversionChemins(map.ways());
 
         for (OSMRelation relationToConvert : map.relations()) {
             Attributes newAttributes = relationToConvert.attributes()
@@ -88,12 +76,27 @@ public final class OSMToGeoTransformer {
                     && !newAttributes.isEmpty()) {
                 for (Attributed<Polygon> polygon : assemblePolygon(
                         relationToConvert, newAttributes)) {
-                    mapInConstruction.addPolygon(polygon);
+                    mapToBe.addPolygon(polygon);
                 }
             }
         }
 
-        return mapInConstruction.build();
+        return mapToBe.build();
+    }
+
+    protected void conversionChemins(List<OSMWay> ways) {
+        for (OSMWay wayToConvert : ways) {
+            Attributes newAttributes = filteredAttributes(wayToConvert);
+            if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
+                mapToBe.addPolyLine(new Attributed<>(
+                        OSMWayToPolyLine(wayToConvert), newAttributes));
+            } else if (wayToConvert.isClosed()
+                    && OSMWayIsASurface(wayToConvert)
+                    && !newAttributes.isEmpty()) {
+                mapToBe.addPolygon(new Attributed<>(new Polygon(
+                        OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
+            }
+        }
     }
 
     /**
