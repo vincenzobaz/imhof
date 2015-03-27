@@ -16,6 +16,7 @@ import java.lang.Long;
 import java.lang.Double;
 
 import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.osm.OSMWay.Builder;
 
 /**
  * Classe non-instanciable permettant de construire une carte OpenStreetMap à
@@ -57,10 +58,11 @@ public final class OSMMapReader {
             XMLReader r = XMLReaderFactory.createXMLReader();
 
             r.setContentHandler(new DefaultHandler() {
-                OSMNode.Builder newNode;
+                /*OSMNode.Builder newNode;
                 OSMWay.Builder newWay;
                 OSMRelation.Builder newRelation;
-                int entityType = -1;
+                int entityType = -1;*/
+                OSMEntity.Builder newEntity;
 
                 /**
                  * Redéfinition de la méthode startElement du gestionnaire de
@@ -79,27 +81,36 @@ public final class OSMMapReader {
 
                     switch (qName) {
                     case "node":
-                        newNode = new OSMNode.Builder(idOrRef, new PointGeo(
+                        /*newNode = new OSMNode.Builder(idOrRef, new PointGeo(
+                                Math.toRadians(Double.parseDouble(atts
+                                        .getValue("lon"))), Math
+                                        .toRadians(Double.parseDouble(atts
+                                                .getValue("lat")))));*/
+                        newEntity = new OSMNode.Builder(idOrRef, new PointGeo(
                                 Math.toRadians(Double.parseDouble(atts
                                         .getValue("lon"))), Math
                                         .toRadians(Double.parseDouble(atts
                                                 .getValue("lat")))));
                         break;
                     case "way":
-                        newWay = new OSMWay.Builder(idOrRef);
-                        entityType = 0;
+                        //newWay = new OSMWay.Builder(idOrRef);
+                        newEntity = new OSMWay.Builder(idOrRef);
+                        //entityType = 0;
                         break;
                     case "nd":
                         OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
                         if (nodeOfWay == null) {
-                            newWay.setIncomplete();
+                            //newWay.setIncomplete();
+                            newEntity.setIncomplete();
                         } else {
-                            newWay.addNode(nodeOfWay);
+                            //newWay.addNode(nodeOfWay);
+                            ((OSMWay.Builder) newEntity).addNode(nodeOfWay);
                         }
                         break;
                     case "relation":
-                        newRelation = new OSMRelation.Builder(idOrRef);
-                        entityType = 1;
+                        //newRelation = new OSMRelation.Builder(idOrRef);
+                        //entityType = 1;
+                        newEntity = new OSMRelation.Builder(idOrRef);
                         break;
                     case "member":
                         String role = atts.getValue("role");
@@ -107,32 +118,41 @@ public final class OSMMapReader {
                         case "node":
                             OSMNode nodeOfRelation = mapToBe.nodeForId(idOrRef);
                             if (nodeOfRelation == null) {
-                                newRelation.setIncomplete();
-                            } else if (!newRelation.isIncomplete()) {
-                                newRelation.addMember(
+                                //newRelation.setIncomplete();
+                                newEntity.setIncomplete();
+                            //} else if (!newRelation.isIncomplete()) {
+                            } else if (!newEntity.isIncomplete()) {
+                                /*newRelation.addMember(
                                         OSMRelation.Member.Type.NODE, role,
-                                        nodeOfRelation);
+                                        nodeOfRelation);*/
+                                ((OSMRelation.Builder) newEntity).addMember(OSMRelation.Member.Type.NODE, role, nodeOfRelation);
                             }
                             break;
                         case "way":
                             OSMWay wayOfRelation = mapToBe.wayForId(idOrRef);
                             if (wayOfRelation == null) {
-                                newRelation.setIncomplete();
-                            } else if (!newRelation.isIncomplete()) {
-                                newRelation.addMember(
+                                //newRelation.setIncomplete();
+                                newEntity.setIncomplete();
+                            //} else if (!newRelation.isIncomplete()) {
+                            } else if (!newEntity.isIncomplete())  {
+                                /*newRelation.addMember(
                                         OSMRelation.Member.Type.WAY, role,
-                                        wayOfRelation);
+                                        wayOfRelation);*/
+                                ((OSMRelation.Builder) newEntity).addMember(OSMRelation.Member.Type.WAY, role, wayOfRelation);
                             }
                             break;
                         case "relation":
                             OSMRelation relationOfRelation = mapToBe
                                     .relationForId(idOrRef);
                             if (relationOfRelation == null) {
-                                newRelation.setIncomplete();
-                            } else if (!newRelation.isIncomplete()) {
-                                newRelation.addMember(
+                                //newRelation.setIncomplete();
+                                newEntity.setIncomplete();
+                            //} else if (!newRelation.isIncomplete()) {
+                            } else if (!newEntity.isIncomplete()) {
+                                /*newRelation.addMember(
                                         OSMRelation.Member.Type.RELATION, role,
-                                        relationOfRelation);
+                                        relationOfRelation);*/
+                                ((OSMRelation.Builder) newEntity).addMember(OSMRelation.Member.Type.RELATION, role, relationOfRelation);
                             }
                             break;
                         default:
@@ -143,11 +163,12 @@ public final class OSMMapReader {
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
 
-                        if (entityType == 0) {
+                        /*if (entityType == 0) {
                             newWay.setAttribute(key, value);
                         } else if (entityType == 1) {
                             newRelation.setAttribute(key, value);
-                        }
+                        }*/
+                        newEntity.setAttribute(key, value);
                         break;
                     }
                 }
@@ -159,26 +180,30 @@ public final class OSMMapReader {
                  */
                 @Override
                 public void endElement(String uri, String lName, String qName) {
+                    if (newEntity != null && !newEntity.isIncomplete()) {
                     switch (qName) {
                     case "node":
-                        if (newNode != null && !newNode.isIncomplete()) {
+                        /*if (newNode != null && !newNode.isIncomplete()) {
                             mapToBe.addNode(newNode.build());
-                        }
+                        }*/
+                        mapToBe.addNode(((OSMNode.Builder) newEntity).build());
                         break;
                     case "way":
-                        if (newWay != null && !newWay.isIncomplete()) {
+                        /*if (newWay != null && !newWay.isIncomplete()) {
                             mapToBe.addWay(newWay.build());
                             entityType = -1;
-                        }
+                        }*/
+                        mapToBe.addWay(((OSMWay.Builder) newEntity).build());
                         break;
                     case "relation":
-                        if (newRelation != null && !newRelation.isIncomplete()) {
+                        /*if (newRelation != null && !newRelation.isIncomplete()) {
                             mapToBe.addRelation(newRelation.build());
                             entityType = -1;
-                        }
+                        }*/
+                        mapToBe.addRelation(((OSMRelation.Builder) newEntity).build());
                         break;
                     }
-
+                    }
                 }
             });
 
