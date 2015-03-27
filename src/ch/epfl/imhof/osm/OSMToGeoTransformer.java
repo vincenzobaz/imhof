@@ -153,7 +153,6 @@ public final class OSMToGeoTransformer {
      */
     private List<PolyLine> filterMembers(List<Member> members, String role) {
         List<PolyLine> roleWays = new ArrayList<>();
-
         for (Member m : members) {
             if (role.equals(m.role())
                     && m.type() == OSMRelation.Member.Type.WAY) {
@@ -180,8 +179,8 @@ public final class OSMToGeoTransformer {
             return Collections.emptyList();
         }
         // tester si outerRings est vide?
-        outerRings.sort((ring1, ring2) -> (int) Math.signum(ring1.area()
-                - ring2.area()));
+        outerRings.sort((ring1, ring2) -> Double.compare(ring1.area(),
+                ring2.area()));
 
         List<Attributed<Polygon>> relationPolygons = new ArrayList<>();
 
@@ -190,20 +189,15 @@ public final class OSMToGeoTransformer {
             for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
                     .hasNext();) {
                 ClosedPolyLine nextPolyLine = iterator.next();
-                if (outerRing.containsPoint(nextPolyLine.firstPoint())) {
+                if (outerRing.containsPoint(nextPolyLine.firstPoint())
+                        && outerRing.area() > nextPolyLine.area()) {
                     attachedInnerRings.add(nextPolyLine);
                     iterator.remove();
                 }
             }
-            if (attachedInnerRings.isEmpty()) {
-                relationPolygons.add(new Attributed<>(new Polygon(outerRing),
-                        attributes));
-            } else {
-                relationPolygons.add(new Attributed<>(new Polygon(outerRing,
-                        attachedInnerRings), attributes));
-            }
+            relationPolygons.add(new Attributed<>(new Polygon(outerRing,
+                    attachedInnerRings), attributes));
         }
-
         return relationPolygons;
     }
 
@@ -264,10 +258,8 @@ public final class OSMToGeoTransformer {
     // erreurs
     private Graph<Point> graphCreator(List<PolyLine> roleWays) {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
-
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
-
             for (int i = 0; i < pointList.size(); ++i) {
                 graphInConstruction.addNode(pointList.get(i));
                 if (i > 0) {
@@ -275,6 +267,12 @@ public final class OSMToGeoTransformer {
                             pointList.get(i - 1));
                 }
             }
+            /**
+            if (!pointList.isEmpty()) {
+                graphInConstruction.addEdge(pointList.get(0),
+                        pointList.get(pointList.size() - 1));
+            }
+            */
             /*
              * for (ListIterator<Point> iterator = pointList.listIterator();
              * iterator .hasNext();) { Point nextPoint = iterator.next();
