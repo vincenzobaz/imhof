@@ -91,6 +91,7 @@ public final class OSMMapReader {
                                         .getValue("lon"))), Math
                                         .toRadians(Double.parseDouble(atts
                                                 .getValue("lat")))));
+                        // 0 -> way    1 -> relation    2 -> node
                         break;
                     case "way":
                         //newWay = new OSMWay.Builder(idOrRef);
@@ -164,12 +165,18 @@ public final class OSMMapReader {
                         String value = atts.getValue("v");
 
                         /*if (entityType == 0) {
+=======
+                        switch (entityType){
+                        case 0: 
+>>>>>>> branch 'master' of https://github.com/vincenzobaz/imhof.git
                             newWay.setAttribute(key, value);
-                        } else if (entityType == 1) {
+                            break;
+                        case 1:
                             newRelation.setAttribute(key, value);
+<<<<<<< HEAD
                         }*/
                         newEntity.setAttribute(key, value);
-                        break;
+                            break;
                     }
                 }
 
@@ -185,6 +192,7 @@ public final class OSMMapReader {
                     case "node":
                         /*if (newNode != null && !newNode.isIncomplete()) {
                             mapToBe.addNode(newNode.build());
+<<<<<<< HEAD
                         }*/
                         mapToBe.addNode(((OSMNode.Builder) newEntity).build());
                         break;
