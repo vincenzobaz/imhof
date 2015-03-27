@@ -10,7 +10,7 @@ import ch.epfl.imhof.projection.*;
 
 public class OSMToGeoTransformerTest {
 
-    private String fichier = "lausanne.osm";
+    private String fichier = "lc.osm";
 
     public OSMMap readFile(String nomfichier) {
         String fileALire = "data/" + nomfichier;
@@ -57,14 +57,15 @@ public class OSMToGeoTransformerTest {
                 new CH1903Projection());
         Map mappa = convertisseur.transform(fileMap);
         System.out.println("conversion");
-        System.out.println("Nombre de polyline " + mappa.polyLines().size());
-        System.out.println("Nombre de polygons " + mappa.polygons().size());
         System.out.println("Chemins dans le OSMMap " + fileMap.ways().size());
-        System.out.println("Relations dans le Map "
+        System.out.println("Relations dans le OSMMap "
                 + fileMap.relations().size());
         System.out.println("L'attribut de polygon est present? "
                 + fileMap.relations().get(0).hasAttribute("type"));
-        /*
+ 
+        System.out.println("Nombre de polylines dans Map " + mappa.polyLines().size());
+        System.out.println("Nombre de polygons dans Map " + mappa.polygons().size());
+       /*
          * OSMToGeoTransformer convertisseur = new OSMToGeoTransformer( new
          * CH1903Projection()); Map prova = convertisseur.transform(fileMap);
          * System.out.println("Nombre de polyline " + prova.polyLines().size());

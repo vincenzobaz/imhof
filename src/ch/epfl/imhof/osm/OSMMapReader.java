@@ -84,7 +84,7 @@ public final class OSMMapReader {
                                         .getValue("lon"))), Math
                                         .toRadians(Double.parseDouble(atts
                                                 .getValue("lat")))));
-                        // 0 -> way 1 -> relation 2 -> node
+                        // 0 -> way    1 -> relation    2 -> node
                         entityType = 2;
                         break;
                     case "way":
@@ -145,8 +145,8 @@ public final class OSMMapReader {
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
 
-                        switch (entityType) {
-                        case 0:
+                        switch (entityType){
+                        case 0: 
                             newWay.setAttribute(key, value);
                             break;
                         case 1:
