@@ -58,9 +58,9 @@ public final class OSMMap {
      *
      */
     public static final class Builder {
-        private Map<Long, OSMNode> nodes;
-        private Map<Long, OSMWay> ways;
-        private Map<Long, OSMRelation> relations;
+        private final Map<Long, OSMNode> nodes;
+        private final Map<Long, OSMWay> ways;
+        private final Map<Long, OSMRelation> relations;
 
         /**
          * Constructeur par défaut du bâtisseur

@@ -113,7 +113,7 @@ public final class OSMWay extends OSMEntity {
      *
      */
     public static final class Builder extends OSMEntity.Builder {
-        private List<OSMNode> nodes;
+        private final List<OSMNode> nodes;
 
         /**
          * Constructeur du bâtisseur

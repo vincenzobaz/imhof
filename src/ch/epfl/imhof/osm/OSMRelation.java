@@ -116,7 +116,7 @@ public final class OSMRelation extends OSMEntity {
      *
      */
     public static final class Builder extends OSMEntity.Builder {
-        private List<Member> members;
+        private final List<Member> members;
 
         /**
          * Constructeur du bâtisseur. Pour instancier on ne demande qu'un

@@ -76,7 +76,7 @@ public abstract class OSMEntity {
     public abstract static class Builder {
         protected final long id;
         private boolean isIncomplete;
-        protected Attributes.Builder attributesInProgress;
+        protected final Attributes.Builder attributesInProgress;
 
         /**
          * Constructeur du bâtisseur. Cet objet s'instancie à partir d'un

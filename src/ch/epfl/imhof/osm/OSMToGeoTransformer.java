@@ -43,7 +43,7 @@ public final class OSMToGeoTransformer {
             Arrays.asList(POLYGON_VALUES));
 
     private final Projection projection;
-    private Map.Builder mapToBe;
+    private final Map.Builder mapToBe;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection

@@ -60,8 +60,8 @@ public final class Map {
      *
      */
     public static final class Builder {
-        List<Attributed<PolyLine>> polyLines;
-        List<Attributed<Polygon>> polygons;
+        private final List<Attributed<PolyLine>> polyLines;
+        private final List<Attributed<Polygon>> polygons;
 
         /**
          * Constructeur par défaut du bâtisseur

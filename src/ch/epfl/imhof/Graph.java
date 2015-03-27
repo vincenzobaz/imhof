@@ -72,7 +72,7 @@ public final class Graph<N> {
      *            le type des noeuds du graphe en construction
      */
     public static final class Builder<N> {
-        private Map<N, Set<N>> neighbors;
+        private final Map<N, Set<N>> neighbors;
 
         /**
          * Constructeur par défaut du bâtisseur

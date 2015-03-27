@@ -66,7 +66,7 @@ public abstract class PolyLine {
      * 
      */
     public static final class Builder {
-        private List<Point> points;
+        private final List<Point> points;
 
         /**
          * Constructeur par défaut du bâtisseur

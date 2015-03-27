@@ -124,7 +124,7 @@ public final class Attributes {
      *
      */
     public static final class Builder {
-        private Map<String, String> attributes;
+        private final Map<String, String> attributes;
 
         /**
          * Constructeur par défaut du bâtisseur
