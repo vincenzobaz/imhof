@@ -10,10 +10,14 @@ import org.xml.sax.SAXException;
 import static org.junit.Assert.*;
 
 public class OSMMapReaderTest {
-    @Test
-    public void readOSMFileWorks() {
+    @Test public void lectures(){
+        readOSMFileWorks("lausanne.osm");
+        readOSMFileWorks("berne.osm");
+        readOSMFileWorks("interlaken.osm");
+    }
+    public void readOSMFileWorks(String zone) {
         try {
-            String fileALire = "data/lausanne.osm";
+            String fileALire = "data/"+zone;
             long preTime = System.currentTimeMillis();
             System.out.println("Debut lecture du fichier "+fileALire);
             OSMMap fileMap = OSMMapReader.readOSMFile(fileALire,
@@ -25,8 +29,15 @@ public class OSMMapReaderTest {
             List<OSMRelation> relations = fileMap.relations();
             List<OSMWay> ways = fileMap.ways();
 
+        System.out.println("Chemins dans le OSMMap " + fileMap.ways().size());
+        System.out.println("Relations dans le OSMMap "
+                + fileMap.relations().size());
+        System.out.println("L'attribut de polygon est present? "
+                + fileMap.relations().get(0).hasAttribute("type"));
+        System.out.println();
+ 
             // temps de outputter sur fichier de texte tous les ways.:
-            PrintWriter debug = new PrintWriter("Debugging.txt");
+            PrintWriter debug = new PrintWriter("Debugging_"+zone+".txt");
             for (OSMWay way : ways) {
                 debug.println("Way, ID: " + way.id());
                 for (OSMNode node : way.nodes()) {
