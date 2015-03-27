@@ -62,6 +62,7 @@ public class OSMToGeoTransformerTest {
                 + fileMap.relations().size());
         System.out.println("L'attribut de polygon est present? "
                 + fileMap.relations().get(0).hasAttribute("type"));
+        System.out.println("Valeur de l'attribut type: " + fileMap.relations().get(0).attributeValue("type"));
  
         System.out.println("Nombre de polylines dans Map " + mappa.polyLines().size());
         System.out.println("Nombre de polygons dans Map " + mappa.polygons().size());
