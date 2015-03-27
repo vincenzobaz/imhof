@@ -10,8 +10,6 @@ import ch.epfl.imhof.projection.*;
 
 public class OSMToGeoTransformerTest {
 
-    private String fichier = "lc.osm";
-
     public OSMMap readFile(String nomfichier) {
         String fileALire = "data/" + nomfichier;
         System.out.println("Debut lecture du fichier " + fileALire);
@@ -50,8 +48,7 @@ public class OSMToGeoTransformerTest {
      *       provina.polygons().size()); }
      */
 
-    @Test
-    public void transformMarche() {
+    public void transformMarche(String fichier) {
         OSMMap fileMap = readFile(fichier);
         OSMToGeoTransformer convertisseur = new OSMToGeoTransformer(
                 new CH1903Projection());
@@ -66,12 +63,21 @@ public class OSMToGeoTransformerTest {
  
         System.out.println("Nombre de polylines dans Map " + mappa.polyLines().size());
         System.out.println("Nombre de polygons dans Map " + mappa.polygons().size());
+        System.out.println();
        /*
          * OSMToGeoTransformer convertisseur = new OSMToGeoTransformer( new
          * CH1903Projection()); Map prova = convertisseur.transform(fileMap);
          * System.out.println("Nombre de polyline " + prova.polyLines().size());
          * System.out.println("Nombre de polygons " + prova.polygons().size());
          */
+    }
+    
+    @Test
+    public void testAll(){
+//       transformMarche("lausanne.osm"); 
+ //      transformMarche("berne.osm");
+  //     transformMarche("interlaken.osm");
+       transformMarche("lc.osm");
     }
 
     /*
