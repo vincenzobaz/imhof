@@ -84,6 +84,8 @@ public final class OSMMapReader {
                                         .getValue("lon"))), Math
                                         .toRadians(Double.parseDouble(atts
                                                 .getValue("lat")))));
+                        // 0 -> way 1 -> relation 2 -> node
+                        entityType = 2;
                         break;
                     case "way":
                         newWay = new OSMWay.Builder(idOrRef);
@@ -143,10 +145,16 @@ public final class OSMMapReader {
                         String key = atts.getValue("k");
                         String value = atts.getValue("v");
 
-                        if (entityType == 0) {
+                        switch (entityType) {
+                        case 0:
                             newWay.setAttribute(key, value);
-                        } else if (entityType == 1) {
+                            break;
+                        case 1:
                             newRelation.setAttribute(key, value);
+                            break;
+                        case 2:
+                            newNode.setAttribute(key, value);
+                            break;
                         }
                         break;
                     }
@@ -163,6 +171,7 @@ public final class OSMMapReader {
                     case "node":
                         if (newNode != null && !newNode.isIncomplete()) {
                             mapToBe.addNode(newNode.build());
+                            entityType = -1;
                         }
                         break;
                     case "way":
