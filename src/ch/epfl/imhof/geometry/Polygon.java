@@ -16,13 +16,13 @@ public final class Polygon {
     private final List<ClosedPolyLine> holes;
 
     /**
-     * Construit un polygone avec trous
+     * Construit un polygone avec l'enveloppe et les trous donnés.
      * 
      * @param shell
-     *            l'enveloppe du polygone, sous forme de polyligne fermée
+     *            l'enveloppe du polygone, une polyligne fermée
      * @param holes
-     *            l'ensemble des trous du polygone, sous forme de liste de
-     *            polylignes fermées
+     *            l'ensemble des trous du polygone, une liste de polylignes
+     *            fermées
      */
     public Polygon(ClosedPolyLine shell, List<ClosedPolyLine> holes) {
         this.shell = shell;
@@ -30,10 +30,10 @@ public final class Polygon {
     }
 
     /**
-     * Construit un polygone sans trous
+     * Construit un polygone avec l'enveloppe donnée, sans trous.
      * 
      * @param shell
-     *            l'enveloppe du polygone, sous forme de polyligne fermée
+     *            l'enveloppe du polygone, une polyligne fermée
      */
     public Polygon(ClosedPolyLine shell) {
         this.shell = shell;
@@ -41,18 +41,18 @@ public final class Polygon {
     }
 
     /**
-     * Accesseur de l'enveloppe du polygone
+     * Retourne l'enveloppe du polygone.
      * 
-     * @return l'attribut shell du Polygon
+     * @return la polyligne constituant l'enveloppe du polygone
      */
     public ClosedPolyLine shell() {
         return shell;
     }
 
     /**
-     * Accesseur de la liste des trous du polygone
+     * Retourne la liste des trous du polygone.
      * 
-     * @return l'attribut holes du Polygon
+     * @return la liste de polylignes constituant les trous du polygone
      */
     public List<ClosedPolyLine> holes() {
         return holes;
