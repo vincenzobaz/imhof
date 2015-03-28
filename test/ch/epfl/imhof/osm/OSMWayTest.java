@@ -1,93 +1,131 @@
 package ch.epfl.imhof.osm;
 
+import ch.epfl.imhof.Attributes;
+import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.osm.OSMEntity.Builder;
+import ch.epfl.imhof.testUtilities.ListNonMutableTestUtility;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
-import ch.epfl.imhof.*;
-import java.util.List;
+public class OSMWayTest extends OSMEntityTest{
 
-public final class OSMWayTest {
+    private static final OSMNode TEST_NODE_1 = new OSMNode(12, new PointGeo(0.125621, 0.803253), EMPTY_ATTRIBUTES);
+    private static final OSMNode TEST_NODE_2 = new OSMNode(34, new PointGeo(0.136710, 0.814253), EMPTY_ATTRIBUTES);
+    private static final OSMNode TEST_NODE_3 = new OSMNode(56, new PointGeo(0.107312, 0.805619), EMPTY_ATTRIBUTES);
+
+    @Override
+    OSMEntity newEntity(long id, Attributes entityAttributes) {
+        ArrayList<OSMNode> testWayList = new ArrayList<>();
+        testWayList.add(TEST_NODE_1);
+        testWayList.add(TEST_NODE_2);
+        testWayList.add(TEST_NODE_3);
+        return new OSMWay(id, testWayList, entityAttributes);
+    }
+
+    @Override
+    Builder newEntityBuilder() {
+        return new OSMWay.Builder(1);
+    }
+
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void constructorLessThanTwoNodes() {
+        ArrayList<OSMNode> testWayList = new ArrayList<>();
+        testWayList.add(TEST_NODE_1);
+        new OSMWay(4, testWayList, EMPTY_ATTRIBUTES);
+    }
+    
     @Test
-    public void builderAndNonClosedWayTest() {
-        OSMWay.Builder wayInConstruction = new OSMWay.Builder(1234);
-        wayInConstruction.addNode(new OSMNode(01, new PointGeo(0, 0), BuildAll
-                .newAttributes("clé1", "valeur1", "chemin1", "way1")));
-        wayInConstruction.addNode(new OSMNode(02, new PointGeo(1, 1), BuildAll
-                .newAttributes("clé2", "valeur2", "chemin2", "way2")));
-        wayInConstruction.addNode(new OSMNode(03, new PointGeo(-1, -1),
-                BuildAll.newAttributes("clé3", "valeur3", "chemin3", "way3")));
-        wayInConstruction.setAttribute("test1", "testA");
-
-        OSMWay newWay = wayInConstruction.build();
-
-        assertTrue(newWay.nodesCount() == 3);
-
-        List<OSMNode> nodes = newWay.nodes();
-        assertTrue(nodes.get(0).id() == 01);
-        assertTrue(nodes.get(2).id() == 03);
-
-        List<OSMNode> nonRepeatingNodes = newWay.nonRepeatingNodes();
-        assertTrue(nodes.get(0).equals(nonRepeatingNodes.get(0)));
-        assertTrue(nodes.get(2).equals(nonRepeatingNodes.get(2)));
-
-        assertTrue(newWay.firstNode().position().longitude() == 0);
-        assertTrue(newWay.lastNode().position().latitude() == -1);
-
-        assertFalse(newWay.isClosed());
-        assertTrue(newWay.id() == 1234);
-        assertTrue(newWay.hasAttribute("test1"));
-        assertFalse(newWay.hasAttribute("nope"));
-        assertTrue(newWay.attributeValue("test1").equals("testA"));
+    public void constructorNodeListNonMutable() {
+        ArrayList<OSMNode> testWayList = new ArrayList<>();
+        testWayList.add(TEST_NODE_1);
+        testWayList.add(TEST_NODE_2);
+        testWayList.add(TEST_NODE_3);
+        OSMWay testWay = new OSMWay(4, testWayList, EMPTY_ATTRIBUTES);
+        assertTrue(ListNonMutableTestUtility.nonMutableFieldListTest(testWayList, testWay.nodes()));
     }
 
     @Test
-    public void builderAndClosedWayTest() {
-        OSMWay.Builder wayInConstruction = new OSMWay.Builder(4567);
-        OSMNode node1 = new OSMNode(01, new PointGeo(0, 0),
-                BuildAll.newAttributes("clé1", "valeur1", "chemin1", "way1"));
-        wayInConstruction.addNode(node1);
-        wayInConstruction.addNode(new OSMNode(02, new PointGeo(1, 1), BuildAll
-                .newAttributes("clé2", "valeur2", "chemin2", "way2")));
-        wayInConstruction.addNode(new OSMNode(03, new PointGeo(-1, -1),
-                BuildAll.newAttributes("clé3", "valeur3", "chemin3", "way3")));
-        wayInConstruction.addNode(node1);
-        OSMWay newWay = wayInConstruction.build();
+    public void notClosed() {
+        ArrayList<OSMNode> testWayList = new ArrayList<>();
+        testWayList.add(TEST_NODE_1);
+        testWayList.add(TEST_NODE_2);
+        testWayList.add(TEST_NODE_3);
+        OSMWay testWay = new OSMWay(4, testWayList, EMPTY_ATTRIBUTES);
+        assertFalse(testWay.isClosed());
+        assertSame(testWay.firstNode(), TEST_NODE_1);
+        assertSame(testWay.lastNode(), TEST_NODE_3);
+        assertEquals(testWay.nodesCount(), 3);
+        assertEquals(testWay.nodes(), testWayList);
+        assertEquals(testWay.nonRepeatingNodes(), testWayList);
+    }
 
-        assertTrue(newWay.nodesCount() == 4);
-        assertTrue(newWay.isClosed());
-        assertTrue(newWay.id() == 4567);
+    @Test
+    public void closed() {
+        ArrayList<OSMNode> testWayList = new ArrayList<>();
+        testWayList.add(TEST_NODE_1);
+        testWayList.add(TEST_NODE_2);
+        testWayList.add(TEST_NODE_1);
+        OSMWay testWay = new OSMWay(4, testWayList, EMPTY_ATTRIBUTES);
+        assertTrue(testWay.isClosed());
+        assertSame(testWay.firstNode(), TEST_NODE_1);
+        assertSame(testWay.lastNode(), TEST_NODE_1);
+        assertEquals(testWay.nodesCount(), 3);
+        assertEquals(testWay.nodes(), testWayList);
+        assertEquals(testWay.nonRepeatingNodes(), testWayList.subList(0, testWayList.size() - 1));
+    }
 
-        List<OSMNode> nodes = newWay.nonRepeatingNodes();
-        assertTrue(nodes.size() == 3);
-        assertTrue(nodes.get(0).id() == 01);
-        assertTrue(nodes.get(0).attributeValue("chemin1").equals("way1"));
-        assertTrue(nodes.get(1).id() == 02);
-        assertTrue(nodes.get(1).hasAttribute("clé2"));
-        assertTrue(nodes.get(2).id() == 03);
-        assertTrue(nodes.get(2).hasAttribute("chemin3"));
+    @Test
+    @Override
+    public void builderBuiltSetAttribute() throws Throwable {
+        OSMWay.Builder testBuild = new OSMWay.Builder(1);
+        testBuild.addNode(TEST_NODE_1);
+        testBuild.addNode(TEST_NODE_2);
+        testBuild.setAttribute("testKey 1", "testValue 1");
+        // Test if setAttribute overwrites old value
+        testBuild.setAttribute("testKey 1", "testValue 3");
+        testBuild.setAttribute("testKey 2", "testValue 2");
+        OSMEntity entity = testBuild.build();
+        assertTrue(entity.hasAttribute("testKey 1") && entity.attributeValue("testKey 1").equals( "testValue 3")
+                && entity.hasAttribute("testKey 2") && entity.attributeValue("testKey 2").equals("testValue 2"));
+    }
+
+    @Test
+    @Override
+    public void builderIsIncomplete() {
+        OSMWay.Builder builder = new OSMWay.Builder(1);
+        assertTrue(builder.isIncomplete());
+        builder.addNode(TEST_NODE_1);
+        builder.addNode(TEST_NODE_2);
+        assertFalse(builder.isIncomplete());
+        builder.setIncomplete();
+        assertTrue(builder.isIncomplete());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void builderFailsWhenNodesCountIsLessThanTwo() {
-        OSMWay.Builder wayInConstruction = new OSMWay.Builder(891011);
-        wayInConstruction.addNode(new OSMNode(01, new PointGeo(0, 0), BuildAll
-                .newAttributes("clé1", "valeur1", "chemin1", "way1")));
-        assertTrue(wayInConstruction.isIncomplete());
-        wayInConstruction.build();
+    public void builderWitNoNode() {
+            OSMWay.Builder wayBuilder = new OSMWay.Builder(14);
+            wayBuilder.build();
     }
 
     @Test(expected = IllegalStateException.class)
-    public void builderFailsWhenSetIncompleteIsCalled() {
-        OSMWay.Builder wayInConstruction = new OSMWay.Builder(1234);
-        wayInConstruction.addNode(new OSMNode(01, new PointGeo(0, 0), BuildAll
-                .newAttributes("clé1", "valeur1", "chemin1", "way1")));
-        wayInConstruction.addNode(new OSMNode(02, new PointGeo(1, 1), BuildAll
-                .newAttributes("clé2", "valeur2", "chemin2", "way2")));
-        wayInConstruction.addNode(new OSMNode(03, new PointGeo(-1, -1),
-                BuildAll.newAttributes("clé3", "valeur3", "chemin3", "way3")));
-
-        wayInConstruction.setIncomplete();
-        assertTrue(wayInConstruction.isIncomplete());
-        wayInConstruction.build();
+    public void builderWithLessThanTwoNode() {
+            OSMWay.Builder wayBuilder = new OSMWay.Builder(14);
+            wayBuilder.addNode(TEST_NODE_1);
+            wayBuilder.build();
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void buildWithMoreThanTwoNodesAndIncomplete() {
+            OSMWay.Builder wayBuilder = new OSMWay.Builder(14);
+            wayBuilder.addNode(TEST_NODE_1);
+            wayBuilder.addNode(TEST_NODE_2);
+            wayBuilder.addNode(TEST_NODE_3);
+            wayBuilder.setIncomplete();
+            wayBuilder.build();
+    }
+
 }
