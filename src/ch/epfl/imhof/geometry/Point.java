@@ -14,7 +14,7 @@ public final class Point {
     private final double y;
 
     /**
-     * Construit un point avec les coordonnées données
+     * Construit un point avec les coordonnées données.
      * 
      * @param x
      *            la coordonnée horizontale du point
@@ -27,18 +27,18 @@ public final class Point {
     }
 
     /**
-     * Accesseur de la coordonnée horizontale
+     * Retourne la coordonnée x du point.
      * 
-     * @return l'attribut x
+     * @return la coordonnée horizontale, un double
      */
     public double x() {
         return x;
     }
 
     /**
-     * Accesseur de la coordonnée verticale
+     * Retourne la coordonnée y du point.
      * 
-     * @return l'attribut y
+     * @return la coordonnée verticale, un double
      */
     public double y() {
         return y;
