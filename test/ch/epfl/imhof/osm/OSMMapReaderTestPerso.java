@@ -9,7 +9,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.*;
 
-public class OSMMapReaderTest {
+public class OSMMapReaderTestPerso {
     @Test public void lectures(){
         readOSMFileWorks("lausanne.osm");
         readOSMFileWorks("berne.osm");

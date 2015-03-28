@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class ClosedPolyLineTest extends PolyLineTest {
+public class ClosedPolyLineTestPerso extends PolyLineTest {
     @Override
     PolyLine newPolyLine(List<Point> ps) {
         return new ClosedPolyLine(ps);

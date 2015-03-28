@@ -7,7 +7,7 @@ import java.util.Set;
 
 import ch.epfl.imhof.PointGeo;
 
-public class GraphTest {
+public class GraphTestPerso {
     @Test(expected = IllegalArgumentException.class)
     public void builderTest() {
         Graph.Builder<PointGeo> graphInConstruction = new Graph.Builder<>();

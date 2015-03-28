@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import ch.epfl.imhof.PointGeo;
 
-public class OSMMapTest {
+public class OSMMapTestPerso {
     @Test
     public void builderTest() {
         OSMMap.Builder mapInConstruction = new OSMMap.Builder();

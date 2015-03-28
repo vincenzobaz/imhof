@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class PointGeoTest {
+public class PointGeoTestPerso {
     @Test  (expected = IllegalArgumentException.class)
     public void constructorFailsOnInvalidLongitude() {
         new PointGeo(5.986310, 0);
