@@ -19,7 +19,8 @@ public final class OSMMap {
     private final List<OSMRelation> relations;
 
     /**
-     * Construit une nouvelle carte avec les chemins et les relations donnés
+     * Construit une nouvelle carte OSM avec les chemins et les relations
+     * donnés.
      * 
      * @param ways
      *            les chemins de la carte, une liste de OSMWay
@@ -33,25 +34,25 @@ public final class OSMMap {
     }
 
     /**
-     * Accesseur des chemins de la carte
+     * Retourne la liste des chemins de la carte.
      * 
-     * @return la liste des chemins de la carte
+     * @return les chemins de la carte, sous forme de List
      */
     public List<OSMWay> ways() {
         return ways;
     }
 
     /**
-     * Accesseur des relations de la carte
+     * Retourne la liste des relations de la carte.
      * 
-     * @return la liste des relations de la carte
+     * @return les relations de la carte, sous forme de List
      */
     public List<OSMRelation> relations() {
         return relations;
     }
 
     /**
-     * Bâtisseur de la classe OSMMap
+     * Bâtisseur de la classe OSMMap.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -63,7 +64,7 @@ public final class OSMMap {
         private final Map<Long, OSMRelation> relations;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             nodes = new HashMap<>();
@@ -72,10 +73,10 @@ public final class OSMMap {
         }
 
         /**
-         * Ajoute le noeud donné au bâtisseur
+         * Ajoute le noeud donné au bâtisseur.
          * 
          * @param newNode
-         *            le noeud qu'on souhaite ajouter au bâtisseur
+         *            le noeud qu'on souhaite ajouter à la carte en construction
          */
         public void addNode(OSMNode newNode) {
             nodes.put(newNode.id(), newNode);
@@ -83,7 +84,7 @@ public final class OSMMap {
 
         /**
          * Retourne le noeud associé à l'identifiant passé en paramètre, ou null
-         * si le noeud n'a pas été ajouté au bâtisseur
+         * si le noeud n'a pas été ajouté au bâtisseur.
          * 
          * @param id
          *            l'identifiant du noeud qu'on recherche
@@ -94,10 +95,11 @@ public final class OSMMap {
         }
 
         /**
-         * Ajoute le chemin donné à la carte en cours de construction
+         * Ajoute le chemin donné au bâtisseur.
          * 
          * @param newWay
-         *            le chemin qu'on souhaite ajouter à la carte
+         *            le chemin qu'on souhaite ajouter à la carte en
+         *            construction
          */
         public void addWay(OSMWay newWay) {
             ways.put(newWay.id(), newWay);
@@ -105,22 +107,23 @@ public final class OSMMap {
 
         /**
          * Retourne le chemin associé à l'identifiant passé en paramètre, ou
-         * null si le chemin n'a pas été ajouté au bâtisseur
+         * null si le chemin n'a pas été ajouté au bâtisseur.
          * 
          * @param id
          *            l'identifiant du chemin recherché
-         * @return le chemin recherché s'il a été ajouté à la carte en
-         *         construction, null sinon
+         * @return le chemin recherché s'il a été ajouté au bâtisseur, null
+         *         sinon
          */
         public OSMWay wayForId(long id) {
             return ways.get(id);
         }
 
         /**
-         * Ajoute la relation donnée à la carte en cours de construction
+         * Ajoute la relation donnée au bâtisseur.
          * 
          * @param newRelation
-         *            la relation qu'on souhaite ajouter à la carte
+         *            la relation qu'on souhaite ajouter à la carte en
+         *            construction
          */
         public void addRelation(OSMRelation newRelation) {
             relations.put(newRelation.id(), newRelation);
@@ -128,20 +131,20 @@ public final class OSMMap {
 
         /**
          * Retourne la relation associée à l'identifiant passé en paramètre, ou
-         * null si la relation n'a pas été ajoutée au bâtisseur
+         * null si la relation n'a pas été ajoutée au bâtisseur.
          * 
          * @param id
          *            l'identifiant de la relation recherchée
-         * @return la relation recherchée si elle a été ajoutée à la carte en
-         *         construction, null sinon
+         * @return la relation recherchée si elle a été ajoutée au bâtisseur,
+         *         null sinon
          */
         public OSMRelation relationForId(long id) {
             return relations.get(id);
         }
 
         /**
-         * Construit une carte OSM avec les chemins et les relations ajoutés
-         * jusqu'à présent
+         * Construit et retourne une carte OSM avec les chemins et les relations
+         * ajoutés jusqu'à présent au bâtisseur.
          * 
          * @return la nouvelle carte
          */
