@@ -16,11 +16,12 @@ public final class Attributes {
     private final Map<String, String> attributes;
 
     /**
-     * Construit un nouvel ensemble d'attributs à partir de la table passée en
-     * paramètre
+     * Construit un ensemble d'attributs avec les paires clef/valeur présentes
+     * dans la table associative donnée.
      * 
      * @param attributes
-     *            les attributs, sous forme de Map de deux String
+     *            la table associative contenant les paires constituant les
+     *            attributs
      */
     public Attributes(Map<String, String> attributes) {
         this.attributes = Collections
@@ -49,8 +50,8 @@ public final class Attributes {
     }
 
     /**
-     * Retourne la valeur associée à la clef donnée, ou null si la clef n'existe
-     * pas.
+     * Retourne la valeur associée à la clef donnée, si elle existe. Retourne
+     * null si la clef n'est pas présente dans la table associative.
      * 
      * @param key
      *            la clé dont on cherche la valeur associée, sous forme de
@@ -72,7 +73,7 @@ public final class Attributes {
      * @param defaultValue
      *            la valeur par défaut, une String
      * @return la valeur associée à la clé passée en paramètre, la valeur par
-     *         défaut si aucune valeur ne lui est associé
+     *         défaut si aucune valeur ne lui est associée
      */
     public String get(String key, String defaultValue) {
         return attributes.getOrDefault(key, defaultValue);
@@ -134,7 +135,9 @@ public final class Attributes {
         }
 
         /**
-         * Ajoute le couple clé, valeur à l'Attributes en construction
+         * Ajoute la paire clé, valeur donnée à l'ensemble d'attributs en cours
+         * de construction. Remplace la valeur associée à la clé par la nouvelle
+         * si la clé est déjà présente dans l'ensemble d'attributs.
          * 
          * @param key
          *            la clé, une String
@@ -146,8 +149,8 @@ public final class Attributes {
         }
 
         /**
-         * Construit un ensemble d'attributs contenant les associations
-         * clef/valeur ajoutées jusqu'à présent.
+         * Construit et retourne un ensemble d'attributs contenant les
+         * associations clef/valeur ajoutées jusqu'à présent.
          * 
          * @return l'Attributes en construction
          */
