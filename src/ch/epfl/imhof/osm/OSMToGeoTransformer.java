@@ -47,10 +47,11 @@ public final class OSMToGeoTransformer {
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
-     * donnée
+     * donnée.
      * 
      * @param projection
-     *            la projection à utiliser, une Projection
+     *            la projection à utiliser pour les conversions d'entités OSM en
+     *            entités géométriques
      */
     public OSMToGeoTransformer(Projection projection) {
         this.projection = projection;
@@ -58,7 +59,7 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Convertit une carte OSM en une carte géométrique projetée
+     * Convertit une carte OSM en une carte géométrique projetée.
      * 
      * @param map
      *            la carte qu'on veut convertir, une OSMMap
@@ -259,17 +260,18 @@ public final class OSMToGeoTransformer {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
-           
+
             for (int i = 0; i < pointList.size(); ++i) {
                 graphInConstruction.addNode(pointList.get(i));
                 if (i > 0) {
                     graphInConstruction.addEdge(pointList.get(i),
                             pointList.get(i - 1));
                 }
-                
+
             }
             if (polyline.isClosed()) {
-                graphInConstruction.addEdge(polyline.firstPoint(), pointList.get(pointList.size()-1));
+                graphInConstruction.addEdge(polyline.firstPoint(),
+                        pointList.get(pointList.size() - 1));
             }
             /**
              * if (!pointList.isEmpty()) {
