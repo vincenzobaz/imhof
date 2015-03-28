@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public abstract class PolyLineTest {
+public abstract class PolyLineTestPerso {
     protected static double DELTA = 0.000001;
     protected static List<Point> pts3 = Arrays.asList(
             new Point(0, 0), new Point(10, 0), new Point(10, 10));
