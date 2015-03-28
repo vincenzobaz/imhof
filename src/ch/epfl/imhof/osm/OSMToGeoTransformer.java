@@ -259,19 +259,23 @@ public final class OSMToGeoTransformer {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
+           
             for (int i = 0; i < pointList.size(); ++i) {
                 graphInConstruction.addNode(pointList.get(i));
                 if (i > 0) {
                     graphInConstruction.addEdge(pointList.get(i),
                             pointList.get(i - 1));
                 }
+                
+            }
+            if (polyline.isClosed()) {
+                graphInConstruction.addEdge(polyline.firstPoint(), pointList.get(pointList.size()-1));
             }
             /**
-            if (!pointList.isEmpty()) {
-                graphInConstruction.addEdge(pointList.get(0),
-                        pointList.get(pointList.size() - 1));
-            }
-            */
+             * if (!pointList.isEmpty()) {
+             * graphInConstruction.addEdge(pointList.get(0),
+             * pointList.get(pointList.size() - 1)); }
+             */
             /*
              * for (ListIterator<Point> iterator = pointList.listIterator();
              * iterator .hasNext();) { Point nextPoint = iterator.next();

@@ -1,131 +1,151 @@
 package ch.epfl.imhof;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.junit.Test;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class AttributesTest {
-    @Test
-    public void isEmptyReturnsTrueForEmptyMap() {
-        Attributes test = new Attributes(new HashMap<String, String>());
-        assertTrue(test.isEmpty());
-    }
 
-    @Test
-    public void isEmptyReturnsFalseForNotEmptyMap() {
-        Attributes test = BuildAll.newAttributes("name", "Léman");
-        assertFalse(test.isEmpty());
-    }
+	private HashMap<String, String> sampleAttributesValues() {
+		HashMap<String, String> testData = new HashMap<>();
+		testData.put("testKey 1", "testValue 1");
+		testData.put("testKey 2", "testValue 2");
+		testData.put("testKey 3", "testValue 3");
+		return testData;
+	}
 
-    @Test
-    public void containsReturnsTrueForKeyPresent() {
-        Attributes test = BuildAll.newAttributes("name", "Léman", "color",
-                "blue");
-        assertTrue(test.contains("name"));
-        assertTrue(test.contains("color"));
-    }
+	@Test
+	public void constructorAndNonMutableAttributes() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		testData.put("testKey 4", "testValue 4");
+		assertTrue(testData.containsKey("testKey 4"));
+		assertFalse(testAttributes.contains("testKey 4"));
+	}
 
-    @Test
-    public void containsReturnsFalseForKeyNotPresent() {
-        Attributes test = BuildAll.newAttributes("name", "Léman", "color",
-                "blue");
-        assertFalse(test.contains("jambon"));
-        assertFalse(test.contains("pourquoi?"));
-    }
+	@Test
+	public void emptyAttributesIndication() {
+		Attributes testAttributes = new Attributes(new HashMap<>());
+		assertTrue(testAttributes.isEmpty());
+	}
 
-    @Test
-    public void isEmptyTest() {
-        Map<String, String> emptyMap = new HashMap<String, String>();
-        assertTrue(emptyMap.isEmpty());
-        Map<String, String> notEmptyMap = new HashMap<String, String>();
-        notEmptyMap.put("nature", "forest");
-        assertFalse(notEmptyMap.isEmpty());
-    }
+	@Test
+	public void attributesIsEmptyWhenNotEmpty() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		assertFalse(testAttributes.isEmpty());
+	}
 
-    @Test
-    public void containsTest() {
-        Attributes notEmpty = BuildAll.newAttributes("nature", "forest",
-                "highways", "motorway");
-        assertTrue(notEmpty.contains("forest"));
-    }
+	@Test
+	public void containedKeys() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		assertTrue(testAttributes.contains("testKey 1")
+				&& testAttributes.contains("testKey 2")
+				&& testAttributes.contains("testKey 3"));
+		assertFalse(testAttributes.contains("testKey 4"));
+	}
 
-    @Test
-    public void getReturnsCorrectValue() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", ":(");
-        assertEquals("mettre", test.get("quoi"));
-    }
+	@Test
+	public void getTheValue() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		assertEquals("testValue 1", testAttributes.get("testKey 1"));
+		assertEquals("testValue 2", testAttributes.get("testKey 2"));
+		assertEquals("testValue 3", testAttributes.get("testKey 3"));
+		assertEquals(null, testAttributes.get("testKey 4"));
+	}
 
-    @Test
-    public void getReturnsNullForKeyNotValid() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", ":(");
-        assertEquals(null, test.get("rien"));
-    }
+	@Test
+	public void getWhereNoSuch() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		assertEquals("testValue 1", testAttributes.get("testKey 1", "No Such"));
+		assertEquals("No Such", testAttributes.get("testKey 4", "No Such"));
+	}
 
-    @Test
-    public void getReturnsCorrectValueBis() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", ":(");
-        assertEquals(":(", test.get("ici", "defaultValue"));
-    }
+	@Test
+	public void getIntFromString() {
+		HashMap<String, String> testData = new HashMap<>();
+		testData.put("testKey 1", "-81");
+		testData.put("testKey 2", "42");
+		testData.put("testKey 3", "yes");
+		testData.put("testKey 5", null);
+		Attributes testAttributes = new Attributes(testData);
+		assertEquals(-81, testAttributes.get("testKey 1", 0));
+		assertEquals(42, testAttributes.get("testKey 2", 0));
+		assertEquals(0, testAttributes.get("testKey 3", 0));
+		assertEquals(0, testAttributes.get("testKey 4", 0));
+		assertEquals(0, testAttributes.get("testKey 5", 0));
+	}
 
-    @Test
-    public void getReturnsDefaultValue() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", ":(");
-        assertEquals("defaultValue", test.get("fake", "defaultValue"));
-    }
+	@Test
+	public void builderBuilt() {
+		Attributes.Builder testBuild = new Attributes.Builder();
+		testBuild.put("testKey 1", "testValue 1");
+		testBuild.put("testKey 2", "testValue 2");
+		testBuild.put("testKey 3", "testValue 3");
+		Attributes test = testBuild.build();
+		assertTrue(test.contains("testKey 1") && test.contains("testKey 2")
+				&& test.contains("testKey 3"));
+		assertEquals(test.get("testKey 1"), "testValue 1");
+		assertEquals(test.get("testKey 2"), "testValue 2");
+		assertEquals(test.get("testKey 3"), "testValue 3");
+		testBuild.put("testKey 4", "testValue 4");
+		assertFalse(test.contains("testKey 4"));
+	}
 
-    @Test
-    public void getReturnsCorrectInt() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", "2014");
-        assertEquals(2014, test.get("ici", 12));
-    }
+	@Test
+	public void keysWithEmptySet() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		HashSet<String> keptKeys = new HashSet<>();
+		Attributes testResult = testAttributes.keepOnlyKeys(keptKeys);
+		assertTrue(testResult.isEmpty());
+	}
 
-    @Test
-    public void getReturnsDefaultValueBis() {
-        Attributes test = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", "2014");
-        assertEquals(42, test.get("sais", 42));
-        assertEquals(42, test.get("faaaake", 42));
-    }
+	@Test
+	public void someKeysKeepingFromInitial() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		HashSet<String> keptKeys = new HashSet<>();
+		keptKeys.add("testKey 1");
+		keptKeys.add("testKey 3");
+		Attributes testResult = testAttributes.keepOnlyKeys(keptKeys);
+		assertTrue(testResult.contains("testKey 1")
+				&& testResult.contains("testKey 3")
+				&& !testResult.contains("testKey 2"));
+	}
 
-    @Test
-    public void keepOnlyKeysTest() {
-        List<String> list = new ArrayList<>();
-        list.add("sais");
-        list.add("ici");
-        HashSet<String> keysToKeep = new HashSet<>(list);
-        Attributes toFilter = BuildAll.newAttributes("je", "ne", "sais", "pas",
-                "quoi", "mettre", "ici", "2014");
-        Attributes test = toFilter.keepOnlyKeys(keysToKeep);
-        assertFalse(test.isEmpty());
-        assertTrue(test.contains("sais"));
-        assertEquals("pas", test.get("sais"));
-        assertTrue(test.contains("ici"));
-        assertEquals(2014, test.get("ici", 24));
-        assertFalse(test.contains("je"));
-        assertFalse(test.contains("quoi"));
-    }
+	@Test
+	public void allKeysKeepingFromInitial() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		HashSet<String> keptKeys = new HashSet<>();
+		keptKeys.add("testKey 1");
+		keptKeys.add("testKey 2");
+		keptKeys.add("testKey 3");
+		keptKeys.add("testKey 4");
+		Attributes testResult = testAttributes.keepOnlyKeys(keptKeys);
+		assertTrue(testResult.contains("testKey 1")
+				&& testResult.contains("testKey 2")
+				&& testResult.contains("testKey 3")
+				&& !testResult.contains("testKey 4"));
+	}
 
-    @Test
-    public void builderTest() {
-        Attributes.Builder newBuilder = new Attributes.Builder();
-        newBuilder.put("test1", "valeur1");
-        newBuilder.put("test2", "valeur2");
-        Attributes newAttributes = newBuilder.build();
-        assertTrue(newAttributes.contains("test1"));
-        assertTrue(newAttributes.get("test1").equals("valeur1"));
-        assertTrue(newAttributes.contains("test2"));
-        assertTrue(newAttributes.get("test2").equals("valeur2"));
-        assertFalse(newAttributes.contains("nope"));
-    }
+	@Test
+	public void keysWithKeyNotInMap() {
+		HashMap<String, String> testData = sampleAttributesValues();
+		Attributes testAttributes = new Attributes(testData);
+		HashSet<String> keptKeys = new HashSet<>();
+		keptKeys.add("testKey 4");
+		Attributes testResult = testAttributes.keepOnlyKeys(keptKeys);
+		assertTrue(testResult.isEmpty());
+	}
+
 }
