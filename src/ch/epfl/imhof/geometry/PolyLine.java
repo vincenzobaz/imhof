@@ -58,7 +58,7 @@ public abstract class PolyLine {
     }
 
     /**
-     * Bâtisseur de la classe PolyLine
+     * Bâtisseur de la classe PolyLine.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -68,7 +68,7 @@ public abstract class PolyLine {
         private final List<Point> points;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             points = new ArrayList<>();

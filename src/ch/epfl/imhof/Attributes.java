@@ -118,7 +118,7 @@ public final class Attributes {
     }
 
     /**
-     * Bâtisseur de la classe Attributes
+     * Bâtisseur de la classe Attributes.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -128,7 +128,7 @@ public final class Attributes {
         private final Map<String, String> attributes;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             attributes = new HashMap<>();

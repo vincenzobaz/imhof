@@ -71,7 +71,7 @@ public abstract class OSMEntity {
     }
 
     /**
-     * Bâtisseur pour la classe OSMEntity
+     * Bâtisseur de la classe OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -79,8 +79,8 @@ public abstract class OSMEntity {
      */
     public abstract static class Builder {
         /*
-         * utilisation du protected pour que les sous-classes puissent accéder
-         * aux deux attributs id et attributesInProgress
+         * Utilisation du protected pour que les sous-classes puissent accéder
+         * aux deux attributs id et attributesInProgress.
          */
         protected final long id;
         private boolean isIncomplete;

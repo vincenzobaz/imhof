@@ -108,7 +108,8 @@ public final class OSMWay extends OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe OSMWay, héritant du bâtisseur de OSMEntity.
+     * Bâtisseur de la classe OSMWay. Il hérite du bâtisseur de la classe
+     * OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)

@@ -42,8 +42,8 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Cette classe statique imbriquée représente un membre d'une relation OSM.
-     * La classe est immuable
+     * Classe imbriquée statiquement représentant un membre d'une relation OSM.
+     * Elle est immuable.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
