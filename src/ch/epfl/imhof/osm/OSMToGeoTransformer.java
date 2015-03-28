@@ -154,8 +154,7 @@ public final class OSMToGeoTransformer {
     private List<PolyLine> filterMembers(List<Member> members, String role) {
         List<PolyLine> roleWays = new ArrayList<>();
         for (Member m : members) {
-            if (role.equals(m.role())
-                    && m.type() == OSMRelation.Member.Type.WAY) {
+            if (role.equals(m.role())) {
                 roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
             }
         }
