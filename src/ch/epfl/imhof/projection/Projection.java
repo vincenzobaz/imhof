@@ -12,9 +12,9 @@ import ch.epfl.imhof.PointGeo;
  * 
  */
 public interface Projection {
+    
     /**
-     * Méthode retournant un Point (en coordonnées cartésiennes) à partir d'un
-     * PointGeo (en coordonnées sphériques)
+     * Projette sur le plan le point PointGeo reçu en argument.
      * 
      * @param point
      *            le point en coordonnées sphériques
@@ -22,8 +22,7 @@ public interface Projection {
     Point project(PointGeo point);
 
     /**
-     * Méthode retournant un PointGeo (en coordonnées sphériques) à partir d'un
-     * Point (en coordonnées cartésiennes)
+     *  Dé-projette le point (Point) du plan reçu en argument.
      * 
      * @param point
      *            le point en coordonnées cartésiennes
