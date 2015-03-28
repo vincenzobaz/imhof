@@ -17,9 +17,8 @@ public final class OSMRelation extends OSMEntity {
     private final List<Member> members;
 
     /**
-     * Le constructeur de la classe. Comme la classe doit être immuable, on fait
-     * une copie des objets non-immuables et on la stocke sous forme de vue
-     * non-modifiable
+     * Construit une relation ayant l'identifiant, les membres et les attributs
+     * donnés.
      * 
      * @param id
      *            l'identifiant unique de la relation.
@@ -34,10 +33,9 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Accesseur des membres de la relation. L'objet fourni est une vue
-     * non-modifiable, ce qui garantit l'immuabilité de la classe.
+     * Retourne la liste des membres de la relation.
      * 
-     * @return la liste des membres de la relation
+     * @return les membres de la relation, sous forme de List
      */
     public List<Member> members() {
         return members;
@@ -57,14 +55,14 @@ public final class OSMRelation extends OSMEntity {
         private final OSMEntity member;
 
         /**
-         * Le constructeur de la classe.
+         * Construit un membre ayant le type, le rôle et la valeur donnés.
          * 
          * @param type
          *            le type du membre
          * @param role
          *            le rôle du membre
          * @param member
-         *            membre défini comme entité OSM
+         *            l'entité OSM qui constitue le membre
          */
         public Member(Type type, String role, OSMEntity member) {
             this.type = type;
@@ -73,8 +71,7 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Accesseur du type du membre. La classe Type étant immuable, nous
-         * n'avons pas besoin de copier type avant de le renvoyer.
+         * Retourne le type du membre.
          * 
          * @return le type du membre
          */
@@ -83,25 +80,32 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Accesseur de l'attribut role. Comme il s'agit d'un String, immuable
-         * par définition, nous n'avons pas besoin de le copier avant de le
-         * renvoyer.
+         * Retourne le rôle du membre.
          * 
-         * @return le role du membre
+         * @return le rôle du membre
          */
         public String role() {
             return role;
         }
 
         /**
-         * Accesseur pour l'entité qu'on veut qualifier en tant que membre
+         * Retourne le membre lui-même.
          * 
-         * @return une entité membre
+         * @return le membre, une OSMEntity
          */
         public OSMEntity member() {
             return member;
         }
 
+        /**
+         * Énumération des trois types de membres qu'une relation peut
+         * comporter: NODE pour les noeuds, WAY pour les chemins, RELATION pour
+         * les relations.
+         * 
+         * @author Vincenzo Bazzucchi (249733)
+         * @author Nicolas Phan Van (239293)
+         *
+         */
         public static enum Type {
             NODE, WAY, RELATION;
         }
@@ -119,11 +123,10 @@ public final class OSMRelation extends OSMEntity {
         private final List<Member> members;
 
         /**
-         * Constructeur du bâtisseur. Pour instancier on ne demande qu'un
-         * identifiant unique.
+         * Construit un bâtisseur pour une relation ayant l'identifiant donné.
          * 
          * @param id
-         *            l'identifiant unique
+         *            l'identifiant unique de la relation
          */
         public Builder(long id) {
             super(id);
@@ -131,13 +134,12 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Cette méthode permet d'ajouter un membre à la relation en le
-         * qualifiant avec des attributs
+         * Ajoute un nouveau membre de type et de rôle donnés à la relation.
          * 
          * @param type
          *            le type du membre
          * @param role
-         *            le role dans la relation
+         *            le rôle du membre
          * @param newMember
          *            le membre
          */
@@ -146,11 +148,14 @@ public final class OSMRelation extends OSMEntity {
         }
 
         /**
-         * Méthode permettant enfin de construire une OSMRelation à partir de
-         * l'id passé au constructeur combiné avec les membres ajoutés avec la
-         * méthode addMember
+         * Construit et retourne la relation ayant l'identifiant passé au
+         * constructeur ainsi que les membres et les attributs ajoutés au
+         * bâtisseur.
          * 
          * @return la relation
+         * @throws IllegalStateException
+         *             lève une exception si la relation en cours de
+         *             construction est incomplète
          */
         public OSMRelation build() throws IllegalStateException {
             if (isIncomplete()) {
