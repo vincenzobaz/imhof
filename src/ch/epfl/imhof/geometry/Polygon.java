@@ -36,8 +36,7 @@ public final class Polygon {
      *            l'enveloppe du polygone, une polyligne fermée
      */
     public Polygon(ClosedPolyLine shell) {
-        this.shell = shell;
-        this.holes = Collections.emptyList();
+        this(shell, Collections.emptyList());
     }
 
     /**
