@@ -131,15 +131,15 @@ public final class OSMToGeoTransformer {
      * @return
      */
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        List<PolyLine> roleWays = filterMembers(relation.members(), role);
-        Graph<Point> nonOrientedGraph = graphCreator(roleWays);
+        List<OSMWay> roleWays = filterMembers(relation.members(), role);
+        Graph<OSMNode> nonOrientedGraph = graphCreator(roleWays);
 
         if (!everyNodeHasTwoNeighbors(nonOrientedGraph)) {
             return Collections.emptyList();
         }
 
         List<ClosedPolyLine> ringsList = new ArrayList<>();
-        Set<Point> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
+        Set<OSMNode> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
 
         while (!nonVisitedNodes.isEmpty()) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
@@ -159,11 +159,11 @@ public final class OSMToGeoTransformer {
      * @param role
      * @return
      */
-    private List<PolyLine> filterMembers(List<Member> members, String role) {
-        List<PolyLine> roleWays = new ArrayList<>();
+    private List<OSMWay> filterMembers(List<Member> members, String role) {
+        List<OSMWay> roleWays = new ArrayList<>();
         for (Member m : members) {
             if (role.equals(m.role())) {
-                roleWays.add(OSMWayToPolyLine((OSMWay) m.member()));
+                roleWays.add((OSMWay) m.member());
             }
         }
         return roleWays;
