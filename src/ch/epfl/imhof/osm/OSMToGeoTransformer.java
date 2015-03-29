@@ -101,16 +101,6 @@ public final class OSMToGeoTransformer {
             Attributes filteredAttributes = filteredAttributes(wayToConvert,
                     wayToConvertIsAPolygon);
 
-            /*
-             * if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty()))
-             * { mapToBe.addPolyLine(new Attributed<>(
-             * OSMWayToPolyLine(wayToConvert), newAttributes)); } else if
-             * (wayToConvert.isClosed() && OSMWayIsASurface(wayToConvert) &&
-             * !newAttributes.isEmpty()) { mapToBe.addPolygon(new
-             * Attributed<>(new Polygon( OSMWayToClosedPolyLine(wayToConvert)),
-             * newAttributes)); }
-             */
-
             if (wayToConvertIsAPolygon && !filteredAttributes.isEmpty()) {
                 mapToBe.addPolygon(new Attributed<>(new Polygon(
                         OSMWayToClosedPolyLine(wayToConvert)),
@@ -195,10 +185,10 @@ public final class OSMToGeoTransformer {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
             for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
                     .hasNext();) {
-                ClosedPolyLine nextPolyLine = iterator.next();
-                if (outerRing.containsPoint(nextPolyLine.firstPoint())
-                        && outerRing.area() > nextPolyLine.area()) {
-                    attachedInnerRings.add(nextPolyLine);
+                ClosedPolyLine potentialRing = iterator.next();
+                if (outerRing.containsPoint(potentialRing.firstPoint())
+                        && outerRing.area() > potentialRing.area()) {
+                    attachedInnerRings.add(potentialRing);
                     iterator.remove();
                 }
             }
@@ -262,17 +252,14 @@ public final class OSMToGeoTransformer {
      * @param roleWays
      * @return
      */
-    // erreurs
     private Graph<OSMNode> graphCreator(List<OSMWay> roleWays) {
         Graph.Builder<OSMNode> graphInConstruction = new Graph.Builder<>();
         for (OSMWay way : roleWays) {
             List<OSMNode> nodes = way.nodes();
-            for (int i = 0; i < nodes.size(); ++i) {
+            graphInConstruction.addNode(nodes.get(0));
+            for (int i = 1; i < nodes.size(); ++i) {
                 graphInConstruction.addNode(nodes.get(i));
-                if (i > 0) {
-                    graphInConstruction.addEdge(nodes.get(i),
-                            nodes.get(i - 1));
-                }
+                graphInConstruction.addEdge(nodes.get(i), nodes.get(i - 1));
             }
         }
         return graphInConstruction.build();
@@ -286,13 +273,6 @@ public final class OSMToGeoTransformer {
      */
     private Attributes filteredAttributes(OSMWay way, boolean isAPolygon) {
         Attributes filteredAttributes;
-
-        /*
-         * if (!OSMWayIsASurface(way)) { filteredAttributes =
-         * way.attributes().keepOnlyKeys( POLYLINE_ATTRIBUTES); } else {
-         * filteredAttributes = way.attributes().keepOnlyKeys(
-         * POLYGON_ATTRIBUTES); }
-         */
 
         if (isAPolygon) {
             filteredAttributes = way.attributes().keepOnlyKeys(
@@ -327,9 +307,9 @@ public final class OSMToGeoTransformer {
     private OpenPolyLine OSMWayToOpenPolyLine(OSMWay way) {
         PolyLine.Builder openPolylineInConstruction = new PolyLine.Builder();
 
-        for (OSMNode nodeToConvert : way.nodes()) {
+        for (OSMNode nodeToProject : way.nodes()) {
             openPolylineInConstruction.addPoint(projection
-                    .project(nodeToConvert.position()));
+                    .project(nodeToProject.position()));
         }
         return openPolylineInConstruction.buildOpen();
     }
@@ -343,9 +323,9 @@ public final class OSMToGeoTransformer {
     private ClosedPolyLine OSMWayToClosedPolyLine(OSMWay way) {
         PolyLine.Builder closedPolyLineInConstruction = new PolyLine.Builder();
 
-        for (OSMNode nodeToConvert : way.nonRepeatingNodes()) {
+        for (OSMNode nodeToProject : way.nonRepeatingNodes()) {
             closedPolyLineInConstruction.addPoint(projection
-                    .project(nodeToConvert.position()));
+                    .project(nodeToProject.position()));
         }
         return closedPolyLineInConstruction.buildClosed();
     }
