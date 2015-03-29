@@ -241,13 +241,13 @@ public final class OSMToGeoTransformer {
      * @param nonOrientedGraph
      * @return
      */
-    private boolean everyNodeHasTwoNeighbors(Graph<Point> nonOrientedGraph) {
+    private boolean everyNodeHasTwoNeighbors(Graph<OSMNode> nonOrientedGraph) {
         if (nonOrientedGraph.nodes().isEmpty()) {
             return false;
         } else {
             boolean everyNodeHasTwoNeighbors = true;
 
-            Iterator<Point> iterator = nonOrientedGraph.nodes().iterator();
+            Iterator<OSMNode> iterator = nonOrientedGraph.nodes().iterator();
             while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
                 everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
                         iterator.next()).size() == 2);
@@ -263,28 +263,17 @@ public final class OSMToGeoTransformer {
      * @return
      */
     // erreurs
-    private Graph<Point> graphCreator(List<PolyLine> roleWays) {
-        Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
-        for (PolyLine polyline : roleWays) {
-            List<Point> pointList = polyline.points();
-
-            for (int i = 0; i < pointList.size(); ++i) {
-                graphInConstruction.addNode(pointList.get(i));
+    private Graph<OSMNode> graphCreator(List<OSMWay> roleWays) {
+        Graph.Builder<OSMNode> graphInConstruction = new Graph.Builder<>();
+        for (OSMWay way : roleWays) {
+            List<OSMNode> nodes = way.nodes();
+            for (int i = 0; i < nodes.size(); ++i) {
+                graphInConstruction.addNode(nodes.get(i));
                 if (i > 0) {
-                    graphInConstruction.addEdge(pointList.get(i),
-                            pointList.get(i - 1));
+                    graphInConstruction.addEdge(nodes.get(i),
+                            nodes.get(i - 1));
                 }
-
             }
-            if (polyline.isClosed()) {
-                graphInConstruction.addEdge(polyline.firstPoint(),
-                        pointList.get(pointList.size() - 1));
-            }
-            /**
-             * if (!pointList.isEmpty()) {
-             * graphInConstruction.addEdge(pointList.get(0),
-             * pointList.get(pointList.size() - 1)); }
-             */
         }
         return graphInConstruction.build();
     }
