@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import ch.epfl.imhof.Attributes;
 
 /**
- * Cette classe répresente une relation OSM. La classe est immuable.
+ * Classe répresentant une relation OSM. La classe est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

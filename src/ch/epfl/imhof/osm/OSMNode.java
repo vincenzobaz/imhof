@@ -4,7 +4,7 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Attributes;
 
 /**
- * Classe qui représente un noeud OSM, héritant de OSMEntity. Elle est immuable.
+ *Classe représentant un noeud OSM, héritant de OSMEntity. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
