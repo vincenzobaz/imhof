@@ -4,7 +4,7 @@ import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.PointGeo;
 
 /**
- * Cette interface est utilisée pour la conversion des coordonnées d'un système
+ * Interface utilisée pour la conversion des coordonnées d'un système
  * de coordonnées sphériques à un système de coordonnées cartésiennes.
  * 
  * @author Vincenzo Bazzucchi (249733)
