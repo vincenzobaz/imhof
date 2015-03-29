@@ -210,12 +210,16 @@ public final class OSMToGeoTransformer {
     private void theRingMaker(Graph<OSMNode> nonOrientedGraph,
             PolyLine.Builder polylineInConstruction,
             Set<OSMNode> nonVisitedNodes, OSMNode currentNode) {
+
         polylineInConstruction.addPoint(projection.project(currentNode
                 .position()));
+
         Set<OSMNode> neighbors = new HashSet<>(
                 nonOrientedGraph.neighborsOf(currentNode));
         neighbors.retainAll(nonVisitedNodes);
+
         nonVisitedNodes.remove(currentNode);
+
         if (neighbors.isEmpty()) {
             return;
         } else {
