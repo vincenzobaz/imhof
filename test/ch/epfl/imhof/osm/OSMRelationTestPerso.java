@@ -8,7 +8,7 @@ import java.util.List;
 import ch.epfl.imhof.BuildAll;
 import ch.epfl.imhof.PointGeo;
 
-public class OSMRelationTest {
+public class OSMRelationTestPerso {
     private OSMRelation newRelation() {
         OSMRelation.Builder relationInConstruction = new OSMRelation.Builder(
                 1234);

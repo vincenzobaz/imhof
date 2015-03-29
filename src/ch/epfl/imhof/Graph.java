@@ -20,11 +20,11 @@ public final class Graph<N> {
     private final Map<N, Set<N>> neighbors;
 
     /**
-     * Construit un nouveau graphe à partir de la table d'adjacence passée en
-     * paramètre
+     * Construit un nouveau graphe à partir de la table d'adjacence donnée.
      * 
      * @param neighbors
-     *            la table d'adjacence du graphe, une Map
+     *            la table contenant l'ensemble des noeuds du graphe, ansi que
+     *            l'ensemble des voisins de chaque noeud
      */
     public Graph(Map<N, Set<N>> neighbors) {
         Map<N, Set<N>> temp = new HashMap<>();
@@ -36,7 +36,7 @@ public final class Graph<N> {
     }
 
     /**
-     * Retourne l'ensemble des noeuds du graphe
+     * Retourne l'ensemble des noeuds du graphe.
      * 
      * @return les noeuds du graphe, sous forme de Set
      */
@@ -45,7 +45,7 @@ public final class Graph<N> {
     }
 
     /**
-     * Retourne l'ensemble des noeuds voisins du noeud donné
+     * Retourne l'ensemble des noeuds voisins du noeud donné.
      * 
      * @param node
      *            le noeud dont on cherche les voisins
@@ -63,7 +63,7 @@ public final class Graph<N> {
     }
 
     /**
-     * Bâtisseur de la classe Graph
+     * Bâtisseur de la classe Graph.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -75,7 +75,7 @@ public final class Graph<N> {
         private final Map<N, Set<N>> neighbors;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             neighbors = new HashMap<>();
@@ -83,7 +83,7 @@ public final class Graph<N> {
 
         /**
          * Ajoute le noeud donné au graphe en cours de construction, s'il n'en
-         * fait pas déjà partie
+         * fait pas déjà partie.
          * 
          * @param n
          *            le noeud qu'on souhaite ajouter au graphe
@@ -96,7 +96,7 @@ public final class Graph<N> {
 
         /**
          * Ajoute une arête entre les deux noeuds donnés au graphe en cours de
-         * construction
+         * construction.
          * 
          * @param n1
          *            le premier noeud de l'arête
@@ -116,8 +116,8 @@ public final class Graph<N> {
         }
 
         /**
-         * Construit le graphe composé des noeuds et arêtes ajoutés jusqu'à
-         * présent au bâtisseur
+         * Construit et retourne le graphe composé des noeuds et arêtes ajoutés
+         * au bâtisseur.
          * 
          * @return le nouveau graphe
          */

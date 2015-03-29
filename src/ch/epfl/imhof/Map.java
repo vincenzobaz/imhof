@@ -9,7 +9,7 @@ import ch.epfl.imhof.geometry.Polygon;
 
 /**
  * Cette classe, immuable, représente une carte projetée contenant des entité
- * géométriques attribuées (Attributed)
+ * géométriques attribuées (Attributed).
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -20,12 +20,13 @@ public final class Map {
     private final List<Attributed<Polygon>> polygons;
 
     /**
-     * Constructeur de la classe
+     * Construit une carte à partir des listes de polylignes et polygones
+     * attribués donnés.
      * 
      * @param polyLines
-     *            liste des Polyligne Attributed
+     *            la liste des polylignes attribuées de la carte
      * @param polygons
-     *            liste des Polygons Attributed
+     *            la liste des polygones attribués de la carte
      */
     public Map(List<Attributed<PolyLine>> polyLines,
             List<Attributed<Polygon>> polygons) {
@@ -35,25 +36,25 @@ public final class Map {
     }
 
     /**
-     * Accesseur de la liste de polylignes attribuées
+     * Retourne la liste des polylignes attribuées de la carte.
      * 
-     * @return la liste des polylignes attribuées
+     * @return les polylignes attribuées de la carte, sous forme de List
      */
     public List<Attributed<PolyLine>> polyLines() {
         return polyLines;
     }
 
     /**
-     * Accesseur de la liste de polygones attribués
+     * Retourne la liste des polygones attribués de la carte.
      * 
-     * @return la liste des polygones attribués
+     * @return les polygones attribués de la carte, sous forme de List
      */
     public List<Attributed<Polygon>> polygons() {
         return polygons;
     }
 
     /**
-     * Bâtisseur de la classe Map
+     * Bâtisseur de la classe Map.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -64,7 +65,7 @@ public final class Map {
         private final List<Attributed<Polygon>> polygons;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             polyLines = new ArrayList<>();
@@ -72,25 +73,31 @@ public final class Map {
         }
 
         /**
-         * Méthode permettant d'ajouter une polyligne attribuée
+         * Ajoute une polyligne attribuée au bâtisseur.
          * 
          * @param newPolyLine
+         *            la polyligne attribuée à ajouter à la carte en
+         *            construction
          */
         public void addPolyLine(Attributed<PolyLine> newPolyLine) {
             polyLines.add(newPolyLine);
         }
 
         /**
-         * Méthode permettant d'ajouter un polygone attribué
+         * Ajoute un polygone attribué au bâtisseur.
+         * 
+         * @param newPolygon
+         *            le polygone attribué à ajouter à la carte en construction
          */
         public void addPolygon(Attributed<Polygon> newPolygon) {
             polygons.add(newPolygon);
         }
 
         /**
-         * Méthode de construction d'une Map à partir de son bâtisseur
+         * Construit et retourne une carte avec les polylignes et polygones
+         * ajoutés jusqu'à présent au bâtisseur.
          * 
-         * @return la map
+         * @return la nouvelle carte
          */
         public Map build() {
             return new Map(polyLines, polygons);

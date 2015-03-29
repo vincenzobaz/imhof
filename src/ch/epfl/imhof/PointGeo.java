@@ -14,7 +14,7 @@ public final class PointGeo {
     private final double latitude;
 
     /**
-     * Construit un point avec les coordonnées données
+     * Construit un point avec la longitude et la latitude données (en radians).
      * 
      * @param longitude
      *            la longitude du point, en radians
@@ -28,43 +28,43 @@ public final class PointGeo {
             throws IllegalArgumentException {
         if (coordinateIsInvalid(longitude, 1.0)) {
             throw new IllegalArgumentException(
-                    "La longitude doit être comprise entre -Π et Π");
+                    "La longitude doit être comprise entre -π et π");
         }
         if (coordinateIsInvalid(latitude, 2.0)) {
             throw new IllegalArgumentException(
-                    "La latitude doit être comprise entre -Π/2 et Π/2");
+                    "La latitude doit être comprise entre -π/2 et π/2");
         }
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
     /**
-     * Accesseur de la longitude
+     * Retourne la longitude du point.
      * 
-     * @return l'attribut longitude du point
+     * @return la longitude du point, en radians
      */
     public double longitude() {
         return longitude;
     }
 
     /**
-     * Accesseur de la latitude
+     * Retourne la latitude du point.
      * 
-     * @return l'attribut latitude du point
+     * @return la latitude du point, en radians
      */
     public double latitude() {
         return latitude;
     }
 
     /**
-     * Teste si la coordonnée fournie est valide
+     * Teste si la coordonnée fournie est valide.
      * 
      * @param coordinate
      *            coordonnée à tester, en radians
      * @param parameter
      *            modificateur d'intervalle, 1.0 pour la longitude, 2.0 pour la
      *            latitude
-     * @return true si la coordonée est invalide, false sinon
+     * @return true si la coordonnée est invalide, false sinon
      */
     private boolean coordinateIsInvalid(double coordinate, double parameter) {
         return (coordinate < -Math.PI / parameter || coordinate > Math.PI

@@ -17,13 +17,13 @@ public abstract class PolyLine {
     private final List<Point> points;
 
     /**
-     * Construit une polyligne à partir d'une liste de points
+     * Construit une polyligne avec les sommets donnés.
      * 
      * @param points
-     *            la liste des points composant la ligne
+     *            la liste des sommets composant la ligne
      * 
      * @throws IllegalArgumentException
-     *             lève une exception si la liste passée en paramètre est vide
+     *             lève une exception si la liste des sommets est vide
      */
     public PolyLine(List<Point> points) throws IllegalArgumentException {
         if (points == null || points.size() == 0) {
@@ -33,33 +33,32 @@ public abstract class PolyLine {
     }
 
     /**
-     * On impose aux sous-classes de définir une méthode permettant de
-     * déterminer si la polyligne est ouverte ou fermée
+     * Retourne vrai si et seulement si la polyligne est fermée.
      * 
-     * @return true si la polyligne est ouverte, false dans le cas contraire
+     * @return true si la polyligne est fermée, false dans le cas contraire
      */
     public abstract boolean isClosed();
 
     /**
-     * Accesseur de la liste de points qui constituent la polyligne
+     * Retourne la liste des sommets de la polyligne.
      * 
-     * @return la liste des points
+     * @return les sommets de la polyligne, sous forme de liste de Point
      */
     public List<Point> points() {
         return points;
     }
 
     /**
-     * Accesseur du premier point
+     * Retourne le premier sommet de la polyligne.
      * 
-     * @return le premier point de la polyligne
+     * @return le premier point de la liste de Point
      */
     public Point firstPoint() {
         return points.get(0);
     }
 
     /**
-     * Bâtisseur
+     * Bâtisseur de la classe PolyLine.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -69,35 +68,38 @@ public abstract class PolyLine {
         private final List<Point> points;
 
         /**
-         * Constructeur par défaut du bâtisseur
+         * Constructeur par défaut du bâtisseur.
          */
         public Builder() {
             points = new ArrayList<>();
         }
 
         /**
-         * On ajoute un point à la polyligne
+         * Ajoute le point donné à la liste des sommets de la polyligne en cours
+         * de construction.
          * 
          * @param newPoint
-         *            le point à ajouter
+         *            le point à ajouter à la polyligne
          */
         public void addPoint(Point newPoint) {
             points.add(newPoint);
         }
 
         /**
-         * Construit une polyligne ouverte immuable
+         * Construit et retourne une polyligne ouverte avec les points ajoutés
+         * jusqu'à présent.
          * 
-         * @return la polyligne ouverte immuable
+         * @return une polyligne ouverte
          */
         public OpenPolyLine buildOpen() {
             return new OpenPolyLine(points);
         }
 
         /**
-         * Construit une polyligne fermée immuable
+         * Construit et retourne une polyligne fermée avec les points ajoutés
+         * jusqu'à présent.
          * 
-         * @return la polyligne fermée immuable
+         * @return une polyligne fermée
          */
         public ClosedPolyLine buildClosed() {
             return new ClosedPolyLine(points);

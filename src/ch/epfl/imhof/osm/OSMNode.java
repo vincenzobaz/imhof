@@ -30,16 +30,17 @@ public final class OSMNode extends OSMEntity {
     }
 
     /**
-     * Accesseur de la position du noeud
+     * Retourne la position du noeud.
      * 
-     * @return l'attribut position
+     * @return la position du noeud, un PointGeo
      */
     public PointGeo position() {
         return position;
     }
 
     /**
-     * Bâtisseur de la classe OSMNode, héritant du bâtisseur de OSMEntity
+     * Bâtisseur de la classe OSMNode. Il hérite du bâtisseur de la classe
+     * OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -49,7 +50,8 @@ public final class OSMNode extends OSMEntity {
         private final PointGeo position;
 
         /**
-         * Constructeur du bâtisseur
+         * Construit un bâtisseur pour un noeud ayant l'identifiant et la
+         * position donnés.
          * 
          * @param id
          *            l'identifiant du noeud à bâtir, un long
@@ -62,8 +64,8 @@ public final class OSMNode extends OSMEntity {
         }
 
         /**
-         * Construit un nouveau noeud OSM avec l'identifiant et la position
-         * passés au constructeur, et les attributs ajoutés par le bâtisseur
+         * Construit et retourne un noeud OSM avec l'identifiant et la position
+         * passés au constructeur, et les attributs ajoutés par le bâtisseur.
          * 
          * @return le noeud, un OSMNode
          * @throws IllegalStateException

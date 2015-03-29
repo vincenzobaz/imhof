@@ -11,8 +11,9 @@ import java.util.List;
  * 
  */
 public final class OpenPolyLine extends PolyLine {
+
     /**
-     * Le contructeur de la polyligne ouverte
+     * Construit une polyligne ouverte ayant les sommets donnés.
      * 
      * @param points
      *            la liste des points qui constituent la polyligne
@@ -22,8 +23,7 @@ public final class OpenPolyLine extends PolyLine {
     }
 
     /**
-     * la méthode renvoie toujours faux car une polyligne ouverte est par
-     * définition non-fermée
+     * Retourne faux, la polyligne est ouverte.
      */
     @Override
     public boolean isClosed() {

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public final class ClosedPolyLine extends PolyLine {
     /**
-     * Construit une polyligne fermée à partir d'une liste de points
+     * Construit une polyligne fermée ayant les sommets donnés.
      * 
      * @param points
      *            la liste des points qui constituent la polyligne
@@ -23,7 +23,7 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * @return true car la polyligne est fermée
+     * Retourne vrai, la polyligne est fermée.
      */
     @Override
     public boolean isClosed() {
@@ -31,7 +31,7 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Calcule l'aire de la polyligne
+     * Calcule l'aire de la polyligne.
      * 
      * @return l'aire toujours positive de la polyligne
      */
@@ -45,23 +45,9 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Méthode interne utile pour vérifier si deux points ont les mêmes
-     * coordonnées.
-     * 
-     * @param point1
-     *            le premier point
-     * @param point2
-     *            le deuxième point
-     * @return On retourne un boolean: true si les points coincident, false
-     *         s'ils ont des coordonnées différentes
-     *
-     *         private boolean samePoint(Point point1, Point point2) { return
-     *         (point1.x() == point2.x() && point1.y() == point2.y()); }
-     */
-
-    /**
      * Méthode interne qui vérifie si un point se trouve à gauche d'un segment
-     * en étudiant le signe de l'aire signée
+     * en étudiant le signe de l'aire du triangle formé par ce point et les
+     * extrémités du segment.
      * 
      * @param p
      *            le point dont on veut vérifier la position
@@ -69,24 +55,24 @@ public final class ClosedPolyLine extends PolyLine {
      *            le premier point du segment
      * @param b
      *            le deuxième point du segment
-     * @return On returne true si le point se trouve à gauche du segment, false
-     *         s'il est à sa droite
+     * @return true si le point se trouve à gauche du segment, false s'il est à
+     *         sa droite
      */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
         return (signedTriangleArea(p, a, b) > 0.0);
     }
 
     /**
-     * Méthode interne qui calcule l'aire signée d'un triangle définit par ses
+     * Méthode interne qui calcule l'aire signée d'un triangle défini par ses
      * trois sommets.
      * 
      * @param a
-     *            le premier sommet
+     *            le premier sommet du triangle
      * @param b
-     *            le deuxième sommet
+     *            le deuxième sommet du triangle
      * @param c
-     *            le troisième sommet
-     * @return On retourne un double, l'aire signée du triangle
+     *            le troisième sommet du triangle
+     * @return l'aire signée du triangle
      */
     private double signedTriangleArea(Point a, Point b, Point c) {
         return 0.5 * ((b.x() - a.x()) * (c.y() - a.y()) - (c.x() - a.x())
@@ -94,20 +80,20 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Méthode interne fournissant un sommet d'indice généralisé
+     * Méthode interne retournant un sommet d'indice généralisé.
      * 
      * @param n
      *            l'indice du point qu'on veut généraliser
      * 
-     * @return on retourne le point d'indice généralisé n
+     * @return le point d'indice généralisé n
      */
     private Point getVertex(int n) {
         return points().get(Math.floorMod(n, points().size()));
     }
 
     /**
-     * Méthode qui permet de vérifier si un point se trouve dans une polyligne
-     * fermée
+     * Retourne vrai si et seulement si le point donné est à l'intérieur de la
+     * polyligne.
      * 
      * @param p
      *            le point dont on veut vérifier l'appartenance à la polyligne

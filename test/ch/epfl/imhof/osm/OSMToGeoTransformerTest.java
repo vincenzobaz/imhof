@@ -121,7 +121,6 @@ public class OSMToGeoTransformerTest {
                 || (firstHole.points().size() == 4 && secondHole.points().size() == 10));
     }
 
-<<<<<<< HEAD
     @Test
     public void roadWhole() {
         OSMMap testMapReadResult = null;
@@ -138,30 +137,6 @@ public class OSMToGeoTransformerTest {
         assertEquals("road", polyLine.attributes().get("highway"));
         assertEquals(8, polyLine.value().points().size());
         assertFalse(polyLine.value().isClosed());
-=======
-    public void transformMarche(String fichier) {
-        OSMMap fileMap = readFile(fichier);
-        OSMToGeoTransformer convertisseur = new OSMToGeoTransformer(
-                new CH1903Projection());
-        Map mappa = convertisseur.transform(fileMap);
-        System.out.println("conversion");
-        System.out.println("Chemins dans le OSMMap " + fileMap.ways().size());
-        System.out.println("Relations dans le OSMMap "
-                + fileMap.relations().size());
-        System.out.println("L'attribut de polygon est present? "
-                + fileMap.relations().get(0).hasAttribute("type"));
-        System.out.println("Valeur de l'attribut type: " + fileMap.relations().get(0).attributeValue("type"));
- 
-        System.out.println("Nombre de polylines dans Map " + mappa.polyLines().size());
-        System.out.println("Nombre de polygons dans Map " + mappa.polygons().size());
-        System.out.println();
-       /*
-         * OSMToGeoTransformer convertisseur = new OSMToGeoTransformer( new
-         * CH1903Projection()); Map prova = convertisseur.transform(fileMap);
-         * System.out.println("Nombre de polyline " + prova.polyLines().size());
-         * System.out.println("Nombre de polygons " + prova.polygons().size());
-         */
->>>>>>> 1db0ed350554de04afd8e615da98041671dc67f0
     }
     
     /*

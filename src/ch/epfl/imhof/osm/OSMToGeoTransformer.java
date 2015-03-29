@@ -25,32 +25,29 @@ import ch.epfl.imhof.projection.Projection;
  *
  */
 public final class OSMToGeoTransformer {
-    public static final String[] SURFACE_VALUES = new String[] { "aeroway",
-            "amenity", "building", "harbour", "historic", "landuse", "leisure",
-            "man_made", "military", "natural", "office", "place", "power",
-            "public_transport", "shop", "sport", "tourism", "water",
-            "waterway", "wetland" };
-    public static final String[] POLYLINE_VALUES = new String[] { "bridge",
-            "highway", "layer", "man_made", "railway", "tunnel", "waterway" };
-    public static final String[] POLYGON_VALUES = new String[] { "building",
-            "landuse", "layer", "leisure", "natural", "waterway" };
-
     public static final Set<String> SURFACE_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(SURFACE_VALUES));
+            Arrays.asList(new String[] { "aeroway", "amenity", "building",
+                    "harbour", "historic", "landuse", "leisure", "man_made",
+                    "military", "natural", "office", "place", "power",
+                    "public_transport", "shop", "sport", "tourism", "water",
+                    "waterway", "wetland" }));
     public static final Set<String> POLYLINE_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(POLYLINE_VALUES));
+            Arrays.asList(new String[] { "bridge", "highway", "layer",
+                    "man_made", "railway", "tunnel", "waterway" }));
     public static final Set<String> POLYGON_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(POLYGON_VALUES));
+            Arrays.asList(new String[] { "building", "landuse", "layer",
+                    "leisure", "natural", "waterway" }));
 
     private final Projection projection;
     private final Map.Builder mapToBe;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
-     * donnée
+     * donnée.
      * 
      * @param projection
-     *            la projection à utiliser, une Projection
+     *            la projection à utiliser pour les conversions d'entités OSM en
+     *            entités géométriques
      */
     public OSMToGeoTransformer(Projection projection) {
         this.projection = projection;
@@ -58,7 +55,7 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Convertit une carte OSM en une carte géométrique projetée
+     * Convertit une carte OSM en une carte géométrique projetée.
      * 
      * @param map
      *            la carte qu'on veut convertir, une OSMMap
@@ -177,7 +174,7 @@ public final class OSMToGeoTransformer {
         if (outerRings.isEmpty()) {
             return Collections.emptyList();
         }
-        // tester si outerRings est vide?
+        
         outerRings.sort((ring1, ring2) -> Double.compare(ring1.area(),
                 ring2.area()));
 
@@ -259,29 +256,23 @@ public final class OSMToGeoTransformer {
         Graph.Builder<Point> graphInConstruction = new Graph.Builder<>();
         for (PolyLine polyline : roleWays) {
             List<Point> pointList = polyline.points();
-           
+
             for (int i = 0; i < pointList.size(); ++i) {
                 graphInConstruction.addNode(pointList.get(i));
                 if (i > 0) {
                     graphInConstruction.addEdge(pointList.get(i),
                             pointList.get(i - 1));
                 }
-                
+
             }
             if (polyline.isClosed()) {
-                graphInConstruction.addEdge(polyline.firstPoint(), pointList.get(pointList.size()-1));
+                graphInConstruction.addEdge(polyline.firstPoint(),
+                        pointList.get(pointList.size() - 1));
             }
             /**
              * if (!pointList.isEmpty()) {
              * graphInConstruction.addEdge(pointList.get(0),
              * pointList.get(pointList.size() - 1)); }
-             */
-            /*
-             * for (ListIterator<Point> iterator = pointList.listIterator();
-             * iterator .hasNext();) { Point nextPoint = iterator.next();
-             * graphInConstruction.addNode(nextPoint); if
-             * (iterator.hasPrevious()) { graphInConstruction.addEdge(nextPoint,
-             * iterator.previous()); } }
              */
         }
         return graphInConstruction.build();

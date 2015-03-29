@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 import ch.epfl.imhof.*;
 import java.util.List;
 
-public final class OSMWayTest {
+public final class OSMWayTestPerso {
     @Test
     public void builderAndNonClosedWayTest() {
         OSMWay.Builder wayInConstruction = new OSMWay.Builder(1234);

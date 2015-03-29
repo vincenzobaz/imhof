@@ -8,7 +8,7 @@ import java.util.HashMap;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Attributes;
 
-public final class OSMNodeTest {
+public final class OSMNodeTestPerso {
     @Test
     public void positionReturnsRightValues() {
         OSMNode prova = new OSMNode(123456789, new PointGeo(Math.PI / 3,

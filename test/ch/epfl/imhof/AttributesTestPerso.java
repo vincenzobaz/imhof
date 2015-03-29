@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class AttributesTest {
+public class AttributesTestPerso {
     @Test
     public void isEmptyReturnsTrueForEmptyMap() {
         Attributes test = new Attributes(new HashMap<String, String>());

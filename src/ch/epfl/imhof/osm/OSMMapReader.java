@@ -35,7 +35,8 @@ public final class OSMMapReader {
 
     /**
      * Méthode statique qui lit un fichier OSM et construit une OSMMap à partir
-     * de celui-ci
+     * de celui-ci. Décompresse le fichier avec gzip si le second paramètre est
+     * vrai.
      * 
      * @param fileName
      *            le nom du fichier OSM à lire

@@ -14,10 +14,11 @@ public abstract class OSMEntity {
     private final Attributes attributes;
 
     /**
-     * Constructeur
+     * Construit une entité OSM dotée de l'identifiant unique et des attributs
+     * donnés.
      * 
      * @param id
-     *            identificateur unique d'une entité dans la base de données de
+     *            identifiant unique de l'entité dans la base de données de
      *            OpenStreetMaps
      * @param attributes
      *            les attributs de l'entité
@@ -28,16 +29,16 @@ public abstract class OSMEntity {
     }
 
     /**
-     * Accesseur pour l'id de l'entité
+     * Retourne l'identifiant unique de l'entité.
      * 
-     * @return l'identifiant unique de l'identité
+     * @return l'identifiant de l'identité, un long
      */
     public long id() {
         return id;
     }
 
     /**
-     * Accesseur pour les attributs de l'entité
+     * Retourne les attributs de l'entité.
      * 
      * @return les attributs de l'entité
      */
@@ -46,41 +47,48 @@ public abstract class OSMEntity {
     }
 
     /**
-     * Vérifie si l'ensemble des attributs de l'entité contient un attribut
+     * Retourne vrai si et seulement si l'entité possède l'attribut passé en
+     * argument.
      * 
      * @param key
-     * @return True si l'attribut est dans la liste, False dans le cas contraire
+     *            l'attribut dont on teste l'appartenance à l'entité
+     * @return vrai si l'entité possède l'attribut donné, faux dans le cas
+     *         contraire
      */
     public boolean hasAttribute(String key) {
         return attributes.contains(key);
     }
 
     /**
-     * Retourne la valeur de l'attribut donné
+     * Retourne la valeur de l'attribut donné, ou null si celui-ci n'existe pas.
      * 
      * @param key
-     *            la clé de l'attribut dont on cherche la valeur
-     * @return la valeur associée à la clé, ou null si elle n'existe pas
+     *            l'attribut dont on cherche la valeur
+     * @return la valeur associée à l'attribut si elle existe, null sinon
      */
     public String attributeValue(String key) {
         return attributes.get(key);
     }
 
     /**
-     * Bâtisseur pour les objets OSMEntity
+     * Bâtisseur de la classe OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
      *
      */
     public abstract static class Builder {
+        /*
+         * Utilisation du protected pour que les sous-classes puissent accéder
+         * aux deux attributs id et attributesInProgress.
+         */
         protected final long id;
         private boolean isIncomplete;
         protected final Attributes.Builder attributesInProgress;
 
         /**
-         * Constructeur du bâtisseur. Cet objet s'instancie à partir d'un
-         * identifiant unique
+         * Construit un bâtisseur pour une entité OSM identifiée par l'entier
+         * donné.
          * 
          * @param id
          *            l'identifiant unique de l'entité
@@ -91,8 +99,9 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Ajoute une association clé/valeur à l'attribut de l'entité en
-         * construction
+         * Ajoute l'association clé/valeur donnée à lensemble d'attributs de
+         * l'entité en construction. Remplace l'attribut par la nouvelle valeur
+         * s'il était déjà présent.
          * 
          * @param key
          *            la clé de l'attribut à ajouter
@@ -104,42 +113,21 @@ public abstract class OSMEntity {
         }
 
         /**
-         * Déclare que l'instance du bâtisseur n'est pas prête pour appeler
-         * build() et créer une instance de OSMEntity
+         * Déclare que l'entité en cours de construction est incomplète.
          */
         public void setIncomplete() {
             isIncomplete = true;
         }
 
         /**
-         * Permet de savoir si le bâtisseur peut instancier une OSMEntity
+         * Retourne vrai si et seulement si l'entité en cours de construction
+         * est incomplète.
          * 
-         * @return True si OSMEntity ne peut pas être instanciée, False dans le
-         *         cas contraire
+         * @return vrai si l'entité en construction ne peut pas être instanciée,
+         *         faux dans le cas contraire
          */
         public boolean isIncomplete() {
             return isIncomplete;
         }
-
-        /**
-         * Cette méthode est nécessaire pour que les classes héritant de
-         * celle-ci puissent accéder à la liste d'attribut.
-         * 
-         * @return les attributs de l'entité, un Attributes
-         *
-        protected Attributes attributesBuild() {
-            return attributesInProgress.build();
-        }
-
-        /**
-         * Cette méthode est nécessaire pour que les classes héritant de
-         * celle-ci puissent accéder à l'identifiant unique de l'entité
-         * 
-         * @return l'identifiant unique de l'entité, un long
-         *
-        protected long idBuild() {
-            return id;
-        }
-        */ 
     }
 }

@@ -52,7 +52,7 @@ public final class OSMWay extends OSMEntity {
     /**
      * Retourne la liste des noeuds du chemin
      * 
-     * @return les noeuds, sous forme de List
+     * @return les noeuds du chemin, sous forme de List
      */
     public List<OSMNode> nodes() {
         return nodes;
@@ -96,17 +96,20 @@ public final class OSMWay extends OSMEntity {
      * Retourne vrai si et seulement si le chemin est fermé (le 1er noeud est
      * identique au dernier).
      * 
-     * @return true si le chemin est fermé, false sinon
+     * @return vrai si le chemin est fermé, faux sinon
      */
     public boolean isClosed() {
-        /*return (firstNode().position().latitude() == lastNode().position()
-                .latitude() && firstNode().position().longitude() == lastNode()
-                .position().longitude());*/
+        /*
+         * return (firstNode().position().latitude() == lastNode().position()
+         * .latitude() && firstNode().position().longitude() == lastNode()
+         * .position().longitude());
+         */
         return (firstNode().equals(lastNode()));
     }
 
     /**
-     * Bâtisseur de la classe OSMWay, héritant du bâtisseur de OSMEntity
+     * Bâtisseur de la classe OSMWay. Il hérite du bâtisseur de la classe
+     * OSMEntity.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -116,7 +119,7 @@ public final class OSMWay extends OSMEntity {
         private final List<OSMNode> nodes;
 
         /**
-         * Constructeur du bâtisseur
+         * Construit un bâtisseur pour un chemin ayant l'identifiant donné.
          * 
          * @param id
          *            l'identifiant du chemin, un long
