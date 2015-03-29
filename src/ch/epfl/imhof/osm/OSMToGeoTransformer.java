@@ -76,13 +76,13 @@ public final class OSMToGeoTransformer {
      */
     private void relationsConversion(List<OSMRelation> relations) {
         for (OSMRelation relationToConvert : relations) {
-            Attributes newAttributes = relationToConvert.attributes()
+            Attributes filteredAttributes = relationToConvert.attributes()
                     .keepOnlyKeys(POLYGON_ATTRIBUTES);
 
             if ("multipolygon".equals(relationToConvert.attributeValue("type"))
-                    && !newAttributes.isEmpty()) {
+                    && !filteredAttributes.isEmpty()) {
                 for (Attributed<Polygon> polygon : assemblePolygon(
-                        relationToConvert, newAttributes)) {
+                        relationToConvert, filteredAttributes)) {
                     mapToBe.addPolygon(polygon);
                 }
             }
@@ -97,16 +97,27 @@ public final class OSMToGeoTransformer {
      */
     private void waysConversion(List<OSMWay> ways) {
         for (OSMWay wayToConvert : ways) {
-            Attributes newAttributes = filteredAttributes(wayToConvert);
+            boolean wayToConvertIsAPolygon = isAPolygon(wayToConvert);
+            Attributes filteredAttributes = filteredAttributes(wayToConvert,
+                    wayToConvertIsAPolygon);
 
-            if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty())) {
-                mapToBe.addPolyLine(new Attributed<>(
-                        OSMWayToPolyLine(wayToConvert), newAttributes));
-            } else if (wayToConvert.isClosed()
-                    && OSMWayIsASurface(wayToConvert)
-                    && !newAttributes.isEmpty()) {
+            /*
+             * if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty()))
+             * { mapToBe.addPolyLine(new Attributed<>(
+             * OSMWayToPolyLine(wayToConvert), newAttributes)); } else if
+             * (wayToConvert.isClosed() && OSMWayIsASurface(wayToConvert) &&
+             * !newAttributes.isEmpty()) { mapToBe.addPolygon(new
+             * Attributed<>(new Polygon( OSMWayToClosedPolyLine(wayToConvert)),
+             * newAttributes)); }
+             */
+
+            if (wayToConvertIsAPolygon && !filteredAttributes.isEmpty()) {
                 mapToBe.addPolygon(new Attributed<>(new Polygon(
-                        OSMWayToClosedPolyLine(wayToConvert)), newAttributes));
+                        OSMWayToClosedPolyLine(wayToConvert)),
+                        filteredAttributes));
+            } else if (!wayToConvertIsAPolygon && !filteredAttributes.isEmpty()) {
+                mapToBe.addPolyLine(new Attributed<>(
+                        OSMWayToPolyLine(wayToConvert), filteredAttributes));
             }
         }
     }
@@ -174,7 +185,7 @@ public final class OSMToGeoTransformer {
         if (outerRings.isEmpty()) {
             return Collections.emptyList();
         }
-        
+
         outerRings.sort((ring1, ring2) -> Double.compare(ring1.area(),
                 ring2.area()));
 
@@ -284,15 +295,22 @@ public final class OSMToGeoTransformer {
      * @param way
      * @return
      */
-    private Attributes filteredAttributes(OSMWay way) {
+    private Attributes filteredAttributes(OSMWay way, boolean isAPolygon) {
         Attributes filteredAttributes;
 
-        if (!OSMWayIsASurface(way)) {
-            filteredAttributes = way.attributes().keepOnlyKeys(
-                    POLYLINE_ATTRIBUTES);
-        } else {
+        /*
+         * if (!OSMWayIsASurface(way)) { filteredAttributes =
+         * way.attributes().keepOnlyKeys( POLYLINE_ATTRIBUTES); } else {
+         * filteredAttributes = way.attributes().keepOnlyKeys(
+         * POLYGON_ATTRIBUTES); }
+         */
+
+        if (isAPolygon) {
             filteredAttributes = way.attributes().keepOnlyKeys(
                     POLYGON_ATTRIBUTES);
+        } else {
+            filteredAttributes = way.attributes().keepOnlyKeys(
+                    POLYLINE_ATTRIBUTES);
         }
         return filteredAttributes;
     }
@@ -349,10 +367,10 @@ public final class OSMToGeoTransformer {
      * @param way
      * @return
      */
-    private boolean OSMWayIsASurface(OSMWay way) {
+    private boolean isAPolygon(OSMWay way) {
         String area = way.attributeValue("area");
         if ("yes".equals(area) || "1".equals(area) || "true".equals(area)) {
-            return true;
+            return way.isClosed();
         } else {
             boolean hasSurfaceAttribute = false;
 
@@ -360,7 +378,7 @@ public final class OSMToGeoTransformer {
             while (!hasSurfaceAttribute && iterator.hasNext()) {
                 hasSurfaceAttribute = way.hasAttribute(iterator.next());
             }
-            return hasSurfaceAttribute;
+            return (hasSurfaceAttribute && way.isClosed());
         }
     }
 }
