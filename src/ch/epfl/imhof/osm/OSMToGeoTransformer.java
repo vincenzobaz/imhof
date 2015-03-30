@@ -17,8 +17,8 @@ import ch.epfl.imhof.osm.OSMRelation.Member;
 import ch.epfl.imhof.projection.Projection;
 
 /**
- * Classe représentant un convertisseur de données OSM en carte. Elle est
- * immuable.
+ * Classe représentant un convertisseur de données OSM en carte géométrique.
+ * Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -69,8 +69,8 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Méthode convertissant les relations de l'OSMMap et les ajoutant à la Map
-     * en construction.
+     * Convertit les relations de la carte OSM en polygones et les ajoute à la
+     * carte en construction.
      * 
      * @param relations
      */
@@ -90,8 +90,8 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Méthode convertissant les chemins de l'OSMMap et les ajoutant à la Map en
-     * construction.
+     * Convertit les chemins de la carte OSM en entités géométriques attribuées
+     * et les ajoute à la carte en construction.
      * 
      * @param ways
      */
@@ -100,16 +100,6 @@ public final class OSMToGeoTransformer {
             boolean wayToConvertIsAPolygon = isAPolygon(wayToConvert);
             Attributes filteredAttributes = filteredAttributes(wayToConvert,
                     wayToConvertIsAPolygon);
-
-            /*
-             * if (!(OSMWayIsASurface(wayToConvert) || newAttributes.isEmpty()))
-             * { mapToBe.addPolyLine(new Attributed<>(
-             * OSMWayToPolyLine(wayToConvert), newAttributes)); } else if
-             * (wayToConvert.isClosed() && OSMWayIsASurface(wayToConvert) &&
-             * !newAttributes.isEmpty()) { mapToBe.addPolygon(new
-             * Attributed<>(new Polygon( OSMWayToClosedPolyLine(wayToConvert)),
-             * newAttributes)); }
-             */
 
             if (wayToConvertIsAPolygon && !filteredAttributes.isEmpty()) {
                 mapToBe.addPolygon(new Attributed<>(new Polygon(
@@ -124,15 +114,15 @@ public final class OSMToGeoTransformer {
 
     /**
      * Retourne l'ensemble des anneaux de la relation donnée ayant le rôle
-     * spécifié
+     * spécifié.
      * 
      * @param relation
      * @param role
      * @return
      */
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
-        List<OSMWay> roleWays = filterMembers(relation.members(), role);
-        Graph<OSMNode> nonOrientedGraph = graphCreator(roleWays);
+        List<OSMWay> filteredWays = filterMembers(relation.members(), role);
+        Graph<OSMNode> nonOrientedGraph = graphCreator(filteredWays);
 
         if (!everyNodeHasTwoNeighbors(nonOrientedGraph)) {
             return Collections.emptyList();
@@ -143,8 +133,22 @@ public final class OSMToGeoTransformer {
 
         while (!nonVisitedNodes.isEmpty()) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
-            theRingMaker(nonOrientedGraph, polylineInConstruction,
-                    nonVisitedNodes, nonVisitedNodes.iterator().next());
+            Set<OSMNode> neighbors;
+            OSMNode currentNode = nonVisitedNodes.iterator().next();
+
+            do {
+                polylineInConstruction.addPoint(projection.project(currentNode
+                        .position()));
+                nonVisitedNodes.remove(currentNode);
+                neighbors = new HashSet<>(
+                        nonOrientedGraph.neighborsOf(currentNode));
+                neighbors.retainAll(nonVisitedNodes);
+
+                if (!neighbors.isEmpty()) {
+                    currentNode = neighbors.iterator().next();
+                }
+            } while (!neighbors.isEmpty());
+
             ringsList.add(polylineInConstruction.buildClosed());
         }
 
@@ -160,18 +164,19 @@ public final class OSMToGeoTransformer {
      * @return
      */
     private List<OSMWay> filterMembers(List<Member> members, String role) {
-        List<OSMWay> roleWays = new ArrayList<>();
+        List<OSMWay> filteredWays = new ArrayList<>();
+
         for (Member m : members) {
             if (role.equals(m.role())) {
-                roleWays.add((OSMWay) m.member());
+                filteredWays.add((OSMWay) m.member());
             }
         }
-        return roleWays;
+        return filteredWays;
     }
 
     /**
      * Retourne la liste des polygones attribués de la relation donnée, en leur
-     * attachant les attributs donnés
+     * attachant les attributs donnés.
      * 
      * @param relation
      * @param attributes
@@ -193,18 +198,21 @@ public final class OSMToGeoTransformer {
 
         for (ClosedPolyLine outerRing : outerRings) {
             List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
+
             for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
                     .hasNext();) {
-                ClosedPolyLine nextPolyLine = iterator.next();
-                if (outerRing.containsPoint(nextPolyLine.firstPoint())
-                        && outerRing.area() > nextPolyLine.area()) {
-                    attachedInnerRings.add(nextPolyLine);
+                ClosedPolyLine potentialRing = iterator.next();
+
+                if (outerRing.containsPoint(potentialRing.firstPoint())
+                        && outerRing.area() > potentialRing.area()) {
+                    attachedInnerRings.add(potentialRing);
                     iterator.remove();
                 }
             }
             relationPolygons.add(new Attributed<>(new Polygon(outerRing,
                     attachedInnerRings), attributes));
         }
+
         return relationPolygons;
     }
 
@@ -217,26 +225,28 @@ public final class OSMToGeoTransformer {
      * @param nonVisitedNodes
      * @param currentPoint
      */
-    private void theRingMaker(Graph<OSMNode> nonOrientedGraph,
-            PolyLine.Builder polylineInConstruction,
-            Set<OSMNode> nonVisitedNodes, OSMNode currentNode) {
-        polylineInConstruction.addPoint(projection.project(currentNode
-                .position()));
-        Set<OSMNode> neighbors = new HashSet<>(
-                nonOrientedGraph.neighborsOf(currentNode));
-        neighbors.retainAll(nonVisitedNodes);
-        nonVisitedNodes.remove(currentNode);
-        if (neighbors.isEmpty()) {
-            return;
-        } else {
-            theRingMaker(nonOrientedGraph, polylineInConstruction,
-                    nonVisitedNodes, neighbors.iterator().next());
-        }
-    }
+    /*
+     * private void theRingMaker(Graph<OSMNode> nonOrientedGraph,
+     * PolyLine.Builder polylineInConstruction, Set<OSMNode> nonVisitedNodes,
+     * OSMNode currentNode) {
+     * 
+     * polylineInConstruction.addPoint(projection.project(currentNode
+     * .position()));
+     * 
+     * Set<OSMNode> neighbors = new HashSet<>(
+     * nonOrientedGraph.neighborsOf(currentNode));
+     * neighbors.retainAll(nonVisitedNodes);
+     * 
+     * nonVisitedNodes.remove(currentNode);
+     * 
+     * if (neighbors.isEmpty()) { return; } else {
+     * theRingMaker(nonOrientedGraph, polylineInConstruction, nonVisitedNodes,
+     * neighbors.iterator().next()); } }
+     */
 
     /**
      * Retourne vrai si tous les noeuds du graphe donné possèdent exactement
-     * deux voisins
+     * deux voisins.
      * 
      * @param nonOrientedGraph
      * @return
@@ -257,42 +267,34 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Construit un graphe à partir de la liste de polylignes donnée
+     * Construit un graphe non-orienté à partir de la liste de chemins donnée.
      * 
      * @param roleWays
      * @return
      */
-    // erreurs
     private Graph<OSMNode> graphCreator(List<OSMWay> roleWays) {
         Graph.Builder<OSMNode> graphInConstruction = new Graph.Builder<>();
+
         for (OSMWay way : roleWays) {
             List<OSMNode> nodes = way.nodes();
-            for (int i = 0; i < nodes.size(); ++i) {
+            graphInConstruction.addNode(nodes.get(0));
+
+            for (int i = 1; i < nodes.size(); ++i) {
                 graphInConstruction.addNode(nodes.get(i));
-                if (i > 0) {
-                    graphInConstruction.addEdge(nodes.get(i),
-                            nodes.get(i - 1));
-                }
+                graphInConstruction.addEdge(nodes.get(i), nodes.get(i - 1));
             }
         }
         return graphInConstruction.build();
     }
 
     /**
-     * Retourne une version filtrée des attributs du chemin donné
+     * Retourne une version filtrée des attributs du chemin donné.
      * 
      * @param way
      * @return
      */
     private Attributes filteredAttributes(OSMWay way, boolean isAPolygon) {
         Attributes filteredAttributes;
-
-        /*
-         * if (!OSMWayIsASurface(way)) { filteredAttributes =
-         * way.attributes().keepOnlyKeys( POLYLINE_ATTRIBUTES); } else {
-         * filteredAttributes = way.attributes().keepOnlyKeys(
-         * POLYGON_ATTRIBUTES); }
-         */
 
         if (isAPolygon) {
             filteredAttributes = way.attributes().keepOnlyKeys(
@@ -305,7 +307,8 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Convertit le chemin donné en polyligne
+     * Convertit le chemin donné en polyligne, ouverte ou fermée selon que le
+     * chemin est ouvert ou fermé.
      * 
      * @param way
      * @return
@@ -319,7 +322,7 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Convertit le chemin donné en polyligne ouverte
+     * Convertit le chemin donné en polyligne ouverte.
      * 
      * @param way
      * @return
@@ -327,15 +330,15 @@ public final class OSMToGeoTransformer {
     private OpenPolyLine OSMWayToOpenPolyLine(OSMWay way) {
         PolyLine.Builder openPolylineInConstruction = new PolyLine.Builder();
 
-        for (OSMNode nodeToConvert : way.nodes()) {
+        for (OSMNode nodeToProject : way.nodes()) {
             openPolylineInConstruction.addPoint(projection
-                    .project(nodeToConvert.position()));
+                    .project(nodeToProject.position()));
         }
         return openPolylineInConstruction.buildOpen();
     }
 
     /**
-     * Convertit le chemin donné en polyligne fermée
+     * Convertit le chemin donné en polyligne fermée.
      * 
      * @param way
      * @return
@@ -343,21 +346,22 @@ public final class OSMToGeoTransformer {
     private ClosedPolyLine OSMWayToClosedPolyLine(OSMWay way) {
         PolyLine.Builder closedPolyLineInConstruction = new PolyLine.Builder();
 
-        for (OSMNode nodeToConvert : way.nonRepeatingNodes()) {
+        for (OSMNode nodeToProject : way.nonRepeatingNodes()) {
             closedPolyLineInConstruction.addPoint(projection
-                    .project(nodeToConvert.position()));
+                    .project(nodeToProject.position()));
         }
         return closedPolyLineInConstruction.buildClosed();
     }
 
     /**
-     * Retourne vrai si le chemin donné est une surface
+     * Retourne vrai si le chemin donné décrit un polygone.
      * 
      * @param way
      * @return
      */
     private boolean isAPolygon(OSMWay way) {
         String area = way.attributeValue("area");
+
         if ("yes".equals(area) || "1".equals(area) || "true".equals(area)) {
             return way.isClosed();
         } else {
