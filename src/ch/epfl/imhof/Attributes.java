@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Classe représentant un ensemble d'attributs et leurs valeurs associées.
+ * Classe représentant un ensemble d'attributs, chacun étant un couple
+ * clé/valeur.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -20,8 +21,8 @@ public final class Attributes {
      * dans la table associative donnée.
      * 
      * @param attributes
-     *            la table associative contenant les paires constituant les
-     *            attributs
+     *            la table associative contenant les paires clé/valeur
+     *            constituant les attributs
      */
     public Attributes(Map<String, String> attributes) {
         this.attributes = Collections
@@ -31,7 +32,8 @@ public final class Attributes {
     /**
      * Retourne vrai si et seulement si l'ensemble d'attributs est vide.
      * 
-     * @return true si l'ensemble d'attributs est vide, false sinon
+     * @return <code>true</code> si l'ensemble d'attributs est vide,
+     *         <code>false</code> dans le cas contraire.
      */
     public boolean isEmpty() {
         return attributes.isEmpty();
@@ -43,7 +45,9 @@ public final class Attributes {
      * @param key
      *            la clé dont on cherche l'appartenance à l'ensemble
      *            d'attributs, sous forme de String
-     * @return true si la clé appartient à la liste d'attributs, false sinon
+     * @return t<code>true</code> si la clé appartient à la liste d'attributs,
+     *         <code>false</code> dans le cas contraire
+     * 
      */
     public boolean contains(String key) {
         return attributes.containsKey(key);
@@ -57,7 +61,7 @@ public final class Attributes {
      *            la clé dont on cherche la valeur associée, sous forme de
      *            String
      * @return la valeur associée à la clé passée en paramètre si elle existe,
-     *         null sinon
+     *         <code>null</code> sinon
      */
     public String get(String key) {
         return attributes.get(key);
@@ -105,7 +109,7 @@ public final class Attributes {
      * 
      * @param keysToKeep
      *            les valeurs qu'on veut garder, sous forme de Set
-     * @return un Attributes, filtré
+     * @return un objet de type <code>Attributes</code> filtré
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
         Builder filteredAttributes = new Builder();
@@ -118,7 +122,7 @@ public final class Attributes {
     }
 
     /**
-     * Bâtisseur de la classe Attributes.
+     * Bâtisseur de la classe <code>Attributes</code>.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -140,9 +144,9 @@ public final class Attributes {
          * si la clé est déjà présente dans l'ensemble d'attributs.
          * 
          * @param key
-         *            la clé, une String
+         *            la clé, une <code>String</code>
          * @param value
-         *            la valeur, une String
+         *            la valeur, un <code>String</code>
          */
         public void put(String key, String value) {
             attributes.put(key, value);
@@ -152,7 +156,7 @@ public final class Attributes {
          * Construit et retourne un ensemble d'attributs contenant les
          * associations clef/valeur ajoutées jusqu'à présent.
          * 
-         * @return l'Attributes en construction
+         * @return l'objet <code>Attributes</code> en construction
          */
         public Attributes build() {
             return new Attributes(attributes);

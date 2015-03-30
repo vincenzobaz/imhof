@@ -1,4 +1,5 @@
 # imhof
+![Comment rédiger de la javadoc?](./Javadoc_Guidelines/javadocGuidelines.md)
 ## [Étape 1](http://cs108.epfl.ch/p01_points.html)
 - [x] Rendu
 	- PointGeo

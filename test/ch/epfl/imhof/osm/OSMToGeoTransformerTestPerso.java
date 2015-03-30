@@ -75,9 +75,15 @@ public class OSMToGeoTransformerTestPerso {
 
     @Test
     public void testAll() {
+<<<<<<< HEAD
         transformMarche("lausanne.osm");
         // transformMarche("berne.osm");
         // transformMarche("interlaken.osm");
+=======
+        // transformMarche("lausanne.osm");
+        transformMarche("berne.osm");
+        transformMarche("interlaken.osm");
+>>>>>>> branch 'master' of https://github.com/vincenzobaz/imhof.git
         transformMarche("lc.osm");
     }
 
