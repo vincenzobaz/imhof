@@ -131,10 +131,29 @@ public final class OSMToGeoTransformer {
         List<ClosedPolyLine> ringsList = new ArrayList<>();
         Set<OSMNode> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
 
+        /*
+         * while (!nonVisitedNodes.isEmpty()) { PolyLine.Builder
+         * polylineInConstruction = new PolyLine.Builder();
+         * theRingMaker(nonOrientedGraph, polylineInConstruction,
+         * nonVisitedNodes, nonVisitedNodes.iterator().next());
+         * ringsList.add(polylineInConstruction.buildClosed()); }
+         */
+
         while (!nonVisitedNodes.isEmpty()) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
-            theRingMaker(nonOrientedGraph, polylineInConstruction,
-                    nonVisitedNodes, nonVisitedNodes.iterator().next());
+            OSMNode currentNode = nonVisitedNodes.iterator().next();
+            Set<OSMNode> neighbors;
+            do {
+                polylineInConstruction.addPoint(projection.project(currentNode
+                        .position()));
+                nonVisitedNodes.remove(currentNode);
+                neighbors = new HashSet<>(
+                        nonOrientedGraph.neighborsOf(currentNode));
+                neighbors.retainAll(nonVisitedNodes);
+                if (!neighbors.isEmpty()) {
+                    currentNode = neighbors.iterator().next();
+                }
+            } while (!neighbors.isEmpty());
             ringsList.add(polylineInConstruction.buildClosed());
         }
 
@@ -207,7 +226,7 @@ public final class OSMToGeoTransformer {
      * @param nonVisitedNodes
      * @param currentPoint
      */
-    private void theRingMaker(Graph<OSMNode> nonOrientedGraph,
+/*    private void theRingMaker(Graph<OSMNode> nonOrientedGraph,
             PolyLine.Builder polylineInConstruction,
             Set<OSMNode> nonVisitedNodes, OSMNode currentNode) {
 
@@ -226,7 +245,7 @@ public final class OSMToGeoTransformer {
             theRingMaker(nonOrientedGraph, polylineInConstruction,
                     nonVisitedNodes, neighbors.iterator().next());
         }
-    }
+    }*/
 
     /**
      * Retourne vrai si tous les noeuds du graphe donné possèdent exactement
