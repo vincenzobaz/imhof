@@ -3,9 +3,8 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 
 /**
- * Classe définissant l'objet polyligne fermée. On fournit un constructeur
- * public et une méthode fournissant l'aire comprise dans la polyligne. La
- * classe est immuable.
+ * Classe représentant une polyligne fermée, héritant de <code>PolyLine</code>.
+ * Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -23,7 +22,7 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Retourne vrai, la polyligne est fermée.
+     * Retourne <code>true</code>, la polyligne est fermée.
      */
     @Override
     public boolean isClosed() {
@@ -45,9 +44,8 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Méthode interne qui vérifie si un point se trouve à gauche d'un segment
-     * en étudiant le signe de l'aire du triangle formé par ce point et les
-     * extrémités du segment.
+     * Retourne vrai si le point donné se trouve à gauche du segment formé par
+     * les deux autres points.
      * 
      * @param p
      *            le point dont on veut vérifier la position
@@ -55,16 +53,16 @@ public final class ClosedPolyLine extends PolyLine {
      *            le premier point du segment
      * @param b
      *            le deuxième point du segment
-     * @return true si le point se trouve à gauche du segment, false s'il est à
-     *         sa droite
+     * @return <code>true</code> si le point se trouve à gauche du segment,
+     *         <code>false</code> s'il est à sa droite
      */
     private boolean isOnTheLeft(Point p, Point a, Point b) {
         return (signedTriangleArea(p, a, b) > 0.0);
     }
 
     /**
-     * Méthode interne qui calcule l'aire signée d'un triangle défini par ses
-     * trois sommets.
+     * Calcule et retourne l'aire signée d'un triangle dont les sommets sont les
+     * trois points donnés.
      * 
      * @param a
      *            le premier sommet du triangle
@@ -80,12 +78,12 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
-     * Méthode interne retournant un sommet d'indice généralisé.
+     * Retourne un sommet d'indice généralisé, à partir de l'indice donné.
      * 
      * @param n
      *            l'indice du point qu'on veut généraliser
      * 
-     * @return le point d'indice généralisé n
+     * @return le point d'indice généralisé correspondant à n
      */
     private Point getVertex(int n) {
         return points().get(Math.floorMod(n, points().size()));
@@ -98,8 +96,8 @@ public final class ClosedPolyLine extends PolyLine {
      * @param p
      *            le point dont on veut vérifier l'appartenance à la polyligne
      *            fermée
-     * @return true si le point se trouve dans le polyligne, false dans le cas
-     *         contraire
+     * @return <code>true</code> si le point se trouve dans le polyligne,
+     *         <code>false</code> dans le cas contraire
      */
     public boolean containsPoint(Point p) {
         int index = 0;
