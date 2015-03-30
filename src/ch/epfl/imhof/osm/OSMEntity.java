@@ -3,7 +3,7 @@ package ch.epfl.imhof.osm;
 import ch.epfl.imhof.Attributes;
 
 /**
- * Classe abstraite définissant les entité OpenStreetMaps
+ * Classe abstraite représentant une entité OpenStreetMap.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -31,7 +31,7 @@ public abstract class OSMEntity {
     /**
      * Retourne l'identifiant unique de l'entité.
      * 
-     * @return l'identifiant de l'identité, un long
+     * @return l'identifiant de l'identité, un <code>long</code>
      */
     public long id() {
         return id;
@@ -52,26 +52,28 @@ public abstract class OSMEntity {
      * 
      * @param key
      *            l'attribut dont on teste l'appartenance à l'entité
-     * @return vrai si l'entité possède l'attribut donné, faux dans le cas
-     *         contraire
+     * @return <code>true</code> si l'entité possède l'attribut donné,
+     *         <code>false</code> dans le cas contraire
      */
     public boolean hasAttribute(String key) {
         return attributes.contains(key);
     }
 
     /**
-     * Retourne la valeur de l'attribut donné, ou null si celui-ci n'existe pas.
+     * Retourne la valeur de l'attribut donné, ou <code>null</code> si celui-ci
+     * n'existe pas.
      * 
      * @param key
      *            l'attribut dont on cherche la valeur
-     * @return la valeur associée à l'attribut si elle existe, null sinon
+     * @return la valeur associée à l'attribut si elle existe, <code>null</code>
+     *         sinon
      */
     public String attributeValue(String key) {
         return attributes.get(key);
     }
 
     /**
-     * Bâtisseur de la classe OSMEntity.
+     * Bâtisseur de la classe <code>OSMEntity</code>.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -123,8 +125,8 @@ public abstract class OSMEntity {
          * Retourne vrai si et seulement si l'entité en cours de construction
          * est incomplète.
          * 
-         * @return vrai si l'entité en construction ne peut pas être instanciée,
-         *         faux dans le cas contraire
+         * @return <code>true</code> si l'entité en construction ne peut pas
+         *         être instanciée, <code>false</code> dans le cas contraire
          */
         public boolean isIncomplete() {
             return isIncomplete;

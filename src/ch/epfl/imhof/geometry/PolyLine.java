@@ -41,7 +41,8 @@ public abstract class PolyLine {
     /**
      * Retourne la liste des sommets de la polyligne.
      * 
-     * @return les sommets de la polyligne, sous forme de liste de Point
+     * @return les sommets de la polyligne, sous forme de liste de
+     *         <code>Point</code>
      */
     public List<Point> points() {
         return points;
@@ -50,14 +51,14 @@ public abstract class PolyLine {
     /**
      * Retourne le premier sommet de la polyligne.
      * 
-     * @return le premier point de la liste de Point
+     * @return le premier point de la liste de <code>Point</code>
      */
     public Point firstPoint() {
         return points.get(0);
     }
 
     /**
-     * Bâtisseur de la classe PolyLine.
+     * Bâtisseur de la classe <code>PolyLine</code>.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
