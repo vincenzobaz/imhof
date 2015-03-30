@@ -25,7 +25,7 @@ public class OSMToGeoTransformerTest {
         for (Attributed<Polygon> k : testMap.polygons()){
             int holesNumber = k.value().holes().size();
             if (resultMap.containsKey(holesNumber)){
-                resultMap.put(holesNumber, (resultMap.get(0) + 1));
+                resultMap.put(holesNumber, (resultMap.get(holesNumber) + 1));
             } else {
                 resultMap.put(holesNumber, 1);
             }
@@ -48,7 +48,7 @@ public class OSMToGeoTransformerTest {
         assertTrue(polygon.hasAttribute("building"));
         assertEquals("yes", polygon.attributeValue("building"));
     }
-    
+
     @Test
     public void closedWayWithoutAttributeIsFiltered() {
         OSMMap testMapReadResult = null;
@@ -59,9 +59,9 @@ public class OSMToGeoTransformerTest {
         }
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
-        assertEquals(0, testMap.polygons().size());   
+        assertEquals(0, testMap.polygons().size());
     }
-    
+
     @Test
     public void closedWayWithAreaAttribute() {
         OSMMap testMapReadResult = null;
@@ -78,7 +78,7 @@ public class OSMToGeoTransformerTest {
             assertEquals("1", polygon.attributeValue("layer"));
         }
     }
-    
+
     @Test
     public void closedWayWithAttributes() {
         OSMMap testMapReadResult = null;
@@ -94,8 +94,8 @@ public class OSMToGeoTransformerTest {
             assertFalse(polygon.attributes().isEmpty());
         }
     }
-    
-    
+
+
 
 
     @Test
@@ -138,7 +138,7 @@ public class OSMToGeoTransformerTest {
         assertEquals(8, polyLine.value().points().size());
         assertFalse(polyLine.value().isClosed());
     }
-    
+
     /*
      * creates two buildings from two relations using each two ways
      */
@@ -160,7 +160,7 @@ public class OSMToGeoTransformerTest {
             assertEquals(4, polygon.value().shell().points().size());
         }
     }
-    
+
     /*
      * creates two building from two closed ways containing the building key
      */
@@ -194,7 +194,7 @@ public class OSMToGeoTransformerTest {
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
         assertEquals(2, testMap.polygons().size());
-        
+
         boolean buildingFound = false;
         boolean landUseFound = false;
         for (Attributed<Polygon> polygon : testMap.polygons()) {
@@ -220,9 +220,9 @@ public class OSMToGeoTransformerTest {
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
         assertEquals(2, testMap.polygons().size());
-        
+
         boolean holeFound = false;
-        
+
         for (Attributed<Polygon> polygon : testMap.polygons()) {
             assertTrue(polygon.hasAttribute("building"));
             assertEquals("yes", polygon.attributeValue("building"));
@@ -233,7 +233,7 @@ public class OSMToGeoTransformerTest {
                 holeFound = true;
             }
         }
-        
+
         assertTrue(holeFound);
     }
 
@@ -248,7 +248,7 @@ public class OSMToGeoTransformerTest {
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
         assertEquals(1, testMap.polygons().size());
-        
+
         Attributed<Polygon> polygon = testMap.polygons().get(0);
         assertTrue(polygon.hasAttribute("building"));
         assertEquals("yes", polygon.attributeValue("building"));
@@ -281,7 +281,7 @@ public class OSMToGeoTransformerTest {
 
         assertEquals(0, testMap.polyLines().size());
         assertEquals(1, testMap.polygons().size());
-        
+
         Attributed<Polygon> polygon = testMap.polygons().get(0);
         assertTrue(polygon.hasAttribute("building"));
         assertEquals("yes", polygon.attributeValue("building"));
@@ -326,7 +326,7 @@ public class OSMToGeoTransformerTest {
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
         assertEquals(2, testMap.polygons().size());
-        
+
         for (Attributed<Polygon> polygon : testMap.polygons()) {
             assertTrue(polygon.hasAttribute("building"));
             assertEquals("yes", polygon.attributeValue("building"));
@@ -346,16 +346,16 @@ public class OSMToGeoTransformerTest {
         Map testMap = testTransformer.transform(testMapReadResult);
         assertEquals(0, testMap.polyLines().size());
         assertEquals(2, testMap.polygons().size());
-        
+
         for (Attributed<Polygon> polygon : testMap.polygons()){
             assertTrue(polygon.attributes().contains("building"));
             assertEquals("yes", polygon.attributes().get("building"));
-            
+
             assertEquals(1, polygon.value().holes().size());
             assertEquals(4, polygon.value().shell().points().size());
             assertEquals(4, polygon.value().holes().get(0).points().size());
         }
-        
+
         Polygon firstPolygon = testMap.polygons().get(0).value();
         Polygon secondPolygon = testMap.polygons().get(1).value();
         assertTrue(secondPolygon.holes().get(0).containsPoint(firstPolygon.shell().firstPoint()) ||
@@ -380,7 +380,7 @@ public class OSMToGeoTransformerTest {
         mapRef.put(2, 1);
         assertEquals(mapRef, holeCount);
     }
-    
+
     /*
      * test if correct set of polygon keys are filtered
      */
@@ -396,7 +396,7 @@ public class OSMToGeoTransformerTest {
         assertEquals(0, testMap.polyLines().size());
         assertEquals(6, testMap.polygons().size());
     }
-    
+
     /*
      * test if correct set of polyline keys are filtered
      */

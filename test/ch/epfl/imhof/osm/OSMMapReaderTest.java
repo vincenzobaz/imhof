@@ -84,11 +84,11 @@ public class OSMMapReaderTest {
         boolean landUseFound = false;
         for(int i = 0; i < 2; ++i){
             if (testMapReadResult.ways().get(i).attributes().contains("building")) {
-                assertEquals("yes", testMapReadResult.ways().get(0).attributes().get("building"));
+                assertEquals("yes", testMapReadResult.ways().get(i).attributes().get("building"));
                 buildingFound = true;
             }
             if (testMapReadResult.ways().get(i).attributes().contains("landuse")) {
-                assertEquals("residential", testMapReadResult.ways().get(1).attributes().get("landuse"));
+                assertEquals("residential", testMapReadResult.ways().get(i).attributes().get("landuse"));
                 landUseFound = true;
             }
         }

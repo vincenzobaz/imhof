@@ -10,7 +10,7 @@ package ch.epfl.imhof;
  *            Le type de l'entité à laquelle cette classe associe des attributs.
  */
 public final class Attributed<T> {
-    private final T value;
+    private final T entity;
     private final Attributes attributes;
 
     /**
@@ -20,24 +20,24 @@ public final class Attributed<T> {
      * @param value
      *            l'entité à laquelle on veut associer des attributs
      * @param attributes
-     *            les attributs qu'on veut associer à notre entité
+     *            les attributs qu'on veut associer à l'entité
      */
     public Attributed(T value, Attributes attributes) {
-        this.value = value;
+        this.entity = value;
         this.attributes = attributes;
     }
 
     /**
      * Retourne la valeur à laquelle les attributs sont attachés.
      * 
-     * @return une classe générique attribuée
+     * @return une entité générique attribuée
      */
     public T value() {
-        return value;
+        return entity;
     }
 
     /**
-     * Retourne les attributs attachés à la valeur.
+     * Retourne les attributs attachés à l'entité.
      * 
      * @return les attributs de la classe générique
      */
@@ -52,7 +52,8 @@ public final class Attributed<T> {
      * @param attributeName
      *            l'attribut dont on veut vérifier l'appartenance à l'ensemble
      *            d'attributs
-     * @return vrai si l'attribut donné est présent, false sinon
+     * @return <code>true </code> si l'attribut donné est présent,
+     *         <code>false</code> dans le cas contraire
      */
     public boolean hasAttribute(String attributeName) {
         return attributes.contains(attributeName);
@@ -64,7 +65,8 @@ public final class Attributed<T> {
      * 
      * @param attributeName
      *            l'attribut dont on cherche la valeur
-     * @return la valeur associée à l'attribut
+     * @return la valeur associée à l'attribut <code>null</code> si celle-ci n'est pas
+     *         présente
      */
     public String attributeValue(String attributeName) {
         return attributes.get(attributeName);

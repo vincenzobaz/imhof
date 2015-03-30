@@ -6,7 +6,7 @@ import ch.epfl.imhof.PointGeo;
 /**
  * Conversion des coordonnées sphériques d'un point à la surface de la Terre en
  * coordonnées cartésiennes et viceversa dans le cadre de la projection CH1903.
- * Cette classe ne contient que des méthodes. La classe est immuable.
+ * Cette classe ne contient que des méthodes. La classe est immuable. Elle implémente <code>Projection</code>
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -23,13 +23,13 @@ public final class CH1903Projection implements Projection {
      */
     @Override
     public Point project(PointGeo point) {
-        double lon = (Math.toDegrees(point.longitude()) * 3600 - 26782.5) / 10000;
-        double lat = (Math.toDegrees(point.latitude()) * 3600 - 169028.66) / 10000;
-        double x = 600072.37 + 211455.93 * lon - 10938.51 * lon * lat - 0.36
-                * lon * Math.pow(lat, 2) - 44.54 * Math.pow(lon, 3);
-        double y = 200147.07 + 308807.95 * lat + 3745.25 * Math.pow(lon, 2)
-                + 76.63 * Math.pow(lat, 2) - 194.56 * Math.pow(lon, 2) * lat
-                + 119.79 * Math.pow(lat, 3);
+        double longitude = (Math.toDegrees(point.longitude()) * 3600 - 26782.5) / 10000;
+        double latitude = (Math.toDegrees(point.latitude()) * 3600 - 169028.66) / 10000;
+        double x = 600072.37 + 211455.93 * longitude - 10938.51 * longitude * latitude - 0.36
+                * longitude * Math.pow(latitude, 2) - 44.54 * Math.pow(longitude, 3);
+        double y = 200147.07 + 308807.95 * latitude + 3745.25 * Math.pow(longitude, 2)
+                + 76.63 * Math.pow(latitude, 2) - 194.56 * Math.pow(longitude, 2) * latitude
+                + 119.79 * Math.pow(latitude, 3);
         return new Point(x, y);
     }
 

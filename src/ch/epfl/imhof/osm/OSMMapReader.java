@@ -18,8 +18,9 @@ import java.lang.Double;
 import ch.epfl.imhof.PointGeo;
 
 /**
- * Classe non-instanciable permettant de construire une carte OpenStreetMap à
- * partir de données stockées dans un fichier au format OSM.
+ * Classe non-instanciable permettant de construire un objet <code>OSMMap</code>
+ * (une carte OpenStreetMap) à partir de données stockées dans un fichier au
+ * format OSM.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -27,23 +28,24 @@ import ch.epfl.imhof.PointGeo;
  */
 public final class OSMMapReader {
     /**
-     * Constructeur par défaut de OSMMapReader, privé et vide car la classe
-     * n'est pas instanciable
+     * Constructeur par défaut de la classe, privé et vide car la classe n'est
+     * pas instanciable
      */
     private OSMMapReader() {
     }
 
     /**
-     * Méthode statique qui lit un fichier OSM et construit une OSMMap à partir
-     * de celui-ci. Décompresse le fichier avec gzip si le second paramètre est
-     * vrai.
+     * Méthode statique qui lit un fichier OSM et construit une
+     * <code>OSMMap</code> à partir de celui-ci. Décompresse le fichier avec
+     * gzip si le second paramètre est vrai.
      * 
      * @param fileName
      *            le nom du fichier OSM à lire
      * @param unGZip
-     *            booléen, true si et seulement si le fichier OSM est sous forme
-     *            d'archive à décompresser
-     * @return la nouvelle Map, construite à partir du fichier OSM donné
+     *            <code>true</code> si le fichier OSM à lire est fourni sous
+     *            forme d'archive à décompresser
+     * @return un nouvel objet de type <code>Map</code>, construit à partir du
+     *         fichier OSM donné
      * @throws IOException
      *             lève une exception en cas d'erreur d'entrée/sortie
      * @throws SAXException
@@ -52,13 +54,15 @@ public final class OSMMapReader {
      */
     public static OSMMap readOSMFile(String fileName, boolean unGZip)
             throws IOException, SAXException {
-        OSMMap.Builder mapToBe = new OSMMap.Builder();
+        OSMMap.Builder mapBuilder = new OSMMap.Builder();
 
-        try (InputStream i = new FileInputStream(fileName)) {
-            XMLReader r = XMLReaderFactory.createXMLReader();
+        try (InputStream inputStream = new FileInputStream(fileName)) {
+            XMLReader reader = XMLReaderFactory.createXMLReader();
 
-            r.setContentHandler(new DefaultHandler() {
-                OSMEntity.Builder newEntity;
+            // On définit une classe anonyme héritant de DefaultHandler pour
+            // gestion du contenu du fichier osm
+            reader.setContentHandler(new DefaultHandler() {
+                OSMEntity.Builder entityBuilder;
 
                 /**
                  * Redéfinition de la méthode startElement du gestionnaire de
@@ -68,7 +72,14 @@ public final class OSMMapReader {
                 @Override
                 public void startElement(String uri, String lName,
                         String qName, Attributes atts) throws SAXException {
+                    // Cette variable contient le id ou la référence de l'objet
+                    // en train d'être construit
                     Long idOrRef = null;
+                    // On vérifie d'abord si le champ id et le champ ref sont
+                    // tous les deux nuls. Si ce n'est pas le cas on peut
+                    // stocker dans idOrRef l'id ou la référence de l'objet en
+                    // cours de construction en choisissant celui qui n'est pas
+                    // nul
                     if (!(atts.getValue("id") == null && atts.getValue("ref") == null)) {
                         idOrRef = (atts.getValue("ref") == null) ? Long
                                 .parseLong(atts.getValue("id")) : Long
@@ -77,58 +88,71 @@ public final class OSMMapReader {
 
                     switch (qName) {
                     case "node":
-                        newEntity = new OSMNode.Builder(idOrRef, new PointGeo(
-                                Math.toRadians(Double.parseDouble(atts
-                                        .getValue("lon"))), Math
-                                        .toRadians(Double.parseDouble(atts
+                        entityBuilder = new OSMNode.Builder(idOrRef,
+                                new PointGeo(Math.toRadians(Double
+                                        .parseDouble(atts.getValue("lon"))),
+                                        Math.toRadians(Double.parseDouble(atts
                                                 .getValue("lat")))));
                         break;
                     case "way":
-                        newEntity = new OSMWay.Builder(idOrRef);
+                        entityBuilder = new OSMWay.Builder(idOrRef);
                         break;
                     case "nd":
-                        OSMNode nodeOfWay = mapToBe.nodeForId(idOrRef);
+                        OSMNode nodeOfWay = mapBuilder.nodeForId(idOrRef);
+                        // On vérifie si le point a été déjà reçu par le
+                        // bâtisseur de la map. Si c'est le cas on ajoute le
+                        // point à l'entité en construction, sinon on déclare
+                        // l'entité en costruction incomplète.
                         if (nodeOfWay == null) {
-                            newEntity.setIncomplete();
+                            entityBuilder.setIncomplete();
                         } else {
-                            ((OSMWay.Builder) newEntity).addNode(nodeOfWay);
+                            ((OSMWay.Builder) entityBuilder).addNode(nodeOfWay);
                         }
                         break;
                     case "relation":
-                        newEntity = new OSMRelation.Builder(idOrRef);
+                        entityBuilder = new OSMRelation.Builder(idOrRef);
                         break;
                     case "member":
+                        // Chaque fois qu'on traite un member il nous faut lire
+                        // son type, qui est reçu comme String, et le
+                        // "convertit" en un objet de type Type (énumeration
+                        // définie dans la classe OSMRelation.Member)
+                        // En plus on ne peut procéder à la construction des
+                        // objets que si ceux-ci ne sont pas incomplets.
                         String role = atts.getValue("role");
                         switch (atts.getValue("type")) {
                         case "node":
-                            OSMNode nodeOfRelation = mapToBe.nodeForId(idOrRef);
+                            OSMNode nodeOfRelation = mapBuilder
+                                    .nodeForId(idOrRef);
                             if (nodeOfRelation == null) {
-                                newEntity.setIncomplete();
-                            } else if (!newEntity.isIncomplete()) {
-                                ((OSMRelation.Builder) newEntity).addMember(
-                                        OSMRelation.Member.Type.NODE, role,
-                                        nodeOfRelation);
+                                entityBuilder.setIncomplete();
+                            } else if (!entityBuilder.isIncomplete()) {
+                                ((OSMRelation.Builder) entityBuilder)
+                                        .addMember(
+                                                OSMRelation.Member.Type.NODE,
+                                                role, nodeOfRelation);
                             }
                             break;
                         case "way":
-                            OSMWay wayOfRelation = mapToBe.wayForId(idOrRef);
+                            OSMWay wayOfRelation = mapBuilder.wayForId(idOrRef);
                             if (wayOfRelation == null) {
-                                newEntity.setIncomplete();
-                            } else if (!newEntity.isIncomplete()) {
-                                ((OSMRelation.Builder) newEntity).addMember(
-                                        OSMRelation.Member.Type.WAY, role,
-                                        wayOfRelation);
+                                entityBuilder.setIncomplete();
+                            } else if (!entityBuilder.isIncomplete()) {
+                                ((OSMRelation.Builder) entityBuilder)
+                                        .addMember(OSMRelation.Member.Type.WAY,
+                                                role, wayOfRelation);
                             }
                             break;
                         case "relation":
-                            OSMRelation relationOfRelation = mapToBe
+                            OSMRelation relationOfRelation = mapBuilder
                                     .relationForId(idOrRef);
                             if (relationOfRelation == null) {
-                                newEntity.setIncomplete();
-                            } else if (!newEntity.isIncomplete()) {
-                                ((OSMRelation.Builder) newEntity).addMember(
-                                        OSMRelation.Member.Type.RELATION, role,
-                                        relationOfRelation);
+                                entityBuilder.setIncomplete();
+                            } else if (!entityBuilder.isIncomplete()) {
+                                ((OSMRelation.Builder) entityBuilder)
+                                        .addMember(
+                                                OSMRelation.Member.Type.RELATION,
+                                                role, relationOfRelation);
                             }
                             break;
                         default:
@@ -136,7 +160,7 @@ public final class OSMMapReader {
                                     "Le type de membre rencontré n'est pas défini.");
                         }
                     case "tag":
-                        newEntity.setAttribute(atts.getValue("k"),
+                        entityBuilder.setAttribute(atts.getValue("k"),
                                 atts.getValue("v"));
                         break;
                     }
@@ -146,33 +170,44 @@ public final class OSMMapReader {
                  * Redéfinition de la méthode endElement du gestionnaire de
                  * contenu qui va ajouter les éléments créés par startElement à
                  * la carte en construction, s'ils sont complets.
+                 * 
                  */
                 @Override
                 public void endElement(String uri, String lName, String qName) {
-                    if (newEntity != null && !newEntity.isIncomplete()) {
+                    // Nous devons vérifier encore une fois que l'entité en
+                    // cours de construction n'est pas null ou incomplète avant
+                    // d'appeler sa méthode build()
+                    if (entityBuilder != null && !entityBuilder.isIncomplete()) {
                         switch (qName) {
                         case "node":
-                            mapToBe.addNode(((OSMNode.Builder) newEntity)
-                                    .build());
+                            mapBuilder
+                                    .addNode(((OSMNode.Builder) entityBuilder)
+                                            .build());
                             break;
                         case "way":
-                            mapToBe.addWay(((OSMWay.Builder) newEntity).build());
+                            mapBuilder.addWay(((OSMWay.Builder) entityBuilder)
+                                    .build());
                             break;
                         case "relation":
-                            mapToBe.addRelation(((OSMRelation.Builder) newEntity)
-                                    .build());
+                            mapBuilder
+                                    .addRelation(((OSMRelation.Builder) entityBuilder)
+                                            .build());
                             break;
                         }
                     }
                 }
             });
 
+            // On appelle la méthode parse de reader sur le bon flot d'entrée:
+            // le flot InputStream si on a un fichier osm ou le flot
+            // GZInputStream(inputStream)) si on doit lire un fichier en format
+            // gzip.
             if (unGZip) {
-                r.parse(new InputSource(new GZIPInputStream(i)));
+                reader.parse(new InputSource(new GZIPInputStream(inputStream)));
             } else {
-                r.parse(new InputSource(i));
+                reader.parse(new InputSource(inputStream));
             }
-            return mapToBe.build();
+            return mapBuilder.build();
         }
     }
 }

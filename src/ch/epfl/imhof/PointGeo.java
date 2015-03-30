@@ -64,7 +64,8 @@ public final class PointGeo {
      * @param parameter
      *            modificateur d'intervalle, 1.0 pour la longitude, 2.0 pour la
      *            latitude
-     * @return true si la coordonnée est invalide, false sinon
+     * @return <code>true</code> si la coordonnée est invalide,
+     *         <code>false</code> dans le cas contraire.
      */
     private boolean coordinateIsInvalid(double coordinate, double parameter) {
         return (coordinate < -Math.PI / parameter || coordinate > Math.PI

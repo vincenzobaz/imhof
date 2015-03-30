@@ -59,24 +59,26 @@ public class OSMToGeoTransformerTestPerso {
                 + fileMap.relations().size());
         System.out.println("L'attribut de polygon est present? "
                 + fileMap.relations().get(0).hasAttribute("type"));
- 
-        System.out.println("Nombre de polylines dans Map " + mappa.polyLines().size());
-        System.out.println("Nombre de polygons dans Map " + mappa.polygons().size());
+
+        System.out.println("Nombre de polylines dans Map "
+                + mappa.polyLines().size());
+        System.out.println("Nombre de polygons dans Map "
+                + mappa.polygons().size());
         System.out.println();
-       /*
+        /*
          * OSMToGeoTransformer convertisseur = new OSMToGeoTransformer( new
          * CH1903Projection()); Map prova = convertisseur.transform(fileMap);
          * System.out.println("Nombre de polyline " + prova.polyLines().size());
          * System.out.println("Nombre de polygons " + prova.polygons().size());
          */
     }
-    
+
     @Test
-    public void testAll(){
-//       transformMarche("lausanne.osm"); 
- //      transformMarche("berne.osm");
-  //     transformMarche("interlaken.osm");
-       transformMarche("lc.osm");
+    public void testAll() {
+        // transformMarche("lausanne.osm");
+        transformMarche("berne.osm");
+        transformMarche("interlaken.osm");
+        transformMarche("lc.osm");
     }
 
     /*
