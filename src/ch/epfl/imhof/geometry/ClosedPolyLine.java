@@ -44,6 +44,32 @@ public final class ClosedPolyLine extends PolyLine {
     }
 
     /**
+     * Retourne vrai si et seulement si le point donné est à l'intérieur de la
+     * polyligne.
+     * 
+     * @param p
+     *            le point dont on veut vérifier l'appartenance à la polyligne
+     *            fermée
+     * @return <code>true</code> si le point se trouve dans le polyligne,
+     *         <code>false</code> dans le cas contraire
+     */
+    public boolean containsPoint(Point p) {
+        int index = 0;
+        for (int i = 0; i < points().size(); i++) {
+            if (getVertex(i).y() <= p.y()) {
+                if (getVertex(i + 1).y() > p.y()
+                        && isOnTheLeft(p, getVertex(i), getVertex(i + 1))) {
+                    index++;
+                }
+            } else if (getVertex(i + 1).y() <= p.y()
+                    && isOnTheLeft(p, getVertex(i + 1), getVertex(i))) {
+                index--;
+            }
+        }
+        return index != 0;
+    }
+
+    /**
      * Retourne vrai si le point donné se trouve à gauche du segment formé par
      * les deux autres points.
      * 
@@ -87,31 +113,5 @@ public final class ClosedPolyLine extends PolyLine {
      */
     private Point getVertex(int n) {
         return points().get(Math.floorMod(n, points().size()));
-    }
-
-    /**
-     * Retourne vrai si et seulement si le point donné est à l'intérieur de la
-     * polyligne.
-     * 
-     * @param p
-     *            le point dont on veut vérifier l'appartenance à la polyligne
-     *            fermée
-     * @return <code>true</code> si le point se trouve dans le polyligne,
-     *         <code>false</code> dans le cas contraire
-     */
-    public boolean containsPoint(Point p) {
-        int index = 0;
-        for (int i = 0; i < points().size(); i++) {
-            if (getVertex(i).y() <= p.y()) {
-                if (getVertex(i + 1).y() > p.y()
-                        && isOnTheLeft(p, getVertex(i), getVertex(i + 1))) {
-                    index++;
-                }
-            } else if (getVertex(i + 1).y() <= p.y()
-                    && isOnTheLeft(p, getVertex(i + 1), getVertex(i))) {
-                index--;
-            }
-        }
-        return index != 0;
     }
 }

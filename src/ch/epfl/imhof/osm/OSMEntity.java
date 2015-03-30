@@ -86,7 +86,7 @@ public abstract class OSMEntity {
          */
         protected final long id;
         private boolean isIncomplete;
-        protected final Attributes.Builder attributesInProgress;
+        protected final Attributes.Builder attributesBuilder;
 
         /**
          * Construit un bâtisseur pour une entité OSM identifiée par l'entier
@@ -97,7 +97,7 @@ public abstract class OSMEntity {
          */
         public Builder(long id) {
             this.id = id;
-            attributesInProgress = new Attributes.Builder();
+            attributesBuilder = new Attributes.Builder();
         }
 
         /**
@@ -111,7 +111,7 @@ public abstract class OSMEntity {
          *            la valeur de l'attribut
          */
         public void setAttribute(String key, String value) {
-            attributesInProgress.put(key, value);
+            attributesBuilder.put(key, value);
         }
 
         /**

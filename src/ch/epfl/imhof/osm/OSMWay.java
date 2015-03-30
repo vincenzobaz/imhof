@@ -160,7 +160,7 @@ public final class OSMWay extends OSMEntity {
                 throw new IllegalStateException(
                         "Le chemin en cours de construction est incomplet.");
             }
-            return new OSMWay(this.id, nodes, this.attributesInProgress.build());
+            return new OSMWay(this.id, nodes, this.attributesBuilder.build());
         }
     }
 }

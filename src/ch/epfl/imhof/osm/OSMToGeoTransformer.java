@@ -25,15 +25,18 @@ import ch.epfl.imhof.projection.Projection;
  *
  */
 public final class OSMToGeoTransformer {
+    // Ensemble contenant les attributs qualifiant une surface
     public static final Set<String> SURFACE_ATTRIBUTES = new HashSet<>(
             Arrays.asList(new String[] { "aeroway", "amenity", "building",
                     "harbour", "historic", "landuse", "leisure", "man_made",
                     "military", "natural", "office", "place", "power",
                     "public_transport", "shop", "sport", "tourism", "water",
                     "waterway", "wetland" }));
+    // Ensemble contenant les attributs à garder pour une polyligne
     public static final Set<String> POLYLINE_ATTRIBUTES = new HashSet<>(
             Arrays.asList(new String[] { "bridge", "highway", "layer",
                     "man_made", "railway", "tunnel", "waterway" }));
+    // Ensemble contenant les attributs à garder pour un polygone
     public static final Set<String> POLYGON_ATTRIBUTES = new HashSet<>(
             Arrays.asList(new String[] { "building", "landuse", "layer",
                     "leisure", "natural", "waterway" }));
@@ -69,32 +72,6 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Convertit les relations de la carte OSM en polygones attribués et les
-     * ajoute à la carte en construction.
-     * 
-     * @param relations
-     *            la liste des relations de la carte OSM à convertir
-     */
-    private void relationsConversion(List<OSMRelation> relations) {
-        // Parcours des relations de la carte OSM
-        for (OSMRelation relationToConvert : relations) {
-            Attributes filteredAttributes = relationToConvert.attributes()
-                    .keepOnlyKeys(POLYGON_ATTRIBUTES);
-
-            // Teste si la relation doit être convertie en polygone
-            if ("multipolygon".equals(relationToConvert.attributeValue("type"))
-                    && !filteredAttributes.isEmpty()) {
-                // Parcours de la liste de polygones attribués retournée par
-                // assemblePolygon, et ajout au constructeur de la carte
-                for (Attributed<Polygon> polygon : assemblePolygon(
-                        relationToConvert, filteredAttributes)) {
-                    mapBuilder.addPolygon(polygon);
-                }
-            }
-        }
-    }
-
-    /**
      * Convertit les chemins de la carte OSM en entités géométriques attribuées
      * et les ajoute à la carte en construction.
      * 
@@ -109,7 +86,8 @@ public final class OSMToGeoTransformer {
                     wayIsAPolygon);
 
             // Teste si le chemin doit être converti en polygone, polyligne, ou
-            // ignoré
+            // ignoré, et ajoute l'entité correspondante à la carte en
+            // construction
             if (wayIsAPolygon && !filteredAttributes.isEmpty()) {
                 mapBuilder.addPolygon(new Attributed<>(new Polygon(
                         OSMWayToClosedPolyLine(wayToConvert)),
@@ -119,6 +97,87 @@ public final class OSMToGeoTransformer {
                         OSMWayToPolyLine(wayToConvert), filteredAttributes));
             }
         }
+    }
+
+    /**
+     * Convertit les relations de la carte OSM en polygones attribués et les
+     * ajoute à la carte en construction.
+     * 
+     * @param relations
+     *            la liste des relations de la carte OSM à convertir
+     */
+    private void relationsConversion(List<OSMRelation> relations) {
+        // Parcours des relations de la carte OSM
+        for (OSMRelation relationToConvert : relations) {
+            Attributes filteredAttributes = relationToConvert.attributes()
+                    .keepOnlyKeys(POLYGON_ATTRIBUTES);
+
+            // Teste si la relation doit être convertie en polygone, si oui
+            // appelle la méthode assemblePolygon
+            if ("multipolygon".equals(relationToConvert.attributeValue("type"))
+                    && !filteredAttributes.isEmpty()) {
+                // Parcours de la liste de polygones attribués retournée par
+                // assemblePolygon, et ajout au constructeur de la carte
+                for (Attributed<Polygon> polygon : assemblePolygon(
+                        relationToConvert, filteredAttributes)) {
+                    mapBuilder.addPolygon(polygon);
+                }
+            }
+        }
+    }
+
+    /**
+     * Retourne la liste des polygones attribués extraits de la relation donnée,
+     * en leur attachant les attributs donnés.
+     * 
+     * @param relation
+     *            la relation dont on extrait les polygones
+     * @param attributes
+     *            les attributs à attacher aux polygones
+     * @return une liste de polygones attribués
+     */
+    private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
+            Attributes attributes) {
+        List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
+        List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
+
+        // Retourne une liste vide si le polygone ne possède pas d'anneau
+        // extérieur, donc pas d'enveloppe.
+        if (outerRings.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Tri de la liste des anneaux extérieurs en fonction de leur aire,
+        // utilisant une fonction anonyme redéfinissant un comparateur.
+        outerRings.sort((ring1, ring2) -> Double.compare(ring1.area(),
+                ring2.area()));
+
+        List<Attributed<Polygon>> relationPolygons = new ArrayList<>();
+
+        // Parcours des anneaux extérieurs
+        for (ClosedPolyLine outerRing : outerRings) {
+            List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
+
+            // Parcours des anneaux intérieurs
+            for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
+                    .hasNext();) {
+                ClosedPolyLine potentialRing = iterator.next();
+
+                // Ajout de l'anneau intérieur courant à la liste des trous s'il
+                // est contenu dans l'anneau extérieur courant, et suppression
+                // de celui-ci de la liste des anneaux intérieurs le cas
+                // échéant.
+                if (outerRing.containsPoint(potentialRing.firstPoint())
+                        && outerRing.area() > potentialRing.area()) {
+                    attachedInnerRings.add(potentialRing);
+                    iterator.remove();
+                }
+            }
+            relationPolygons.add(new Attributed<>(new Polygon(outerRing,
+                    attachedInnerRings), attributes));
+        }
+
+        return relationPolygons;
     }
 
     /**
@@ -146,8 +205,7 @@ public final class OSMToGeoTransformer {
         Set<OSMNode> nonVisitedNodes = new HashSet<>(nonOrientedGraph.nodes());
 
         // Parcours de l'ensemble des noeuds non visités du graphe, tant qu'il
-        // en reste au
-        // moins un
+        // en reste au moins un
         while (!nonVisitedNodes.isEmpty()) {
             PolyLine.Builder polylineInConstruction = new PolyLine.Builder();
             Set<OSMNode> neighbors;
@@ -160,7 +218,7 @@ public final class OSMToGeoTransformer {
              * et on construit un ensemble qui est l'intersection de l'ensemble
              * des voisins du noeud courant et de l'ensemble des noeuds
              * non-visités. Si cet ensemble est non-vide, le prochain noeud est
-             * un des éléments de cet ensemble. Sinon la boucle se termine.
+             * un de ses éléments. Sinon la boucle se termine.
              */
             do {
                 polylineInConstruction.addPoint(projection.project(currentNode
@@ -204,56 +262,26 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Retourne la liste des polygones attribués extraits de la relation donnée,
-     * en leur attachant les attributs donnés.
+     * Construit un graphe non-orienté à partir des noeuds des chemins donnés.
+     * Ajoute une arête entre deux noeuds s'ils se suivent dans le même chemin.
      * 
-     * @param relation
-     *            la relation dont on extrait les polygones
-     * @param attributes
-     *            les attributs à attacher aux polygones
-     * @return une liste de polygones attribués
+     * @param ways
+     *            la liste des chemins dont les noeuds vont former le graphe
+     * @return le graphe non-orienté
      */
-    private List<Attributed<Polygon>> assemblePolygon(OSMRelation relation,
-            Attributes attributes) {
-        List<ClosedPolyLine> innerRings = ringsForRole(relation, "inner");
-        List<ClosedPolyLine> outerRings = ringsForRole(relation, "outer");
+    private Graph<OSMNode> graphCreator(List<OSMWay> ways) {
+        Graph.Builder<OSMNode> graphBuilder = new Graph.Builder<>();
 
-        // Retourne une liste vide si le polygone ne possède pas d'anneau
-        // extérieur, donc pas d'enveloppe.
-        if (outerRings.isEmpty()) {
-            return Collections.emptyList();
-        }
+        for (OSMWay way : ways) {
+            List<OSMNode> nodes = way.nodes();
+            graphBuilder.addNode(nodes.get(0));
 
-        // Tri de la liste des anneaux extérieurs en fonction de leur aire,
-        // utilisant une fonction anonyme redéfinissant un comparateur.
-        outerRings.sort((ring1, ring2) -> Double.compare(ring1.area(),
-                ring2.area()));
-
-        List<Attributed<Polygon>> relationPolygons = new ArrayList<>();
-
-        // Parcours des anneaux extérieurs
-        for (ClosedPolyLine outerRing : outerRings) {
-            List<ClosedPolyLine> attachedInnerRings = new ArrayList<>();
-
-            // Parcours des anneaux intérieurs
-            for (Iterator<ClosedPolyLine> iterator = innerRings.iterator(); iterator
-                    .hasNext();) {
-                ClosedPolyLine potentialRing = iterator.next();
-
-                // Ajout de l'anneau intérieur courant à la liste des trous s'il
-                // est contenu dans l'anneau extérieur courant, et suppression
-                // de celui-ci de la liste le cas échéant.
-                if (outerRing.containsPoint(potentialRing.firstPoint())
-                        && outerRing.area() > potentialRing.area()) {
-                    attachedInnerRings.add(potentialRing);
-                    iterator.remove();
-                }
+            for (int i = 1; i < nodes.size(); ++i) {
+                graphBuilder.addNode(nodes.get(i));
+                graphBuilder.addEdge(nodes.get(i), nodes.get(i - 1));
             }
-            relationPolygons.add(new Attributed<>(new Polygon(outerRing,
-                    attachedInnerRings), attributes));
         }
-
-        return relationPolygons;
+        return graphBuilder.build();
     }
 
     /**
@@ -281,30 +309,10 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Construit un graphe non-orienté à partir des noeuds des chemins donnés.
-     * 
-     * @param ways
-     *            la liste des chemins dont les noeuds vont former le graphe
-     * @return le graphe non-orienté
-     */
-    private Graph<OSMNode> graphCreator(List<OSMWay> ways) {
-        Graph.Builder<OSMNode> graphBuilder = new Graph.Builder<>();
-
-        for (OSMWay way : ways) {
-            List<OSMNode> nodes = way.nodes();
-            graphBuilder.addNode(nodes.get(0));
-
-            for (int i = 1; i < nodes.size(); ++i) {
-                graphBuilder.addNode(nodes.get(i));
-                graphBuilder.addEdge(nodes.get(i), nodes.get(i - 1));
-            }
-        }
-        return graphBuilder.build();
-    }
-
-    /**
      * Retourne une version filtrée des attributs du chemin donné. Utilise les
      * ensembles d'attributs à garder stockés de façon statique dans la classe.
+     * Détermine si le chemin est un polygone ou une polyligne grâce au booléen
+     * passé en paramètre.
      * 
      * @param way
      *            le chemin dont on veut filtrer les attributs
@@ -377,7 +385,8 @@ public final class OSMToGeoTransformer {
     }
 
     /**
-     * Retourne vrai si le chemin donné forme un polygone.
+     * Retourne vrai si le chemin donné forme un polygone, c'est-à-dire s'il est
+     * fermé et qu'il possède un attribut le qualifiant de surface.
      * 
      * @param way
      *            le chemin à tester

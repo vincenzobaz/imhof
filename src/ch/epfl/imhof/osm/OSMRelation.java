@@ -164,7 +164,7 @@ public final class OSMRelation extends OSMEntity {
                         "La relation en cours de construction est incomplète.");
             }
             return new OSMRelation(this.id, members,
-                    this.attributesInProgress.build());
+                    this.attributesBuilder.build());
         }
     }
 }
