@@ -3,8 +3,8 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 
 /**
- * Classe définisssant l'objet Polyligne ouvert. On fournit un constructeur
- * public. La classe est immuable.
+ * Classe représentant une polyligne ouverte, héritant de <code>PolyLine</code>.
+ * Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -23,7 +23,7 @@ public final class OpenPolyLine extends PolyLine {
     }
 
     /**
-     * Retourne faux, la polyligne est ouverte.
+     * Retourne <code>false</code>, la polyligne est ouverte.
      */
     @Override
     public boolean isClosed() {
