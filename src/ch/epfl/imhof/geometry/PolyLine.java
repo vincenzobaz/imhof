@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Classe abstraite définissant l'entité polyligne. On fournit deux getters:
- * l'un pour le premier point et l'autre pour la liste entière. La classe est
- * immuable
+ * Classe abstraite représentant une polyligne. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -35,7 +33,8 @@ public abstract class PolyLine {
     /**
      * Retourne vrai si et seulement si la polyligne est fermée.
      * 
-     * @return true si la polyligne est fermée, false dans le cas contraire
+     * @return <code>true</code> si la polyligne est fermée, <code>false</code>
+     *         dans le cas contraire
      */
     public abstract boolean isClosed();
 
