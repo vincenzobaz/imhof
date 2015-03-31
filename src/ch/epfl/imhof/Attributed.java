@@ -1,7 +1,7 @@
 package ch.epfl.imhof;
 
 /**
- * Cette classe représente une entité de type T dotée d'Attributes.
+ * Cette classe représente une entité de type T dotée d'attributs.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -60,13 +60,13 @@ public final class Attributed<T> {
     }
 
     /**
-     * Retourne la valeur associée à l'attribut donné, ou null si celui-ci
-     * n'existe pas.
+     * Retourne la valeur associée à l'attribut donné, ou <code>null</code> si
+     * celui-ci n'existe pas.
      * 
      * @param attributeName
      *            l'attribut dont on cherche la valeur
-     * @return la valeur associée à l'attribut <code>null</code> si celle-ci n'est pas
-     *         présente
+     * @return la valeur associée à l'attribut, ou <code>null</code> si celle-ci
+     *         n'est pas présente
      */
     public String attributeValue(String attributeName) {
         return attributes.get(attributeName);

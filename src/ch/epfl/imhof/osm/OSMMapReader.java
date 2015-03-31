@@ -60,7 +60,7 @@ public final class OSMMapReader {
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
             // On définit une classe anonyme héritant de DefaultHandler pour
-            // gestion du contenu du fichier osm
+            // la gestion du contenu du fichier osm
             reader.setContentHandler(new DefaultHandler() {
                 OSMEntity.Builder entityBuilder;
 
@@ -75,15 +75,16 @@ public final class OSMMapReader {
                     // Cette variable contient le id ou la référence de l'objet
                     // en train d'être construit
                     Long idOrRef = null;
+                    String id = atts.getValue("id");
+                    String ref = atts.getValue("ref");
                     // On vérifie d'abord si le champ id et le champ ref sont
                     // tous les deux nuls. Si ce n'est pas le cas on peut
                     // stocker dans idOrRef l'id ou la référence de l'objet en
                     // cours de construction en choisissant celui qui n'est pas
-                    // nul
-                    if (!(atts.getValue("id") == null && atts.getValue("ref") == null)) {
-                        idOrRef = (atts.getValue("ref") == null) ? Long
-                                .parseLong(atts.getValue("id")) : Long
-                                .parseLong(atts.getValue("ref"));
+                    // nul.
+                    if (!(id == null && ref == null)) {
+                        idOrRef = (ref == null) ? Long.parseLong(id) : Long
+                                .parseLong(ref);
                     }
 
                     switch (qName) {
@@ -102,7 +103,7 @@ public final class OSMMapReader {
                         // On vérifie si le point a été déjà reçu par le
                         // bâtisseur de la map. Si c'est le cas on ajoute le
                         // point à l'entité en construction, sinon on déclare
-                        // l'entité en costruction incomplète.
+                        // l'entité en construction incomplète.
                         if (nodeOfWay == null) {
                             entityBuilder.setIncomplete();
                         } else {
@@ -115,7 +116,7 @@ public final class OSMMapReader {
                     case "member":
                         // Chaque fois qu'on traite un member il nous faut lire
                         // son type, qui est reçu comme String, et le
-                        // "convertit" en un objet de type Type (énumeration
+                        // "convertit" en un objet de type Type (énumération
                         // définie dans la classe OSMRelation.Member)
                         // En plus on ne peut procéder à la construction des
                         // objets que si ceux-ci ne sont pas incomplets.

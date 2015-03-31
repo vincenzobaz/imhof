@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 /**
  * Classe représentant un ensemble d'attributs, chacun étant un couple
- * clé/valeur.
+ * clé/valeur. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -44,8 +44,8 @@ public final class Attributes {
      * 
      * @param key
      *            la clé dont on cherche l'appartenance à l'ensemble
-     *            d'attributs, sous forme de String
-     * @return t<code>true</code> si la clé appartient à la liste d'attributs,
+     *            d'attributs, sous forme de <code>String</code>
+     * @return <code>true</code> si la clé appartient à la liste d'attributs,
      *         <code>false</code> dans le cas contraire
      * 
      */
@@ -55,11 +55,12 @@ public final class Attributes {
 
     /**
      * Retourne la valeur associée à la clef donnée, si elle existe. Retourne
-     * null si la clef n'est pas présente dans la table associative.
+     * <code>null</code> si la clef n'est pas présente dans la table
+     * associative.
      * 
      * @param key
      *            la clé dont on cherche la valeur associée, sous forme de
-     *            String
+     *            <code>String</code>
      * @return la valeur associée à la clé passée en paramètre si elle existe,
      *         <code>null</code> sinon
      */
@@ -73,9 +74,9 @@ public final class Attributes {
      * 
      * @param key
      *            la clé dont on cherche la valeur associée, sous forme de
-     *            String
+     *            <code>String</code>
      * @param defaultValue
-     *            la valeur par défaut, une String
+     *            la valeur par défaut, une <code>String</code>
      * @return la valeur associée à la clé passée en paramètre, la valeur par
      *         défaut si aucune valeur ne lui est associée
      */
@@ -89,9 +90,10 @@ public final class Attributes {
      * un entier valide.
      * 
      * @param key
-     *            la clé dont on cherche l'entier associé, sous forme de String
+     *            la clé dont on cherche l'entier associé, sous forme de
+     *            <code>String</code>
      * @param defaultValue
-     *            la valeur par défaut, un int
+     *            la valeur par défaut, un <code>int</code>
      * @return l'entier associé à la clé passée en paramètre s'il existe, la
      *         valeur par défaut sinon
      */
@@ -108,7 +110,7 @@ public final class Attributes {
      * nom figure dans l'ensemble passé.
      * 
      * @param keysToKeep
-     *            les valeurs qu'on veut garder, sous forme de Set
+     *            les valeurs qu'on veut garder, sous forme de <code>Set</code>
      * @return un objet de type <code>Attributes</code> filtré
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
