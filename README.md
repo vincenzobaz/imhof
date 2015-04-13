@@ -80,15 +80,15 @@
 
 ## [Etape 7](http://cs108.epfl.ch/p07_drawing-style.html)
 - Color
-	- [ ] code
+	- [x] code
 	- [ ] doc
 	- [ ] test
 - LineStyle
-	- [ ] code
+	- [x] code
 	- [ ] doc
 	- [ ] test
 - Filters
-	- [ ] code
+	- [x] code
 	- [ ] doc
 	- [ ] test
 
