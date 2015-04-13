@@ -77,3 +77,22 @@
 	- Trucs à vérifier: modification d'éléments immuables, validité des données/conditions, performances, ConcurrentModificationException
 	- La creation des polygons ne marche pas. addEdge de Graphe lance une illegalargumentexception.
 	- Avant le rendu: vérifier immuabilité de toutes les classes, notamment pour les getters, retourner des copies au lieu de l'attribut lui-même.
+
+## [Etape 7](http://cs108.epfl.ch/p07_drawing-style.html)
+- Color
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+- LineStyle
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+- Filters
+	- [ ] code
+	- [ ] doc
+	- [ ] test
+
+- Point (classe étape 1, ajouter une méthode statique)
+	- [ ] code
+	- [ ] doc
+	- [ ] test
