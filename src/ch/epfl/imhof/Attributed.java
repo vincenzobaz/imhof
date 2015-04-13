@@ -1,16 +1,16 @@
 package ch.epfl.imhof;
 
 /**
- * Cette classe représente une entité de type T dotée d'attributs.
+ * Cette classe représente un objet de type T doté d'attributs.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  * @param <T>
- *            Le type de l'entité à laquelle cette classe associe des attributs.
+ *            Le type d'objet auquel cette classe associe des attributs.
  */
 public final class Attributed<T> {
-    private final T entity;
+    private final T value;
     private final Attributes attributes;
 
     /**
@@ -18,28 +18,28 @@ public final class Attributed<T> {
      * donnés.
      * 
      * @param value
-     *            l'entité à laquelle on veut associer des attributs
+     *            l'objet auquel on veut associer des attributs
      * @param attributes
-     *            les attributs qu'on veut associer à l'entité
+     *            les attributs qu'on veut associer à l'objet
      */
     public Attributed(T value, Attributes attributes) {
-        this.entity = value;
+        this.value = value;
         this.attributes = attributes;
     }
 
     /**
      * Retourne la valeur à laquelle les attributs sont attachés.
      * 
-     * @return une entité générique attribuée
+     * @return un objet générique attribué
      */
     public T value() {
-        return entity;
+        return value;
     }
 
     /**
-     * Retourne les attributs attachés à l'entité.
+     * Retourne les attributs attachés à la valeur.
      * 
-     * @return les attributs de la classe générique
+     * @return les attributs de l'objet
      */
     public Attributes attributes() {
         return attributes;

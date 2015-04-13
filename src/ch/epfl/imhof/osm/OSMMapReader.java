@@ -86,7 +86,6 @@ public final class OSMMapReader {
                         idOrRef = (ref == null) ? Long.parseLong(id) : Long
                                 .parseLong(ref);
                     }
-
                     switch (qName) {
                     case "node":
                         entityBuilder = new OSMNode.Builder(idOrRef,

@@ -1,9 +1,6 @@
 package ch.epfl.imhof.osm;
 
-import java.io.IOException;
-
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.projection.*;
@@ -75,15 +72,12 @@ public class OSMToGeoTransformerTestPerso {
 
     @Test
     public void testAll() {
-<<<<<<< HEAD
         transformMarche("lausanne.osm");
         // transformMarche("berne.osm");
         // transformMarche("interlaken.osm");
-=======
         // transformMarche("lausanne.osm");
         transformMarche("berne.osm");
         transformMarche("interlaken.osm");
->>>>>>> branch 'master' of https://github.com/vincenzobaz/imhof.git
         transformMarche("lc.osm");
     }
 

@@ -44,24 +44,20 @@
     - [x] documentation
     - [x] test
 
-	À faire:
-- protected dans OSMEntity.Builder? Je pense que on peut le garder.
-- [x] énumération dans OSMRelation!!
-
 ## [Étape 5](http://cs108.epfl.ch/p05_osm-reading.html)
 - OSMGraph
 	- [x] code
 	- [x] doc
-	- [ ] test
+	- [x] test
 	- [x] Réparer constructeur (la copie n'est pas assez profonde)
 - OSMMap
 	- [x] code
 	- [x] doc
-	- [ ] test
+	- [x] test
 - OSMMap.Builder
 	- [x] code
 	- [x] doc
-	- [ ] test
+	- [x] test
 - OSMMapReader
 	- [x] code (trop moche!!!!!) (mais non)
 	- [x] doc
@@ -72,12 +68,12 @@
 - Map & Map.Builder
 	- [x] code
 	- [x] doc
-	- [ ] test
+	- [x] test
 	- Déclarer le constructeur en final?
 - OSMToGeoTransformer
-	- [ ] code
-	- [ ] doc
-	- [ ] test
+	- [x] code
+	- [x] doc
+	- [x] test
 	- Trucs à vérifier: modification d'éléments immuables, validité des données/conditions, performances, ConcurrentModificationException
 	- La creation des polygons ne marche pas. addEdge de Graphe lance une illegalargumentexception.
 	- Avant le rendu: vérifier immuabilité de toutes les classes, notamment pour les getters, retourner des copies au lieu de l'attribut lui-même.
