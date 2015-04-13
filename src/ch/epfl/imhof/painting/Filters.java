@@ -16,14 +16,12 @@ public final class Filters {
             String... attributeValues) {
         return x -> {
             if (x.hasAttribute(attributeName)) {
-                boolean attributesValuesContainsKey = false;
                 for (String s : attributeValues) {
-                    attributesValuesContainsKey = attributesValuesContainsKey
-                            || (s.equals(x.attributeValue(attributeName)));
+                    if (s.equals(x.attributeValue(attributeName)))
+                        return true;
                 }
-                return attributesValuesContainsKey;
-            } else
-                return false;
+            }
+            return false;
         };
     }
 
