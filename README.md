@@ -89,8 +89,8 @@
 	- [ ] test
 - Filters
 	- [x] code
-	- [ ] doc
-	- [ ] test
+	- [x] doc
+	- [x] test
 
 - Point (classe étape 1, ajouter une méthode statique)
 	- [ ] code
