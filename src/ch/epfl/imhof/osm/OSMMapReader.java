@@ -2,6 +2,7 @@ package ch.epfl.imhof.osm;
 
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
@@ -56,7 +57,8 @@ public final class OSMMapReader {
             throws IOException, SAXException {
         OSMMap.Builder mapBuilder = new OSMMap.Builder();
 
-        try (InputStream inputStream = new FileInputStream(fileName)) {
+        try (InputStream inputStream = new BufferedInputStream(
+                new FileInputStream(fileName))) {
             XMLReader reader = XMLReaderFactory.createXMLReader();
 
             // On définit une classe anonyme héritant de DefaultHandler pour
@@ -77,6 +79,7 @@ public final class OSMMapReader {
                     Long idOrRef = null;
                     String id = atts.getValue("id");
                     String ref = atts.getValue("ref");
+
                     // On vérifie d'abord si le champ id et le champ ref sont
                     // tous les deux nuls. Si ce n'est pas le cas on peut
                     // stocker dans idOrRef l'id ou la référence de l'objet en
@@ -86,6 +89,7 @@ public final class OSMMapReader {
                         idOrRef = (ref == null) ? Long.parseLong(id) : Long
                                 .parseLong(ref);
                     }
+
                     switch (qName) {
                     case "node":
                         entityBuilder = new OSMNode.Builder(idOrRef,
@@ -120,6 +124,7 @@ public final class OSMMapReader {
                         // En plus on ne peut procéder à la construction des
                         // objets que si ceux-ci ne sont pas incomplets.
                         String role = atts.getValue("role");
+
                         switch (atts.getValue("type")) {
                         case "node":
                             OSMNode nodeOfRelation = mapBuilder
