@@ -11,16 +11,46 @@ public final class Color {
     private final double greenRatio;
     private final double blueRatio;
 
-    private Color(double red, double green, double blue)
+    private Color(double redRatio, double greenRatio, double blueRatio)
             throws IllegalArgumentException {
-        if (ratioIsInvalid(red) || ratioIsInvalid(green)
-                || ratioIsInvalid(blue)) {
+        if (ratioIsInvalid(redRatio)) {
             throw new IllegalArgumentException(
-                    "La valeur de la couleur doit �tre comprise entre 0 et 1.");
+                    "La composante rouge est invalide.");
         }
-        this.redRatio = red;
-        this.greenRatio = green;
-        this.blueRatio = blue;
+        if (ratioIsInvalid(greenRatio)) {
+            throw new IllegalArgumentException(
+                    "La composante verte est invalide.");
+        }
+        if (ratioIsInvalid(blueRatio)) {
+            throw new IllegalArgumentException(
+                    "La composante bleue est invalide.");
+        }
+
+        this.redRatio = redRatio;
+        this.greenRatio = greenRatio;
+        this.blueRatio = blueRatio;
+    }
+
+    public static Color gray(double ratio) throws IllegalArgumentException {
+        try {
+            return new Color(ratio, ratio, ratio);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    public static Color rgb(double redRatio, double greenRatio, double blueRatio)
+            throws IllegalArgumentException {
+        try {
+            return new Color(redRatio, greenRatio, blueRatio);
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+
+    public static Color rgb(int binaryContainer)
+            throws IllegalArgumentException {
+
     }
 
     public double redRatio() {
@@ -35,35 +65,14 @@ public final class Color {
         return blueRatio;
     }
 
-    public static Color gray(double ratio) throws IllegalArgumentException {
-        try {
-            return new Color(ratio, ratio, ratio);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+    public Color multiplyWith(Color c) {
+        return new Color(redRatio * c.redRatio(), greenRatio * c.greenRatio(),
+                blueRatio * c.blueRatio());
     }
 
-    public static Color rgb(double red, double green, double blue)
-            throws IllegalArgumentException {
-        try {
-            return new Color(red, green, blue);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
-    }
-
-    public static Color rgb(int truc) throws IllegalArgumentException {
-
-    }
-
-    public Color multiply(Color c1, Color c2) {
-        return new Color(c1.redRatio() * c2.redRatio(), c1.greenRatio()
-                * c2.greenRatio(), c1.blueRatio() * c2.blueRatio());
-    }
-
-    public java.awt.Color convert(Color c) {
-        return new java.awt.Color((float) c.redRatio(), (float) c.greenRatio(),
-                (float) c.blueRatio());
+    public java.awt.Color convert() {
+        return new java.awt.Color((float) redRatio, (float) greenRatio,
+                (float) blueRatio);
     }
 
     private boolean ratioIsInvalid(double ratio) {
