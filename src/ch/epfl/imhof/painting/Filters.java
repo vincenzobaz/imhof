@@ -25,7 +25,7 @@ public final class Filters {
         };
     }
 
-    public Predicate<Attributed<?>> isOnLayer(int layer) {
+    public static Predicate<Attributed<?>> isOnLayer(int layer) {
         if (layer < -5 || layer > 5)
             throw new IllegalArgumentException(
                     "the value of the attribute layer is an integer between -5 and 5");
