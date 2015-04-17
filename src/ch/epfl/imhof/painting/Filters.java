@@ -31,8 +31,8 @@ public final class Filters {
      * @return un filtre (<code>Predicate</code>)
      */
     public static Predicate<Attributed<?>> tagged(String attributeName) {
-        // return Attributed::hasAttribute;
         return x -> x.hasAttribute(attributeName);
+        // return Attributed<?>::hasAttribute;
     }
 
     /**

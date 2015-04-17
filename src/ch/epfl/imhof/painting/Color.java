@@ -57,7 +57,6 @@ public final class Color {
             throw new IllegalArgumentException(
                     "La composante n'est pas valide.");
         }
-
         return new Color(ratio, ratio, ratio);
     }
 

@@ -99,6 +99,45 @@
 	- [ ] test
 
 ## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
-- Toile
-- Toile 2D
-- Peintre
+### Canvas
+- [ ] `interface Canvas`
+	- [ ] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
+	- [ ] `drawPolygon` dessine sur la toile un `Polygon` à partir d'un `Color`
+- [ ] `class Java2DCanvas implements Canvas`
+	- attributs (à fournir au constructeur):
+		- coord bas-gauche + coord haut-droite
+		- largeur et hauteur image en pixels
+		- résolution points/pouce
+		- couleur fond
+		- changement de repère plan/image
+	Dans le constructeur on utilise `alignedCoordinateChange` a stocker dans la variable ci-dessus pour simplifier l'écriture de `drawX` qui peuvent utiliser la fonction pour transformer les coordonnées des points des lignes ou polygones en coordonnées à passer aux méthodes de `java2d`
+	- [ ] `public BufferedImage image()`
+
+- ImageDiscrète (tableau bidimensionnel de pixels)
+	- attributs: largeur et hauteur en pixels
+	- resolution: nbr de pixel par unité de longueur (dpi?)
+
+### Painters
+- Polygon (colore intérieure polygons)
+- PolyLigne (peint les polylignes à partir de `LineStyle`s)
+- Pourtour (peint les polylignes formant les enveloppes et les trous des polygons avec un `LineStyle` donné)
+On doit pouvoir appliquer deux opérations de dérivation sur ces peintres. Je pense que la démarche à suivre est celle de créer une interface définissant un peintre et qui contient des méthodes pour:
+- *Filtrer*: obtenir un nouveau peintre à partir d'un peintre existant en ne **fournissant à ce dernier qu'un sous-ensemble des éntités de la carte à dessinner**
+- *Empiler*: combiner deux peintres pour en obtenir un nouveau **dessinnant tout d'abord la carte du premier peintre puis, par dessus, la carte du second**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
