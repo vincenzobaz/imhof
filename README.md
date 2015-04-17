@@ -95,15 +95,15 @@
 
 - Point (classe étape 1, ajouter une méthode statique)
 	- [x] code
-	- [ ] doc
-	- [ ] test
+	- [x] doc
+	- [x] test
 
 ## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
 ### Canvas
 - [x] `interface Canvas`
     - [x] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
     - [x] `drawPolygon` dessine sur la toile un `Polygon` à partir d'un `Color`
-- [ ] `class Java2DCanvas implements Canvas`
+- [x] `class Java2DCanvas implements Canvas`
     - attributs (à fournir au constructeur):
         - coord bas-gauche + coord haut-droite
         - largeur et hauteur image en pixels
@@ -111,7 +111,7 @@
         - couleur fond
         - changement de repère plan/image
     Dans le constructeur on utilise `alignedCoordinateChange` a stocker dans la variable ci-dessus pour simplifier l'écriture de `drawX` qui peuvent utiliser la fonction pour transformer les coordonnées des points des lignes ou polygones en coordonnées à passer aux méthodes de `java2d`
-    - [ ] `public BufferedImage image()`
+    - [x] `public BufferedImage image()`
 
 ### Painters
 - `public interface Painter<E>`
