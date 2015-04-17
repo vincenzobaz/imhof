@@ -86,7 +86,7 @@
 	- [ ] test
 - LineStyle
 	- [x] code
-	- [ ] doc
+	- [x] doc
 	- [ ] test
 - Filters
 	- [x] code
