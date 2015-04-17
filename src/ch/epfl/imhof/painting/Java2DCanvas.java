@@ -1,7 +1,7 @@
 package ch.epfl.imhof.painting;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
 import java.util.function.Function;
 
 import ch.epfl.imhof.geometry.Point;
@@ -9,24 +9,27 @@ import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
 public final class Java2DCanvas implements Canvas {
-
-    private Point topRight;
     private Point bottomLeft;
+    private Point topRight;
     private int dpi;
     // Color on le garde même si il est stocké dans le contexte RAPPELLE TOI DE
     // FAIRE LA MÊME CHOSE DANS LE CONSTRUCTEUR
     private Color backgroundColor;
     private Function<Point, Point> alignedCoordinateChange;
-    BufferedImage image;
-    Graphics2D context;
+    private BufferedImage image;
+    private Graphics2D context;
 
     public Java2DCanvas(Point bottomLeft, Point topRight, int width,
             int height, int dpi, Color backgroundColor)
             throws IllegalArgumentException {
-        if (width <= 0 || height <= 0 || dpi <= 0)
+        if (width <= 0 || height <= 0 || dpi <= 0) {
             throw new IllegalArgumentException("negative width, heigth or dpi");
-        if (bottomLeft.x() >= topRight.x() || bottomLeft.y() >= topRight.y())
-            throw new IllegalArgumentException();
+        }
+        if (bottomLeft.x() >= topRight.x() || bottomLeft.y() >= topRight.y()) {
+            throw new IllegalArgumentException(
+                    "La position des coins n'est pas valide.");
+        }
+
         this.bottomLeft = bottomLeft;
         this.topRight = topRight;
         this.dpi = dpi;
@@ -54,5 +57,4 @@ public final class Java2DCanvas implements Canvas {
         // TODO Auto-generated method stub
 
     }
-
 }
