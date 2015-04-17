@@ -12,32 +12,19 @@ import ch.epfl.imhof.geometry.Polygon;
 
 public interface Painter<E> {
     void drawMap(Map map, Canvas canvas);
-    
-    public static Painter<Polygon> polygon (Color fillColor){
-        return (map, canvas) ->{
+
+    public static Painter<Polygon> polygon(Color fillColor) {
+        return (map, canvas) -> {
             for (Attributed<Polygon> attributed : map.polygons()) {
-                PolyLine shell = attributed.value().shell();
-                Path2D shellPath = new Path2D.Double() ;
-                shellPath.moveTo(shell.firstPoint().x(), shell.firstPoint().y() );
-                Iterator<Point> iterator = shell.points().iterator();
-                iterator.next();
-                while (iterator.hasNext()){
-                    Point point = iterator.next();
-                    shellPath.lineTo(point.x(), point.y());
-                }
-                shellPath.closePath();
-                Area area = new Area(shellPath);
             }
         };
     }
-	
-	public static Painter<PolyLine> line(float width, Color color, LineStyle.LineCap cap, LineStyle.LineJoin join, float[] dashingPattern) {
-		LineStyle style = new LineStyle(width, color, cap, join, dashingPattern);
-		return (map, canvas) -> {
-			for (Attributed<PolyLine>)
-			PathD linePath = new 
-		}
-	}
-	
-	public static Painter<Polygon> basePolygonP
+
+    public static Painter<PolyLine> line(float width, Color color,
+            LineStyle.LineCap cap, LineStyle.LineJoin join,
+            float[] dashingPattern) {
+        LineStyle style = new LineStyle(width, color, cap, join, dashingPattern);
+        return (map, canvas) -> {
+        };
+    }
 }
