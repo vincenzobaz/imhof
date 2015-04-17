@@ -2,6 +2,7 @@ package ch.epfl.imhof.painting;
 
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.function.Function;
 
 import ch.epfl.imhof.geometry.Point;
@@ -39,6 +40,11 @@ public final class Java2DCanvas implements Canvas {
                 new Point((double) width, 0d));
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         context = image.createGraphics();
+        context.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        context.setBackground(backgroundColor.convert());
+    }
+                RenderingHints.VALUE_ANTIALIAS_ON);
         context.setBackground(backgroundColor.convert());
     }
 
