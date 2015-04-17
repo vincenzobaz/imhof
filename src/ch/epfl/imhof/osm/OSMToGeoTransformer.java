@@ -26,20 +26,22 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class OSMToGeoTransformer {
     // Ensemble contenant les attributs qualifiant une surface
-    public static final Set<String> SURFACE_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(new String[] { "aeroway", "amenity", "building",
-                    "harbour", "historic", "landuse", "leisure", "man_made",
-                    "military", "natural", "office", "place", "power",
-                    "public_transport", "shop", "sport", "tourism", "water",
-                    "waterway", "wetland" }));
+    private final static Set<String> SURFACE_ATTRIBUTES = Collections
+            .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
+                    "aeroway", "amenity", "building", "harbour", "historic",
+                    "landuse", "leisure", "man_made", "military", "natural",
+                    "office", "place", "power", "public_transport", "shop",
+                    "sport", "tourism", "water", "waterway", "wetland" })));
     // Ensemble contenant les attributs à garder pour une polyligne
-    public static final Set<String> POLYLINE_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(new String[] { "bridge", "highway", "layer",
-                    "man_made", "railway", "tunnel", "waterway" }));
+    private final static Set<String> POLYLINE_ATTRIBUTES = Collections
+            .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
+                    "bridge", "highway", "layer", "man_made", "railway",
+                    "tunnel", "waterway" })));
     // Ensemble contenant les attributs à garder pour un polygone
-    public static final Set<String> POLYGON_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(new String[] { "building", "landuse", "layer",
-                    "leisure", "natural", "waterway" }));
+    private final static Set<String> POLYGON_ATTRIBUTES = Collections
+            .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
+                    "building", "landuse", "layer", "leisure", "natural",
+                    "waterway" })));
 
     private final Projection projection;
     private final Map.Builder mapBuilder;
