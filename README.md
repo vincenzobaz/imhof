@@ -99,7 +99,6 @@
 	- [ ] test
 
 ## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
-## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
 ### Canvas
 - [x] `interface Canvas`
     - [x] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
