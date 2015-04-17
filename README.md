@@ -82,11 +82,11 @@
 ## [Etape 7](http://cs108.epfl.ch/p07_drawing-style.html)
 - Color
 	- [x] code
-	- [ ] doc
+	- [x] doc
 	- [ ] test
 - LineStyle
 	- [x] code
-	- [ ] doc
+	- [x] doc
 	- [ ] test
 - Filters
 	- [x] code
@@ -97,3 +97,8 @@
 	- [x] code
 	- [ ] doc
 	- [ ] test
+
+## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
+- Toile
+- Toile 2D
+- Peintre
