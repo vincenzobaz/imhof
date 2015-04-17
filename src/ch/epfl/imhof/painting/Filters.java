@@ -54,6 +54,7 @@ public final class Filters {
      */
     public static Predicate<Attributed<?>> tagged(String attributeName,
             String... attributeValues) {
+        // nombre supérieur à 1?
         return x -> {
             // On ne vérifie l'association attributeName-attributeValue que si
             // attributeName est le nom d'un attribut possédé par la valeur
@@ -83,6 +84,7 @@ public final class Filters {
      */
     public static Predicate<Attributed<?>> isOnLayer(int layer)
             throws IllegalArgumentException {
+        // ignorer ce truc?
         if (layer < -5 || layer > 5) {
             throw new IllegalArgumentException(
                     "the value of the attribute layer is an integer between -5 and 5");
