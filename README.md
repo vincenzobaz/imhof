@@ -99,45 +99,47 @@
 	- [ ] test
 
 ## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
+## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
 ### Canvas
-- [ ] `interface Canvas`
-	- [ ] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
-	- [ ] `drawPolygon` dessine sur la toile un `Polygon` à partir d'un `Color`
+- [x] `interface Canvas`
+    - [x] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
+    - [x] `drawPolygon` dessine sur la toile un `Polygon` à partir d'un `Color`
 - [ ] `class Java2DCanvas implements Canvas`
-	- attributs (à fournir au constructeur):
-		- coord bas-gauche + coord haut-droite
-		- largeur et hauteur image en pixels
-		- résolution points/pouce
-		- couleur fond
-		- changement de repère plan/image
-	Dans le constructeur on utilise `alignedCoordinateChange` a stocker dans la variable ci-dessus pour simplifier l'écriture de `drawX` qui peuvent utiliser la fonction pour transformer les coordonnées des points des lignes ou polygones en coordonnées à passer aux méthodes de `java2d`
-	- [ ] `public BufferedImage image()`
-
-- ImageDiscrète (tableau bidimensionnel de pixels)
-	- attributs: largeur et hauteur en pixels
-	- resolution: nbr de pixel par unité de longueur (dpi?)
+    - attributs (à fournir au constructeur):
+        - coord bas-gauche + coord haut-droite
+        - largeur et hauteur image en pixels
+        - résolution points/pouce
+        - couleur fond
+        - changement de repère plan/image
+    Dans le constructeur on utilise `alignedCoordinateChange` a stocker dans la variable ci-dessus pour simplifier l'écriture de `drawX` qui peuvent utiliser la fonction pour transformer les coordonnées des points des lignes ou polygones en coordonnées à passer aux méthodes de `java2d`
+    - [ ] `public BufferedImage image()`
 
 ### Painters
+- `public interface Painter<E>`
+
+    - `abstract drawMap(Map , Canvas)`
+
+    - [ ] `static Painter<Polygon> polygon (couleur de dessin)` retourne un peintre dessinant l'intérieur de tous les polygones de la carte qu'il reçoit avec cette couleur
+
+    - [ ] `static Painter<PolyLine> line (les paramètres de style d'une ligne)` retourne un peintre dessinant toutes les lignes de la carte qu'on lui fornit avec le style correspondant
+
+    - [ ] `static Painter<PoyLine> line(largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constricuteur de `LineStyle`)
+
+    - [ ] `static Painter<Polygon> outline (cinq paramètres de style d'une ligne)` dessine les pourtours de l'enveloppe et des trous de tous les polygones de la carte qu'on lui fournit
+
+    - [ ] `static Painter<Polygon> outline (largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constructeur de `LineStyle`)
+
+    - [ ] `default Painter<E> when (Predicate<Attributed<?>> pred)` retourne un peintre se comportant comme celui auquel on l'applique si ce n'est qu'il ne considère que les éléments de la carte satisfaisant le predicat
+
+    - [ ] `default Painter<E> above (Painter<E> p)` retourne un peintre dessinant d'abord la carte produite par ce second peintre puis, par dessus, la carte produite par le premier peintre
+
+    - [ ] `default Painter<E> layered()` retourne un peintre utilisant l'attribut layer attaché aux entités de la carte pour la dessiner par couches (en commençant de -5 jusqu'à + 5)
+
 - Polygon (colore intérieure polygons)
 - PolyLigne (peint les polylignes à partir de `LineStyle`s)
 - Pourtour (peint les polylignes formant les enveloppes et les trous des polygons avec un `LineStyle` donné)
 On doit pouvoir appliquer deux opérations de dérivation sur ces peintres. Je pense que la démarche à suivre est celle de créer une interface définissant un peintre et qui contient des méthodes pour:
-- *Filtrer*: obtenir un nouveau peintre à partir d'un peintre existant en ne **fournissant à ce dernier qu'un sous-ensemble des éntités de la carte à dessinner**
+- *Filtrer*: obtenir un nouveau peintre à partir d'un peintre existant en ne **fournissant à ce dernier qu'un sous-ensemble des entités de la carte à dessiner**
 - *Empiler*: combiner deux peintres pour en obtenir un nouveau **dessinnant tout d'abord la carte du premier peintre puis, par dessus, la carte du second**
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
