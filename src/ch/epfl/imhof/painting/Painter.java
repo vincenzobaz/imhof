@@ -30,5 +30,14 @@ public interface Painter<E> {
             }
         };
     }
-    
+	
+	public static Painter<PolyLine> line(float width, Color color, LineStyle.LineCap cap, LineStyle.LineJoin join, float[] dashingPattern) {
+		LineStyle style = new LineStyle(width, color, cap, join, dashingPattern);
+		return (map, canvas) -> {
+			for (Attributed<PolyLine>)
+			PathD linePath = new 
+		}
+	}
+	
+	public static Painter<Polygon> basePolygonP
 }

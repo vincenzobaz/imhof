@@ -1,5 +1,7 @@
 package ch.epfl.imhof.painting;
 
+import java.util.Arrays;
+
 /**
  * Classe regroupant tous les paramètres de style utiles au dessin d'une ligne
  * 
@@ -7,7 +9,7 @@ package ch.epfl.imhof.painting;
  * @author Nicolas Phan Van (239293)
  *
  */
-public class LineStyle {
+public final class LineStyle {
     private final float width;
     private final Color color;
     private final LineCap cap;
@@ -35,18 +37,21 @@ public class LineStyle {
      */
     public LineStyle(float width, Color color, LineCap cap, LineJoin join,
             float[] dashingPattern) throws IllegalArgumentException {
-        if (width < 0)
+        if (width < 0) {
             throw new IllegalArgumentException("negative line width");
+        }
+        
         this.width = width;
         this.color = color;
         this.cap = cap;
         this.join = join;
         this.dashingPattern = new float[dashingPattern.length];
         for (int i = 0; i < dashingPattern.length; i++) {
-            if (dashingPattern[i] <= 0)
+            if (dashingPattern[i] <= 0) {
                 throw new IllegalArgumentException("negative line length");
-            else
+            } else {
                 this.dashingPattern[i] = dashingPattern[i];
+            }
         }
     }
 
@@ -104,10 +109,12 @@ public class LineStyle {
     public float[] getDashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
-        float[] defensiveCopy = new float[dashingPattern.length];
-        System.arraycopy(dashingPattern, 0, defensiveCopy, 0,
-                dashingPattern.length);
-        return defensiveCopy;
+        /*
+         * float[] defensiveCopy = new float[dashingPattern.length];
+         * System.arraycopy(dashingPattern, 0, defensiveCopy, 0,
+         * dashingPattern.length); return defensiveCopy;
+         */
+        return Arrays.copyOf(dashingPattern, dashingPattern.length);
     }
 
     /**
