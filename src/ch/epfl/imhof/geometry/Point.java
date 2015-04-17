@@ -1,6 +1,6 @@
 package ch.epfl.imhof.geometry;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * Classe représentant un point en coordonnées cartésiennes. Elle est immuable.
@@ -64,7 +64,7 @@ public final class Point {
      *             sont situés sur une même ligne horizontale ou verticale, car
      *             il est alors impossible d'effectuer le changement de repère
      */
-    public static Function<Point, Point> alignedCoordinateChange(Point a1,
+    public static UnaryOperator<Point> alignedCoordinateChange(Point a1,
             Point a2, Point b1, Point b2) throws IllegalArgumentException {
         if (a1.x() == b1.x()) {
             throw new IllegalArgumentException(
