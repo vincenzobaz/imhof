@@ -1,7 +1,5 @@
 package ch.epfl.imhof.painting;
 
-import java.awt.geom.Path2D;
-
 import ch.epfl.imhof.geometry.PolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
@@ -21,20 +19,17 @@ public interface Canvas {
      *            la polyligne à dessiner
      * @param style
      *            le style de ligne à utiliser
-     * @return le chemin <code>Path2D</code> correspondant à la polyligne
      */
-    Path2D drawPolyLine(PolyLine polyline, LineStyle style);
+    void drawPolyLine(PolyLine polyline, LineStyle style);
 
     /**
-     * Dessine sur la toile le polygone donné, en dessinant ses contours suivant
-     * le style donné, et en le remplissant avec la couleur donnée.
+     * Dessine sur la toile le polygone donné, en le remplissant avec la couleur
+     * donnée.
      * 
      * @param polygon
      *            le polygone à dessiner
-     * @param style
-     *            le style des bords du polygone et de ses trous
      * @param color
      *            la couleur du polygone
      */
-    void drawPolygon(Polygon polygon, LineStyle style, Color color);
+    void drawPolygon(Polygon polygon, Color color);
 }

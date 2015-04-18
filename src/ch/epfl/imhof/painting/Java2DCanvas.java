@@ -101,39 +101,50 @@ public final class Java2DCanvas implements Canvas {
     }
 
     @Override
-    public Path2D drawPolyLine(PolyLine line, LineStyle style) {
-        int cap = cap(style.getCap());
-        int join = join(style.getJoin());
+    public void drawPolyLine(PolyLine polyline, LineStyle style) {
+        int cap = capValue(style.getCap());
+        int join = joinValue(style.getJoin());
         BasicStroke stroke = style.getDashingPattern().length == 0 ? new BasicStroke(
-                style.getWidth() / scale, cap, join, 10f) : new BasicStroke(
-                style.getWidth() / scale, cap, join, 10f,
+                style.getWidth() / scale, cap, join, 10.0f) : new BasicStroke(
+                style.getWidth() / scale, cap, join, 10.0f,
                 style.getDashingPattern(), 0f);
         context.setStroke(stroke);
         context.setColor(style.getColor().convert());
 
-        Path2D way = new Path2D.Double();
-        Iterator<Point> iterator = line.points().iterator();
-        Point firstPoint = basisChange.apply(iterator.next());
-        way.moveTo(firstPoint.x(), firstPoint.y());
-        while (iterator.hasNext()) {
-            Point nextPoint = basisChange.apply(iterator.next());
-            way.lineTo(nextPoint.x(), nextPoint.y());
-        }
-        if (line.isClosed()) {
-            way.closePath();
-        }
-        context.draw(way);
-        return way;
+        Path2D path = newPath(polyline);
+        context.draw(path);
     }
 
     @Override
-    public void drawPolygon(Polygon polygon, LineStyle style, Color color) {
-        Area area = new Area(drawPolyLine(polygon.shell(), style));
+    public void drawPolygon(Polygon polygon, Color color) {
+        Area area = new Area(newPath(polygon.shell()));
         for (ClosedPolyLine hole : polygon.holes()) {
-            area.subtract(new Area(drawPolyLine(hole, style)));
+            area.subtract(new Area(newPath(hole)));
         }
         context.setColor(color.convert());
         context.fill(area);
+    }
+
+    /**
+     * Construit et retourne le chemin correspondant à la polyligne donnée.
+     * 
+     * @param polyline
+     *            la poyligne à convertir en <code>Path2D</code>
+     * @return le chemin correspondant à la polyligne
+     */
+    private Path2D newPath(PolyLine polyline) {
+        Path2D newPath = new Path2D.Double();
+        Iterator<Point> iterator = polyline.points().iterator();
+        Point firstPoint = basisChange.apply(iterator.next());
+        newPath.moveTo(firstPoint.x(), firstPoint.y());
+        while (iterator.hasNext()) {
+            Point nextPoint = basisChange.apply(iterator.next());
+            newPath.lineTo(nextPoint.x(), nextPoint.y());
+        }
+        if (polyline.isClosed()) {
+            newPath.closePath();
+        }
+        return newPath;
     }
 
     /**
@@ -145,7 +156,7 @@ public final class Java2DCanvas implements Canvas {
      * @return l'entier correspondant à la terminaison dans la classe
      *         <code>BasicStroke</code>
      */
-    private int cap(LineStyle.LineCap capStyle) {
+    private int capValue(LineStyle.LineCap capStyle) {
         switch (capStyle) {
         case BUTT:
             return BasicStroke.CAP_BUTT;
@@ -167,7 +178,7 @@ public final class Java2DCanvas implements Canvas {
      * @return l'entier correspondant à la jointure dans la classe
      *         <code>BasicStroke</code>
      */
-    private int join(LineStyle.LineJoin joinStyle) {
+    private int joinValue(LineStyle.LineJoin joinStyle) {
         switch (joinStyle) {
         case BEVEL:
             return BasicStroke.JOIN_BEVEL;

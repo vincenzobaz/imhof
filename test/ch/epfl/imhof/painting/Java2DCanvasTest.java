@@ -3,7 +3,6 @@
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,7 +19,6 @@ import ch.epfl.imhof.osm.OSMMap;
 import ch.epfl.imhof.osm.OSMMapReader;
 import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
-import ch.epfl.imhof.projection.EquirectangularProjection;
 
 public final class Java2DCanvasTest {
     private Java2DCanvas newCanvas(Color color) {
@@ -68,7 +66,7 @@ public final class Java2DCanvasTest {
     @Test
     public void correctlyDrawsArea() {
         Java2DCanvas canvas = newCanvas(Color.WHITE);
-        canvas.drawPolygon(square(), newStyle(), Color.RED);
+        canvas.drawPolygon(square(), Color.RED);
         try {
             ImageIO.write(canvas.image(), "png", new File("carre.png"));
         } catch (IOException e) {
@@ -94,7 +92,7 @@ public final class Java2DCanvasTest {
         Polygon rolexPlan = rolexMap.polygons().get(0).value();
 
         Java2DCanvas canvas = newCanvas(Color.WHITE);
-        canvas.drawPolygon(rolexPlan, newStyle(), Color.gray(0.7));
+        canvas.drawPolygon(rolexPlan, Color.gray(0.7));
         try {
             ImageIO.write(canvas.image(), "png", new File("rolex.png"));
         } catch (IOException e) {
