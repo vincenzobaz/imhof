@@ -24,12 +24,12 @@ public final class Java2DCanvasTest {
     private Java2DCanvas newCanvas(double x1, double y1, double x2, double y2,
             int width, Color color) {
         return new Java2DCanvas(new Point(x1, y1), new Point(x2, y2), 1280,
-                width, 800, color);
+                width, 2000, color);
     }
 
     private LineStyle newStyle() {
         return new LineStyle(4f, Color.BLACK, LineStyle.LineCap.BUTT,
-                LineStyle.LineJoin.ROUND, new float[] {});
+                LineStyle.LineJoin.ROUND, new float[0]);
     }
 
     private PolyLine simpleLine() {

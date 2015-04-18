@@ -74,7 +74,7 @@ public final class LineStyle {
      * 
      * @return la largeur de la ligne
      */
-    public float getWidth() {
+    public float width() {
         return width;
     }
 
@@ -83,7 +83,7 @@ public final class LineStyle {
      * @return la couleur de la ligne, un objet de type
      *         <code> ch.epfl.imhof.painting.Color </code>
      */
-    public Color getColor() {
+    public Color color() {
         return color;
     }
 
@@ -91,7 +91,7 @@ public final class LineStyle {
      * 
      * @return le type de terminaison de la ligne.
      */
-    public LineCap getCap() {
+    public LineCap cap() {
         return cap;
     }
 
@@ -99,7 +99,7 @@ public final class LineStyle {
      * 
      * @return le type de jointure de la ligne
      */
-    public LineJoin getJoin() {
+    public LineJoin join() {
         return join;
     }
 
@@ -108,7 +108,7 @@ public final class LineStyle {
      * @return l'alternance des segments opaques et transparents, un tableau de
      *         <code> int </code>.
      * */
-    public float[] getDashingPattern() {
+    public float[] dashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
         /*

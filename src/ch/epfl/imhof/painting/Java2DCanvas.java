@@ -102,14 +102,14 @@ public final class Java2DCanvas implements Canvas {
 
     @Override
     public void drawPolyLine(PolyLine polyline, LineStyle style) {
-        int cap = capValue(style.getCap());
-        int join = joinValue(style.getJoin());
-        BasicStroke stroke = style.getDashingPattern().length == 0 ? new BasicStroke(
-                style.getWidth() / scale, cap, join, 10.0f) : new BasicStroke(
-                style.getWidth() / scale, cap, join, 10.0f,
-                style.getDashingPattern(), 0f);
+        int cap = capValue(style.cap());
+        int join = joinValue(style.join());
+        BasicStroke stroke = style.dashingPattern().length == 0 ? new BasicStroke(
+                style.width() / scale, cap, join, 10.0f) : new BasicStroke(
+                style.width() / scale, cap, join, 10.0f,
+                style.dashingPattern(), 0f);
         context.setStroke(stroke);
-        context.setColor(style.getColor().convert());
+        context.setColor(style.color().convert());
 
         Path2D path = newPath(polyline);
         context.draw(path);
