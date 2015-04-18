@@ -21,9 +21,10 @@ import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
 
 public final class Java2DCanvasTest {
-    private Java2DCanvas newCanvas(Color color) {
-        return new Java2DCanvas(new Point(533100, 152160), new Point(533400,
-                152240), 1280, 720, 800, color);
+    private Java2DCanvas newCanvas(double x1, double y1, double x2, double y2,
+            int width, Color color) {
+        return new Java2DCanvas(new Point(x1, y1), new Point(x2, y2), 1280,
+                width, 800, color);
     }
 
     private LineStyle newStyle() {
@@ -32,21 +33,21 @@ public final class Java2DCanvasTest {
     }
 
     private PolyLine simpleLine() {
-        return new OpenPolyLine(Arrays.asList(new Point(-1.0, -1.0), new Point(
-                2.0, 2.0)));
+        return new OpenPolyLine(Arrays.asList(new Point(-3d, 2d), new Point(4d,
+                3d)));
     }
 
     private Polygon square() {
         return new Polygon(new ClosedPolyLine(Arrays.asList(
-                new Point(0.0, -2.0), new Point(2.0, 0.0), new Point(0.0, 2.0),
-                new Point(-2.0, 0.0))));
+                new Point(0.0, -3.0), new Point(3.0, 0.0), new Point(0.0, 3.0),
+                new Point(-3.0, 0.0))));
     }
 
     @Test
     public void correctlyFillsBackground() {
         try {
-            ImageIO.write(newCanvas(Color.RED).image(), "png", new File(
-                    "background.png"));
+            ImageIO.write(newCanvas(-5d, -5d, 5d, 5d, 1280, Color.RED).image(),
+                    "png", new File("background.png"));
         } catch (IOException e) {
             System.out.println("Exception!");
         }
@@ -54,7 +55,7 @@ public final class Java2DCanvasTest {
 
     @Test
     public void correctlyDrawsLine() {
-        Java2DCanvas canvas = newCanvas(Color.WHITE);
+        Java2DCanvas canvas = newCanvas(-5d, -5d, 5d, 5d, 1280, Color.WHITE);
         canvas.drawPolyLine(simpleLine(), newStyle());
         try {
             ImageIO.write(canvas.image(), "png", new File("droite.png"));
@@ -65,7 +66,7 @@ public final class Java2DCanvasTest {
 
     @Test
     public void correctlyDrawsArea() {
-        Java2DCanvas canvas = newCanvas(Color.WHITE);
+        Java2DCanvas canvas = newCanvas(-5d, -5d, 5d, 5d, 1280, Color.WHITE);
         canvas.drawPolygon(square(), Color.RED);
         try {
             ImageIO.write(canvas.image(), "png", new File("carre.png"));
@@ -91,8 +92,10 @@ public final class Java2DCanvasTest {
         Map rolexMap = transformer.transform(rolex);
         Polygon rolexPlan = rolexMap.polygons().get(0).value();
 
-        Java2DCanvas canvas = newCanvas(Color.WHITE);
+        Java2DCanvas canvas = newCanvas(533100, 152150, 533350, 152350, 720,
+                Color.WHITE);
         canvas.drawPolygon(rolexPlan, Color.gray(0.7));
+        canvas.drawPolyLine(rolexPlan.shell(), newStyle());
         try {
             ImageIO.write(canvas.image(), "png", new File("rolex.png"));
         } catch (IOException e) {
