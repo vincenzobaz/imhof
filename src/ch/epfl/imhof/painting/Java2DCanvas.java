@@ -35,6 +35,7 @@ public final class Java2DCanvas implements Canvas {
     private final Function<Point, Point> basisChange;
     private final BufferedImage image;
     private final Graphics2D context;
+    private float scale;
 
     /**
      * Construit une toile ayant pour coins les deux points fournis, la largeur,
@@ -76,9 +77,9 @@ public final class Java2DCanvas implements Canvas {
         this.dpi = dpi;
         this.backgroundColor = backgroundColor;
 
-        double scale = dpi / 72.0;
+        scale = dpi / 72f;
         this.basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(
-                0d, height * scale), topRight, new Point(width * scale, 0d));
+                0d, height / scale), topRight, new Point(width / scale, 0d));
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
@@ -103,8 +104,11 @@ public final class Java2DCanvas implements Canvas {
     public Path2D drawPolyLine(PolyLine line, LineStyle style) {
         int cap = cap(style.getCap());
         int join = join(style.getJoin());
-        context.setStroke(new BasicStroke(style.getWidth(), cap, join, 10.0f,
-                style.getDashingPattern(), 0));
+        BasicStroke stroke = style.getDashingPattern().length == 0 ? new BasicStroke(
+                style.getWidth() / scale, cap, join, 10f) : new BasicStroke(
+                style.getWidth() / scale, cap, join, 10f,
+                style.getDashingPattern(), 0f);
+        context.setStroke(stroke);
         context.setColor(style.getColor().convert());
 
         Path2D way = new Path2D.Double();
@@ -124,11 +128,11 @@ public final class Java2DCanvas implements Canvas {
 
     @Override
     public void drawPolygon(Polygon polygon, LineStyle style, Color color) {
-        context.setColor(color.convert());
         Area area = new Area(drawPolyLine(polygon.shell(), style));
         for (ClosedPolyLine hole : polygon.holes()) {
             area.subtract(new Area(drawPolyLine(hole, style)));
         }
+        context.setColor(color.convert());
         context.fill(area);
     }
 

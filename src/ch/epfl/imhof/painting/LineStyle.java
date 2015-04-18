@@ -14,7 +14,7 @@ public final class LineStyle {
     private final Color color;
     private final LineCap cap;
     private final LineJoin join;
-    private float[] dashingPattern;
+    private final float[] dashingPattern;
 
     /**
      * Construit un style de ligne à partir des cinq paramètres de style
@@ -45,14 +45,16 @@ public final class LineStyle {
         this.color = color;
         this.cap = cap;
         this.join = join;
-        this.dashingPattern = new float[dashingPattern.length];
+        //this.dashingPattern = new float[dashingPattern.length];
+        float[] temp = new float[dashingPattern.length];
         for (int i = 0; i < dashingPattern.length; i++) {
             if (dashingPattern[i] <= 0) {
                 throw new IllegalArgumentException("negative line length");
             } else {
-                this.dashingPattern[i] = dashingPattern[i];
+                temp[i] = dashingPattern[i];
             }
         }
+        this.dashingPattern = temp;
     }
 
     /**
