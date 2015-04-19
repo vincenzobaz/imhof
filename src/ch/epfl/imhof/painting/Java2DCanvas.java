@@ -23,15 +23,6 @@ import ch.epfl.imhof.geometry.Polygon;
  *
  */
 public final class Java2DCanvas implements Canvas {
-    // pas besoin de tous ces trucs en fait
-    private Point bottomLeft;
-    private Point topRight;
-    private int dpi;
-    // Color on le garde même si il est stocké dans le contexte RAPPELLE TOI DE
-    // FAIRE LA MÊME CHOSE DANS LE CONSTRUCTEUR
-    private Color backgroundColor;
-
-    // ceux_là on en a besoin
     private final Function<Point, Point> basisChange;
     private final BufferedImage image;
     private final Graphics2D context;
@@ -59,7 +50,9 @@ public final class Java2DCanvas implements Canvas {
      *             sont négatives ou nulles, ou si le premier point se trouve
      *             plus en haut ou plus à doite que le deuxième point
      */
-    // changer le type de width, height et dpi en float?
+    // changer le type de width, height et dpi en float? Je ne pense pas.
+    // Description étape 7 ils conseillent de mettre en float seulement
+    // l'épaisseur du trait et le tableau
     public Java2DCanvas(Point bottomLeft, Point topRight, int width,
             int height, int dpi, Color backgroundColor)
             throws IllegalArgumentException {
@@ -70,13 +63,6 @@ public final class Java2DCanvas implements Canvas {
             throw new IllegalArgumentException(
                     "La position des coins n'est pas valide.");
         }
-
-        // pas besoin
-        this.bottomLeft = bottomLeft;
-        this.topRight = topRight;
-        this.dpi = dpi;
-        this.backgroundColor = backgroundColor;
-
         scale = dpi / 72f;
         this.basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(
                 0d, height / scale), topRight, new Point(width / scale, 0d));

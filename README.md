@@ -118,21 +118,21 @@
 
     - `abstract drawMap(Map , Canvas)`
 
-    - [ ] `static Painter<Polygon> polygon (couleur de dessin)` retourne un peintre dessinant l'intérieur de tous les polygones de la carte qu'il reçoit avec cette couleur
+    - [x] `static Painter<Polygon> polygon (couleur de dessin)` retourne un peintre dessinant l'intérieur de tous les polygones de la carte qu'il reçoit avec cette couleur
 
-    - [ ] `static Painter<PolyLine> line (les paramètres de style d'une ligne)` retourne un peintre dessinant toutes les lignes de la carte qu'on lui fornit avec le style correspondant
+    - [x] `static Painter<PolyLine> line (les paramètres de style d'une ligne)` retourne un peintre dessinant toutes les lignes de la carte qu'on lui fornit avec le style correspondant
 
-    - [ ] `static Painter<PoyLine> line(largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constricuteur de `LineStyle`)
+    - [x] `static Painter<PoyLine> line(largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constricuteur de `LineStyle`)
 
-    - [ ] `static Painter<Polygon> outline (cinq paramètres de style d'une ligne)` dessine les pourtours de l'enveloppe et des trous de tous les polygones de la carte qu'on lui fournit
+    - [x] `static Painter<Polygon> outline (cinq paramètres de style d'une ligne)` dessine les pourtours de l'enveloppe et des trous de tous les polygones de la carte qu'on lui fournit
 
-    - [ ] `static Painter<Polygon> outline (largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constructeur de `LineStyle`)
+    - [x] `static Painter<Polygon> outline (largeur trait, couleur)` meme chose que ci-dessus (en utilisant le deuxième constructeur de `LineStyle`)
 
-    - [ ] `default Painter<E> when (Predicate<Attributed<?>> pred)` retourne un peintre se comportant comme celui auquel on l'applique si ce n'est qu'il ne considère que les éléments de la carte satisfaisant le predicat
+    - [x] `default Painter<E> when (Predicate<Attributed<?>> pred)` retourne un peintre se comportant comme celui auquel on l'applique si ce n'est qu'il ne considère que les éléments de la carte satisfaisant le predicat
 
-    - [ ] `default Painter<E> above (Painter<E> p)` retourne un peintre dessinant d'abord la carte produite par ce second peintre puis, par dessus, la carte produite par le premier peintre
+    - [x] `default Painter<E> above (Painter<E> p)` retourne un peintre dessinant d'abord la carte produite par ce second peintre puis, par dessus, la carte produite par le premier peintre
 
-    - [ ] `default Painter<E> layered()` retourne un peintre utilisant l'attribut layer attaché aux entités de la carte pour la dessiner par couches (en commençant de -5 jusqu'à + 5)
+    - [x] `default Painter<E> layered()` retourne un peintre utilisant l'attribut layer attaché aux entités de la carte pour la dessiner par couches (en commençant de -5 jusqu'à + 5)
 
 - Polygon (colore intérieure polygons)
 - PolyLigne (peint les polylignes à partir de `LineStyle`s)
