@@ -26,7 +26,7 @@ public final class Java2DCanvas implements Canvas {
     private final Function<Point, Point> basisChange;
     private final BufferedImage image;
     private final Graphics2D context;
-    private float scale;
+    private final float scale;
 
     /**
      * Construit une toile ayant pour coins les deux points fournis, la largeur,
