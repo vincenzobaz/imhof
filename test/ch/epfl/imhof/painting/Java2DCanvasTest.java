@@ -21,6 +21,9 @@ import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
 
 public final class Java2DCanvasTest {
+    private OSMToGeoTransformer transformer = new OSMToGeoTransformer(
+            new CH1903Projection());
+
     private Java2DCanvas newCanvas(double x1, double y1, double x2, double y2,
             int width, Color color) {
         return new Java2DCanvas(new Point(x1, y1), new Point(x2, y2), 1280,
@@ -87,8 +90,6 @@ public final class Java2DCanvasTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        OSMToGeoTransformer transformer = new OSMToGeoTransformer(
-                new CH1903Projection());
         Map rolexMap = transformer.transform(rolex);
         Polygon rolexPlan = rolexMap.polygons().get(0).value();
 
@@ -98,6 +99,34 @@ public final class Java2DCanvasTest {
         canvas.drawPolyLine(rolexPlan.shell(), newStyle());
         try {
             ImageIO.write(canvas.image(), "png", new File("rolex.png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void correctlyDrawsLausanne() {
+        OSMMap lausanne = null;
+        try {
+            lausanne = OSMMapReader.readOSMFile("data/lausanne.osm", false);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Map lausanneMap = transformer.transform(lausanne);
+        Java2DCanvas canvas = new Java2DCanvas(new Point(532510, 150590),
+                new Point(539570, 155260), 800, 530, 72, Color.WHITE);
+        lausanneMap.polygons().forEach(x -> {
+            if (x.hasAttribute("building")) {
+                canvas.drawPolygon(x.value(), Color.BLACK);
+            } else if ("water".equals(x.attributeValue("natural", ""))) {
+                canvas.drawPolygon(x.value(), Color.BLUE);
+            }
+            ;
+        });
+        try {
+            ImageIO.write(canvas.image(), "png", new File("lausanne.png"));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

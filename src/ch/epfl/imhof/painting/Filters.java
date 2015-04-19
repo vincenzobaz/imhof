@@ -65,6 +65,12 @@ public final class Filters {
                         return true;
                 }
             }
+            
+            /*for (String s : attributeValues) {
+                if (s.equals(x.attributeValue(attributeName, ""))) {
+                    return true;
+                }
+            }*/
             return false;
         };
     }

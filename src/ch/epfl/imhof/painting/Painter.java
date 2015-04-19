@@ -1,5 +1,6 @@
 package ch.epfl.imhof.painting;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import ch.epfl.imhof.Attributed;
@@ -71,7 +72,7 @@ public interface Painter<E> {
     }
 
     public default Painter<?> when(Predicate<Attributed<?>> predicate) {
-
+        
     }
 
     public default Painter<?> above(Painter<?> painter) {
