@@ -82,7 +82,7 @@ public final class Filters {
      *             lève une exception si le paramètre identifiant la couche est
      *             un entier inférieur à -5 ou supérieur à 5
      */
-    public static Predicate<Attributed<?>> isOnLayer(int layer)
+    public static Predicate<Attributed<?>> onLayer(int layer)
             throws IllegalArgumentException {
         // ignorer ce truc?
         if (layer < -5 || layer > 5) {

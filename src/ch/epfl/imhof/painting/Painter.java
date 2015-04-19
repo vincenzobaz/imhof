@@ -1,5 +1,7 @@
 package ch.epfl.imhof.painting;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import ch.epfl.imhof.Attributed;
@@ -62,8 +64,7 @@ public interface Painter<E> {
                 }
             }
         };
-        
-        
+
     }
 
     public static Painter<PolyLine> outline(float width, Color color) {
@@ -71,14 +72,33 @@ public interface Painter<E> {
     }
 
     public default Painter<?> when(Predicate<Attributed<?>> predicate) {
-
+        return (map, canvas) -> {
+            Map.Builder mapB = new Map.Builder();
+            for (Attributed<Polygon> p : map.polygons()) {
+                if (predicate.test(p))
+                    mapB.addPolygon(p);
+            }
+            for (Attributed<PolyLine> l : map.polyLines()) {
+                if (predicate.test(l)) {
+                    mapB.addPolyLine(l);
+                }
+            }
+            this.drawMap(mapB.build(), canvas);
+        };
     }
 
     public default Painter<?> above(Painter<?> painter) {
-
+        return (map, canvas) -> {
+            painter.drawMap(map, canvas);
+            this.drawMap(map, canvas);
+        };
     }
 
     public default Painter<?> layered() {
-
+        Painter<?> painter = this;
+        for (int layer = 5; layer > -5; layer --){
+            painter = painter.when(Filters.onLayer(layer)).above(painter.when(Filters.onLayer(layer-1)));
+        }
+        return painter;
     }
 }
