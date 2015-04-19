@@ -6,9 +6,11 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import javax.imageio.ImageIO;
 
+import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Point;
@@ -131,5 +133,41 @@ public final class Java2DCanvasTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+     @Test
+    public void correctlyDrawsLausanne() throws IOException{
+     // Le peintre et ses filtres
+        Predicate<Attributed<?>> isLake =
+            Filters.tagged("natural", "water");
+        Painter lakesPainter =
+            Painter.polygon(Color.BLUE).when(isLake);
+
+        Predicate<Attributed<?>> isBuilding =
+            Filters.tagged("building");
+        Painter buildingsPainter =
+            Painter.polygon(Color.BLACK).when(isBuilding);
+
+        Painter painter = buildingsPainter.above(lakesPainter);
+        OSMMap osmMap = null;
+        try {
+            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm.gz", true);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        OSMToGeoTransformer transformer = new OSMToGeoTransformer(new CH1903Projection());
+        Map map = transformer.transform(osmMap);
+
+        // La toile
+        Point bl = new Point(532510, 150590);
+        Point tr = new Point(539570, 155260);
+        Java2DCanvas canvas =
+            new Java2DCanvas(bl, tr, 800, 530, 72, Color.WHITE);
+
+        // Dessin de la carte et stockage dans un fichier
+        painter.drawMap(map, canvas);
+        ImageIO.write(canvas.image(), "png", new File("loz.png"));
+        
     }
 }
