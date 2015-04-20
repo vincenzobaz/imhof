@@ -40,12 +40,12 @@ public final class LineStyle {
         if (width < 0) {
             throw new IllegalArgumentException("negative line width");
         }
-        
+
         this.width = width;
         this.color = color;
         this.cap = cap;
         this.join = join;
-        //this.dashingPattern = new float[dashingPattern.length];
+        // this.dashingPattern = new float[dashingPattern.length];
         float[] temp = new float[dashingPattern.length];
         for (int i = 0; i < dashingPattern.length; i++) {
             if (dashingPattern[i] <= 0) {
@@ -111,11 +111,6 @@ public final class LineStyle {
     public float[] dashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
-        /*
-         * float[] defensiveCopy = new float[dashingPattern.length];
-         * System.arraycopy(dashingPattern, 0, defensiveCopy, 0,
-         * dashingPattern.length); return defensiveCopy;
-         */
         return Arrays.copyOf(dashingPattern, dashingPattern.length);
     }
 

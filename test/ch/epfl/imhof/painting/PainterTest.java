@@ -65,13 +65,13 @@ public class PainterTest {
         Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
 
         Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
-        Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
+        Painter<?> buildingsPainter = Painter.polygon(Color.RED).when(
                 isBuilding);
 
         Predicate<Attributed<?>> isForest = Filters.tagged("natural", "forest");
         Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
 
-        Painter<?> mapPainter = lakesPainter.above(forestPainter).layered();
+        Painter<?> mapPainter = lakesPainter.above(buildingsPainter);
         Java2DCanvas canvas = new Java2DCanvas(new Point(-7d, -7d), new Point(
                 7d, 7d), 1280, 1280, 72, Color.WHITE);
         mapPainter.drawMap(testMap(), canvas);

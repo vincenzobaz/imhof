@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
+import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
@@ -23,8 +24,9 @@ import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
 
 public final class Java2DCanvasTest {
+    private final CH1903Projection projection = new CH1903Projection();
     private final OSMToGeoTransformer transformer = new OSMToGeoTransformer(
-            new CH1903Projection());
+            projection);
 
     private Java2DCanvas newCanvas(double x1, double y1, double x2, double y2,
             int width, Color color) {
@@ -115,10 +117,14 @@ public final class Java2DCanvasTest {
         Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
                 isBuilding);
 
-        Painter<?> painter = buildingsPainter.above(lakesPainter);
+        Predicate<Attributed<?>> isForest = Filters.tagged("natural", "wood");
+        Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
+
+        Painter<?> painter = buildingsPainter.above(lakesPainter).above(
+                forestPainter);
         OSMMap osmMap = null;
         try {
-            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm.gz", true);
+            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm", false);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -126,6 +132,10 @@ public final class Java2DCanvasTest {
         Map map = transformer.transform(osmMap);
 
         // La toile
+        Point blsc = projection.project(new PointGeo(Math.toRadians(5.8634),
+                Math.toRadians(46.3638)));
+        Point trsc = projection.project(new PointGeo(Math.toRadians(5.9009),
+                Math.toRadians(46.4058)));
         Point bl = new Point(532510, 150590);
         Point tr = new Point(539570, 155260);
         Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 72,
@@ -133,6 +143,6 @@ public final class Java2DCanvasTest {
 
         // Dessin de la carte et stockage dans un fichier
         painter.drawMap(map, canvas);
-        ImageIO.write(canvas.image(), "png", new File("loz.png"));
+        ImageIO.write(canvas.image(), "png", new File("lausanne.png"));
     }
 }

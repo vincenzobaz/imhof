@@ -59,18 +59,18 @@ public final class Filters {
             // On ne vérifie l'association attributeName-attributeValue que si
             // attributeName est le nom d'un attribut possédé par la valeur
             // attribuée
-            if (tagged(attributeName).test(x)) {
+            /*if (tagged(attributeName).test(x)) {
                 for (String s : attributeValues) {
                     if (s.equals(x.attributeValue(attributeName)))
                         return true;
                 }
-            }
+            }*/
             
-            /*for (String s : attributeValues) {
-                if (s.equals(x.attributeValue(attributeName, ""))) {
+            for (String s : attributeValues) {
+                if (s.equals(x.attributeValue(attributeName, "defaultString"))) {
                     return true;
                 }
-            }*/
+            }
             return false;
         };
     }

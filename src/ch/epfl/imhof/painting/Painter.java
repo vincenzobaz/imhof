@@ -70,8 +70,6 @@ public interface Painter<E> {
      *         argument et des valeurs par défaut pour les autres trois
      */
     public static Painter<PolyLine> line(float width, Color color) {
-        // return line(width, color, LineCap.BUTT, LineJoin.MITER, new
-        // float[0]);
         return (map, canvas) -> {
             map.polyLines().forEach(
                     x -> canvas.drawPolyLine(x.value(), new LineStyle(width,
@@ -101,13 +99,6 @@ public interface Painter<E> {
         return (map, canvas) -> {
             LineStyle style = new LineStyle(width, color, cap, join,
                     dashingPattern);
-            /*
-             * for (Attributed<Polygon> attributedPolygon : map.polygons()) {
-             * Polygon polygon = attributedPolygon.value();
-             * canvas.drawPolyLine(polygon.shell(), style); for (PolyLine hole :
-             * polygon.holes()) { canvas.drawPolyLine(hole, style); } }
-             */
-
             map.polygons().forEach(x -> {
                 canvas.drawPolyLine(x.value().shell(), style);
                 x.value().holes().forEach(y -> {
@@ -129,8 +120,6 @@ public interface Painter<E> {
      *         en utilisant des valeurs par défaut pour les autres trois
      */
     public static Painter<PolyLine> outline(float width, Color color) {
-        // return outline(width, color, LineCap.BUTT, LineJoin.MITER, new
-        // float[0]);
         return (map, canvas) -> {
             LineStyle style = new LineStyle(width, color);
             map.polygons().forEach(x -> {
@@ -191,7 +180,13 @@ public interface Painter<E> {
      */
     public default Painter<?> layered() {
         Painter<?> painter = this;
-        for (int layer = 5; layer > -5; layer--) {
+        /*
+         * for (int layer = 5; layer > -5; layer--) { painter =
+         * painter.when(Filters.onLayer(layer)).above(
+         * painter.when(Filters.onLayer(layer - 1))); }
+         */
+
+        for (int layer = -4; layer < 5; ++layer) {
             painter = painter.when(Filters.onLayer(layer)).above(
                     painter.when(Filters.onLayer(layer - 1)));
         }
