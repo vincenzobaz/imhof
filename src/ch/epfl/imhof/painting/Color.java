@@ -121,7 +121,7 @@ public final class Color {
             throw new IllegalArgumentException(
                     "La composante bleue est invalide.");
         }
-        return new Color((redRatio / (255)), (greenRatio / (255)), (blueRatio / (255)));
+        return new Color(redRatio, greenRatio, blueRatio);
     }
 
     /**
