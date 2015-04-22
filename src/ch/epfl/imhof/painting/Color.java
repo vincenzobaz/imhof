@@ -105,8 +105,23 @@ public final class Color {
      */
     public static Color rgb(int binaryContainer)
             throws IllegalArgumentException {
-        // à compléter
-        return new Color();
+        int mask = 0b1111111;
+        double blueRatio = (binaryContainer & mask) / 255d;
+        double greenRatio = ((binaryContainer & (mask << 8)) >>> 8) / 255d;
+        double redRatio = ((binaryContainer & (mask << 16)) >>> 16) / 255d;
+        if (redRatio < 0 || redRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante rouge est invalide.");
+        }
+        if (greenRatio < 0 || greenRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante verte est invalide.");
+        }
+        if (blueRatio < 0 || blueRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante bleue est invalide.");
+        }
+        return new Color(redRatio, greenRatio, blueRatio);
     }
 
     /**

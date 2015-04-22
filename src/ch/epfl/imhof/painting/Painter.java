@@ -191,17 +191,12 @@ public interface Painter<E> {
      *         plus haut (<code>layer=5</code>)
      */
     public default Painter<?> layered() {
-        Painter<?> painter = this;
-        /*
-         * for (int layer = 5; layer > -5; layer--) { painter =
-         * painter.when(Filters.onLayer(layer)).above(
-         * painter.when(Filters.onLayer(layer - 1))); }
-         */
-
-        for (int layer = -4; layer < 5; ++layer) {
-            painter = painter.when(Filters.onLayer(layer)).above(
-                    painter.when(Filters.onLayer(layer - 1)));
-        }
-        return painter;
+        return (map, canvas) -> {
+            Painter<?> layered = this;
+           for (int layer =-5; layer <5; layer++){
+              layered = this.when(Filters.onLayer(layer+1)).above(this.when(Filters.onLayer(layer)));
+           }
+           layered.drawMap(map, canvas);
+        };
     }
 }
