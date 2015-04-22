@@ -1,6 +1,5 @@
 package ch.epfl.imhof.painting;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 import ch.epfl.imhof.Attributed;
@@ -23,7 +22,7 @@ public interface Painter<E> {
 
     /**
      * @param fillColor
-     *            la coulour de remplissage des polygons
+     *            la coulour de remplissage des polygones
      * @return un peintre dessinant l'intérieur de tous les polygones de la
      *         carte qu'il reçoit
      */
@@ -31,6 +30,12 @@ public interface Painter<E> {
         return (map, canvas) -> {
             map.polygons().forEach(
                     x -> canvas.drawPolygon(x.value(), fillColor));
+        };
+    }
+
+    public static Painter<PolyLine> line(LineStyle style) {
+        return (map, canvas) -> {
+            map.polyLines().forEach(x -> canvas.drawPolyLine(x.value(), style));
         };
     }
 
@@ -52,11 +57,12 @@ public interface Painter<E> {
      */
     public static Painter<PolyLine> line(float width, Color color, LineCap cap,
             LineJoin join, float[] dashingPattern) {
-        return (map, canvas) -> {
-            map.polyLines().forEach(
-                    x -> canvas.drawPolyLine(x.value(), new LineStyle(width,
-                            color, cap, join, dashingPattern)));
-        };
+        return line(new LineStyle(width, color, cap, join, dashingPattern));
+        /*
+         * return (map, canvas) -> { map.polyLines().forEach( x ->
+         * canvas.drawPolyLine(x.value(), new LineStyle(width, color, cap, join,
+         * dashingPattern))); };
+         */
     }
 
     /**
@@ -70,10 +76,19 @@ public interface Painter<E> {
      *         argument et des valeurs par défaut pour les autres trois
      */
     public static Painter<PolyLine> line(float width, Color color) {
+        return line(new LineStyle(width, color));
+        /*
+         * return (map, canvas) -> { map.polyLines().forEach( x ->
+         * canvas.drawPolyLine(x.value(), new LineStyle(width, color))); };
+         */
+    }
+
+    public static Painter<PolyLine> outline(LineStyle style) {
         return (map, canvas) -> {
-            map.polyLines().forEach(
-                    x -> canvas.drawPolyLine(x.value(), new LineStyle(width,
-                            color)));
+            map.polygons().forEach(x -> {
+                canvas.drawPolyLine(x.value().shell(), style);
+                x.value().holes().forEach(y -> canvas.drawPolyLine(y, style));
+            });
         };
     }
 
@@ -95,17 +110,15 @@ public interface Painter<E> {
      */
     public static Painter<PolyLine> outline(float width, Color color,
             LineCap cap, LineJoin join, float[] dashingPattern) {
+        return outline(new LineStyle(width, color, cap, join, dashingPattern));
         // Pourquoi ne pas utiliser .forEach() ici aussi?
-        return (map, canvas) -> {
-            LineStyle style = new LineStyle(width, color, cap, join,
-                    dashingPattern);
-            map.polygons().forEach(x -> {
-                canvas.drawPolyLine(x.value().shell(), style);
-                x.value().holes().forEach(y -> {
-                    canvas.drawPolyLine(y, style);
-                });
-            });
-        };
+        /*
+         * return (map, canvas) -> { LineStyle style = new LineStyle(width,
+         * color, cap, join, dashingPattern); map.polygons().forEach(x -> {
+         * canvas.drawPolyLine(x.value().shell(), style);
+         * x.value().holes().forEach(y -> { canvas.drawPolyLine(y, style); });
+         * }); };
+         */
     }
 
     /**
@@ -120,15 +133,14 @@ public interface Painter<E> {
      *         en utilisant des valeurs par défaut pour les autres trois
      */
     public static Painter<PolyLine> outline(float width, Color color) {
-        return (map, canvas) -> {
-            LineStyle style = new LineStyle(width, color);
-            map.polygons().forEach(x -> {
-                canvas.drawPolyLine(x.value().shell(), style);
-                x.value().holes().forEach(y -> {
-                    canvas.drawPolyLine(y, style);
-                });
-            });
-        };
+        return outline(new LineStyle(width, color));
+        /*
+         * return (map, canvas) -> { LineStyle style = new LineStyle(width,
+         * color); map.polygons().forEach(x -> {
+         * canvas.drawPolyLine(x.value().shell(), style);
+         * x.value().holes().forEach(y -> { canvas.drawPolyLine(y, style); });
+         * }); };
+         */
     }
 
     /**
