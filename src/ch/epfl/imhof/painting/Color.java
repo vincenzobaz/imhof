@@ -10,12 +10,12 @@ package ch.epfl.imhof.painting;
  */
 public final class Color {
     // Les couleurs rouge, vert et bleu purs
-    public final static Color RED = new Color(1.0, 0.0, 0.0);
-    public final static Color GREEN = new Color(0.0, 1.0, 0.0);
-    public final static Color BLUE = new Color(0.0, 0.0, 1.0);
+    public final static Color RED = Color.rgb(1.0, 0.0, 0.0);
+    public final static Color GREEN = Color.rgb(0.0, 1.0, 0.0);
+    public final static Color BLUE = Color.rgb(0.0, 0.0, 1.0);
     // Les couleurs blanc et noir
-    public final static Color WHITE = new Color(1.0, 1.0, 1.0);
-    public final static Color BLACK = new Color(0.0, 0.0, 0.0);
+    public final static Color WHITE = Color.rgb(1.0, 1.0, 1.0);
+    public final static Color BLACK = Color.rgb(0.0, 0.0, 0.0);
 
     private final double redRatio;
     private final double greenRatio;
@@ -33,10 +33,25 @@ public final class Color {
      * @param blueRatio
      *            la composante bleue de la couleur
      */
-    private Color(double redRatio, double greenRatio, double blueRatio) {
+
+    private Color(double redRatio, double greenRatio, double blueRatio)
+            throws IllegalArgumentException {
+        if (redRatio < 0 || redRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante rouge est invalide.");
+        }
+        if (greenRatio < 0 || greenRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante verte est invalide.");
+        }
+        if (blueRatio < 0 || blueRatio > 1) {
+            throw new IllegalArgumentException(
+                    "La composante bleue est invalide.");
+        }
         this.redRatio = redRatio;
         this.greenRatio = greenRatio;
         this.blueRatio = blueRatio;
+
     }
 
     /**
@@ -76,19 +91,6 @@ public final class Color {
      */
     public static Color rgb(double redRatio, double greenRatio, double blueRatio)
             throws IllegalArgumentException {
-        if (redRatio < 0 || redRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante rouge est invalide.");
-        }
-        if (greenRatio < 0 || greenRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante verte est invalide.");
-        }
-        if (blueRatio < 0 || blueRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante bleue est invalide.");
-        }
-
         return new Color(redRatio, greenRatio, blueRatio);
     }
 
@@ -105,22 +107,10 @@ public final class Color {
      */
     public static Color rgb(int binaryContainer)
             throws IllegalArgumentException {
-        int mask = 0b1111111;
-        double blueRatio = (binaryContainer & mask) / 255d;
-        double greenRatio = ((binaryContainer & (mask << 8)) >>> 8) / 255d;
-        double redRatio = ((binaryContainer & (mask << 16)) >>> 16) / 255d;
-        if (redRatio < 0 || redRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante rouge est invalide.");
-        }
-        if (greenRatio < 0 || greenRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante verte est invalide.");
-        }
-        if (blueRatio < 0 || blueRatio > 1) {
-            throw new IllegalArgumentException(
-                    "La composante bleue est invalide.");
-        }
+        int mask = 0xFF;
+        double blueRatio = mask & binaryContainer;
+        double greenRatio = mask & (binaryContainer >>> 8);
+        double redRatio = mask & (binaryContainer >>> 16);
         return new Color(redRatio, greenRatio, blueRatio);
     }
 
