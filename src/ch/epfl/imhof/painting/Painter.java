@@ -1,8 +1,6 @@
 package ch.epfl.imhof.painting;
 
-import java.util.List;
 import java.util.function.Predicate;
-
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.PolyLine;
