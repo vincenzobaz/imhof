@@ -22,9 +22,10 @@ import ch.epfl.imhof.osm.OSMMap;
 import ch.epfl.imhof.osm.OSMMapReader;
 import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
+import ch.epfl.imhof.projection.Projection;
 
 public final class Java2DCanvasTest {
-    private final CH1903Projection projection = new CH1903Projection();
+    private final Projection projection = new CH1903Projection();
     private final OSMToGeoTransformer transformer = new OSMToGeoTransformer(
             projection);
 
@@ -120,11 +121,11 @@ public final class Java2DCanvasTest {
         Predicate<Attributed<?>> isForest = Filters.tagged("natural", "wood");
         Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
 
-        Painter<?> painter = buildingsPainter.above(lakesPainter).above(
-                forestPainter);
+        Painter<?> painter = buildingsPainter.above(forestPainter
+                .above(lakesPainter));
         OSMMap osmMap = null;
         try {
-            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm", false);
+            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz", true);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -132,17 +133,23 @@ public final class Java2DCanvasTest {
         Map map = transformer.transform(osmMap);
 
         // La toile
+        Point blbezak = projection.project(new PointGeo(Math.toRadians(6.0294),
+                Math.toRadians(47.2231)));
+        Point trbezak = projection.project(new PointGeo(Math.toRadians(6.0481),
+                Math.toRadians(47.2438)));
         Point blsc = projection.project(new PointGeo(Math.toRadians(5.8634),
                 Math.toRadians(46.3638)));
         Point trsc = projection.project(new PointGeo(Math.toRadians(5.9009),
                 Math.toRadians(46.4058)));
         Point bl = new Point(532510, 150590);
         Point tr = new Point(539570, 155260);
-        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 72,
+        Point blInter = new Point(628764, 167585);
+        Point trInter = new Point(634991, 172331);
+        Java2DCanvas canvas = new Java2DCanvas(blInter, trInter, 800, 530, 72,
                 Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier
         painter.drawMap(map, canvas);
-        ImageIO.write(canvas.image(), "png", new File("lausanne.png"));
+        ImageIO.write(canvas.image(), "png", new File("interlaken.png"));
     }
 }

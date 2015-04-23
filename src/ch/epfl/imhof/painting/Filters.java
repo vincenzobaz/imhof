@@ -32,7 +32,6 @@ public final class Filters {
      */
     public static Predicate<Attributed<?>> tagged(String attributeName) {
         return x -> x.hasAttribute(attributeName);
-        // return Attributed<?>::hasAttribute;
     }
 
     /**
