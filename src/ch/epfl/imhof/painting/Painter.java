@@ -1,7 +1,6 @@
 package ch.epfl.imhof.painting;
 
 import java.util.function.Predicate;
-
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.PolyLine;
@@ -33,12 +32,6 @@ public interface Painter<E> {
         };
     }
 
-    public static Painter<PolyLine> line(LineStyle style) {
-        return (map, canvas) -> {
-            map.polyLines().forEach(x -> canvas.drawPolyLine(x.value(), style));
-        };
-    }
-
     /**
      * 
      * @param width
@@ -58,11 +51,19 @@ public interface Painter<E> {
     public static Painter<PolyLine> line(float width, Color color, LineCap cap,
             LineJoin join, float[] dashingPattern) {
         return line(new LineStyle(width, color, cap, join, dashingPattern));
-        /*
-         * return (map, canvas) -> { map.polyLines().forEach( x ->
-         * canvas.drawPolyLine(x.value(), new LineStyle(width, color, cap, join,
-         * dashingPattern))); };
-         */
+    }
+
+    /**
+     * 
+     * @param style
+     *            le style de dessin du trait
+     * @return un peintre dessinant toutes les lignes de la carte qu'on lui
+     *         fournit en utilisant le style fourni en argument
+     */
+    public static Painter<PolyLine> line(LineStyle style) {
+        return (map, canvas) -> {
+            map.polyLines().forEach(x -> canvas.drawPolyLine(x.value(), style));
+        };
     }
 
     /**
@@ -77,16 +78,23 @@ public interface Painter<E> {
      */
     public static Painter<PolyLine> line(float width, Color color) {
         return line(new LineStyle(width, color));
-        /*
-         * return (map, canvas) -> { map.polyLines().forEach( x ->
-         * canvas.drawPolyLine(x.value(), new LineStyle(width, color))); };
-         */
     }
 
+    /**
+     * 
+     * @param style
+     *            le style du trait à utiliser lors du dessin.
+     * @return un peintre dessinant les pourtours de l'enveloppe et des trous de
+     *         toues les polygones de la carte qu'on lui forunit en utilisant le
+     *         style fourni en argument
+     */
     public static Painter<PolyLine> outline(LineStyle style) {
         return (map, canvas) -> {
             map.polygons().forEach(x -> {
                 canvas.drawPolyLine(x.value().shell(), style);
+                x.value().holes().forEach(y -> {
+                    canvas.drawPolyLine(y, style);
+                });
                 x.value().holes().forEach(y -> canvas.drawPolyLine(y, style));
             });
         };
@@ -111,14 +119,6 @@ public interface Painter<E> {
     public static Painter<PolyLine> outline(float width, Color color,
             LineCap cap, LineJoin join, float[] dashingPattern) {
         return outline(new LineStyle(width, color, cap, join, dashingPattern));
-        // Pourquoi ne pas utiliser .forEach() ici aussi?
-        /*
-         * return (map, canvas) -> { LineStyle style = new LineStyle(width,
-         * color, cap, join, dashingPattern); map.polygons().forEach(x -> {
-         * canvas.drawPolyLine(x.value().shell(), style);
-         * x.value().holes().forEach(y -> { canvas.drawPolyLine(y, style); });
-         * }); };
-         */
     }
 
     /**
@@ -134,13 +134,6 @@ public interface Painter<E> {
      */
     public static Painter<PolyLine> outline(float width, Color color) {
         return outline(new LineStyle(width, color));
-        /*
-         * return (map, canvas) -> { LineStyle style = new LineStyle(width,
-         * color); map.polygons().forEach(x -> {
-         * canvas.drawPolyLine(x.value().shell(), style);
-         * x.value().holes().forEach(y -> { canvas.drawPolyLine(y, style); });
-         * }); };
-         */
     }
 
     /**
@@ -193,10 +186,11 @@ public interface Painter<E> {
     public default Painter<?> layered() {
         return (map, canvas) -> {
             Painter<?> layered = this;
-           for (int layer =-5; layer <5; layer++){
-              layered = this.when(Filters.onLayer(layer+1)).above(this.when(Filters.onLayer(layer)));
-           }
-           layered.drawMap(map, canvas);
+            for (int layer = -5; layer < 5; layer++) {
+                layered = this.when(Filters.onLayer(layer + 1)).above(
+                        this.when(Filters.onLayer(layer)));
+            }
+            layered.drawMap(map, canvas);
         };
     }
 }

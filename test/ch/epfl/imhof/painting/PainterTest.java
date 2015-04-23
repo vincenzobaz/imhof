@@ -46,8 +46,8 @@ public class PainterTest {
                 middleBuilder.build());
 
         Attributes.Builder topBuilder = new Attributes.Builder();
-        middleBuilder.put("layer", "4");
-        middleBuilder.put("building", "true");
+        topBuilder.put("layer", "4");
+        topBuilder.put("building", "true");
         Attributed<Polygon> topAttributed = new Attributed<Polygon>(top,
                 topBuilder.build());
 
@@ -71,7 +71,7 @@ public class PainterTest {
         Predicate<Attributed<?>> isForest = Filters.tagged("natural", "forest");
         Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
 
-        Painter<?> mapPainter = lakesPainter.above(forestPainter);
+        Painter<?> mapPainter = lakesPainter.above(forestPainter.above(buildingsPainter)).layered();
         Java2DCanvas canvas = new Java2DCanvas(new Point(-7d, -7d), new Point(
                 7d, 7d), 1280, 1280, 72, Color.WHITE);
         mapPainter.drawMap(testMap(), canvas);
