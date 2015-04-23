@@ -48,10 +48,10 @@ public final class Color {
             throw new IllegalArgumentException(
                     "La composante bleue est invalide.");
         }
+
         this.redRatio = redRatio;
         this.greenRatio = greenRatio;
         this.blueRatio = blueRatio;
-
     }
 
     /**
@@ -151,8 +151,8 @@ public final class Color {
      * @return le produit, composante par composante, des deux couleurs
      */
     public Color multiplyWith(Color c) {
-        return new Color(redRatio * c.redRatio(), greenRatio * c.greenRatio(),
-                blueRatio * c.blueRatio());
+        return new Color(redRatio * c.redRatio, greenRatio * c.greenRatio,
+                blueRatio * c.blueRatio);
     }
 
     // idem que pour la multiplication

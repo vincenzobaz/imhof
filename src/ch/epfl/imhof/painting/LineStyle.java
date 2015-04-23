@@ -46,6 +46,7 @@ public final class LineStyle {
         this.cap = cap;
         this.join = join;
         // this.dashingPattern = new float[dashingPattern.length];
+        // tester si dashingpattern est null??
         float[] temp = new float[dashingPattern.length];
         for (int i = 0; i < dashingPattern.length; i++) {
             if (dashingPattern[i] <= 0) {
@@ -111,7 +112,8 @@ public final class LineStyle {
     public float[] dashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
-        return dashingPattern == null ? null : Arrays.copyOf(dashingPattern, dashingPattern.length);
+        return dashingPattern == null ? null : Arrays.copyOf(dashingPattern,
+                dashingPattern.length);
     }
 
     /**

@@ -90,7 +90,8 @@ public final class Java2DCanvas implements Canvas {
     public void drawPolyLine(PolyLine polyline, LineStyle style) {
         int cap = capValue(style.cap());
         int join = joinValue(style.join());
-        BasicStroke stroke = style.dashingPattern().length == 0 || style.dashingPattern()==null ? new BasicStroke(
+        BasicStroke stroke = style.dashingPattern().length == 0
+                || style.dashingPattern() == null ? new BasicStroke(
                 style.width() / scale, cap, join, 10.0f) : new BasicStroke(
                 style.width() / scale, cap, join, 10.0f,
                 style.dashingPattern(), 0f);

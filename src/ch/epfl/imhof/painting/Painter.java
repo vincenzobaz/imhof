@@ -1,6 +1,7 @@
 package ch.epfl.imhof.painting;
 
 import java.util.function.Predicate;
+
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.geometry.PolyLine;
@@ -34,6 +35,19 @@ public interface Painter<E> {
 
     /**
      * 
+     * @param style
+     *            le style de dessin du trait
+     * @return un peintre dessinant toutes les lignes de la carte qu'on lui
+     *         fournit en utilisant le style fourni en argument
+     */
+    public static Painter<PolyLine> line(LineStyle style) {
+        return (map, canvas) -> {
+            map.polyLines().forEach(x -> canvas.drawPolyLine(x.value(), style));
+        };
+    }
+
+    /**
+     * 
      * @param width
      *            l'épaisseur du trait
      * @param color
@@ -51,19 +65,6 @@ public interface Painter<E> {
     public static Painter<PolyLine> line(float width, Color color, LineCap cap,
             LineJoin join, float[] dashingPattern) {
         return line(new LineStyle(width, color, cap, join, dashingPattern));
-    }
-
-    /**
-     * 
-     * @param style
-     *            le style de dessin du trait
-     * @return un peintre dessinant toutes les lignes de la carte qu'on lui
-     *         fournit en utilisant le style fourni en argument
-     */
-    public static Painter<PolyLine> line(LineStyle style) {
-        return (map, canvas) -> {
-            map.polyLines().forEach(x -> canvas.drawPolyLine(x.value(), style));
-        };
     }
 
     /**
@@ -95,7 +96,6 @@ public interface Painter<E> {
                 x.value().holes().forEach(y -> {
                     canvas.drawPolyLine(y, style);
                 });
-                x.value().holes().forEach(y -> canvas.drawPolyLine(y, style));
             });
         };
     }
