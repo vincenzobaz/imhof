@@ -21,7 +21,7 @@ public interface Painter<E> {
 
     /**
      * @param fillColor
-     *            la coulour de remplissage des polygons
+     *            la coulour de remplissage des polygones
      * @return un peintre dessinant l'intérieur de tous les polygones de la
      *         carte qu'il reçoit
      */
@@ -95,6 +95,7 @@ public interface Painter<E> {
                 x.value().holes().forEach(y -> {
                     canvas.drawPolyLine(y, style);
                 });
+                x.value().holes().forEach(y -> canvas.drawPolyLine(y, style));
             });
         };
     }
