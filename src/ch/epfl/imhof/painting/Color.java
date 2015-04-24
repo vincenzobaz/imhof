@@ -108,9 +108,9 @@ public final class Color {
     public static Color rgb(int binaryContainer)
             throws IllegalArgumentException {
         int mask = 0xFF;
-        double blueRatio = mask & binaryContainer;
-        double greenRatio = mask & (binaryContainer >>> 8);
-        double redRatio = mask & (binaryContainer >>> 16);
+        double blueRatio = (mask & binaryContainer) / 255d;
+        double greenRatio = (mask & (binaryContainer >>> 8)) / 255d;
+        double redRatio = (mask & (binaryContainer >>> 16)) / 255d;
         return new Color(redRatio, greenRatio, blueRatio);
     }
 
