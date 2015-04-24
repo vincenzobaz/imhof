@@ -8,9 +8,9 @@ package ch.epfl.imhof;
  *
  */
 public final class Vector3D {
-    private double x;
-    private double y;
-    private double z;
+    private final double x;
+    private final double y;
+    private final double z;
 
     /**
      * Construit un vecteur tridimensionnel à partir des ses trois composantes
