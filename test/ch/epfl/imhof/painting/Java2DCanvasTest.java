@@ -36,7 +36,7 @@ public final class Java2DCanvasTest {
     }
 
     private LineStyle newStyle() {
-        return new LineStyle(4f, Color.BLACK, LineStyle.LineCap.BUTT,
+        return new LineStyle(4f, Color.RED, LineStyle.LineCap.BUTT,
                 LineStyle.LineJoin.ROUND, new float[0]);
     }
 
@@ -63,7 +63,7 @@ public final class Java2DCanvasTest {
 
     @Test
     public void correctlyDrawsLine() {
-        Java2DCanvas canvas = newCanvas(-5d, -5d, 5d, 5d, 1280, Color.WHITE);
+        Java2DCanvas canvas = newCanvas(-5d, -5d, 5d, 5d, 1280, Color.BLUE);
         canvas.drawPolyLine(simpleLine(), newStyle());
         try {
             ImageIO.write(canvas.image(), "png", new File("droite.png"));
