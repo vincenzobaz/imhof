@@ -112,8 +112,9 @@ public final class LineStyle {
     public float[] dashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
-        return dashingPattern == null ? null : Arrays.copyOf(dashingPattern,
-                dashingPattern.length);
+//        return dashingPattern == null ? null : Arrays.copyOf(dashingPattern,
+ //               dashingPattern.length);
+        return dashingPattern.clone();
     }
 
     /**
