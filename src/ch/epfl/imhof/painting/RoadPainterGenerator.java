@@ -22,14 +22,14 @@ public final class RoadPainterGenerator {
                 2 * spec.getwI());
 
         Painter<?> tunnelPainter = Painter.line(intTunnel).when(
-                Filters.tagged("tunnel"));
+                Filters.tagged("tunnel").and(spec.getFilter()));
         Painter<?> intBridgePainter = Painter.line(intBridge).when(
-                Filters.tagged("bridge"));
+                Filters.tagged("bridge").and(spec.getFilter()));
         Painter<?> coBridgePainter = Painter.line(coBridge).when(
-                Filters.tagged("bridge"));
+                Filters.tagged("bridge").and(spec.getFilter()));
         Painter<?> coNormRoadPainter = Painter.line(coNormRoad).when(
                 Filters.tagged("bridge").negate()
-                        .and(Filters.tagged("tunnel").negate()));
+                        .and(Filters.tagged("tunnel").negate()).and(spec.getFilter()));
 
         return intBridgePainter.above(coBridgePainter.above(intBridgePainter
                 .above(coNormRoadPainter.above(tunnelPainter))));
