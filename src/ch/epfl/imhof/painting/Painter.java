@@ -148,13 +148,14 @@ public interface Painter<E> {
     public default Painter<?> when(Predicate<Attributed<?>> predicate) {
         return (map, canvas) -> {
             Map.Builder mapBuilder = new Map.Builder();
-            for (Attributed<Polygon> p : map.polygons()) {
-                if (predicate.test(p))
-                    mapBuilder.addPolygon(p);
+            for (Attributed<Polygon> polygon : map.polygons()) {
+                if (predicate.test(polygon)) {
+                    mapBuilder.addPolygon(polygon);
+                }
             }
-            for (Attributed<PolyLine> l : map.polyLines()) {
-                if (predicate.test(l)) {
-                    mapBuilder.addPolyLine(l);
+            for (Attributed<PolyLine> polyline : map.polyLines()) {
+                if (predicate.test(polyline)) {
+                    mapBuilder.addPolyLine(polyline);
                 }
             }
             this.drawMap(mapBuilder.build(), canvas);
@@ -190,7 +191,6 @@ public interface Painter<E> {
                 Painter<?> top = when(Filters.onLayer(layer));
                 painter = top.above(painter);
             }
-            painter.drawMap(map, canvas);
         };
     }
 }

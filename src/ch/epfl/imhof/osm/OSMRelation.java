@@ -108,7 +108,7 @@ public final class OSMRelation extends OSMEntity {
          *
          */
         public static enum Type {
-            NODE, WAY, RELATION;
+            NODE, WAY, RELATION
         }
     }
 

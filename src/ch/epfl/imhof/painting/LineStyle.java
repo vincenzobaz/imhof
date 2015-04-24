@@ -1,7 +1,5 @@
 package ch.epfl.imhof.painting;
 
-import java.util.Arrays;
-
 /**
  * Classe regroupant tous les paramètres de style utiles au dessin d'une ligne
  * 
@@ -38,7 +36,8 @@ public final class LineStyle {
     public LineStyle(float width, Color color, LineCap cap, LineJoin join,
             float... dashingPattern) throws IllegalArgumentException {
         if (width < 0) {
-            throw new IllegalArgumentException("negative line width");
+            throw new IllegalArgumentException(
+                    "La largeur de ligne doit être positive.");
         }
 
         this.width = width;
@@ -53,7 +52,8 @@ public final class LineStyle {
             float[] temp = new float[dashingPattern.length];
             for (int i = 0; i < dashingPattern.length; i++) {
                 if (dashingPattern[i] <= 0) {
-                    throw new IllegalArgumentException("negative line length");
+                    throw new IllegalArgumentException(
+                            "La longueur d'un segment de ligne doit être strictement positive.");
                 } else {
                     temp[i] = dashingPattern[i];
                 }

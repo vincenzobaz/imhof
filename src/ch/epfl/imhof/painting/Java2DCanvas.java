@@ -57,7 +57,8 @@ public final class Java2DCanvas implements Canvas {
             int height, int dpi, Color backgroundColor)
             throws IllegalArgumentException {
         if (width <= 0 || height <= 0 || dpi <= 0) {
-            throw new IllegalArgumentException("negative width, heigth or dpi");
+            throw new IllegalArgumentException(
+                    "La largeur, la hauteur et la résolution de l'image doivent être positives.");
         }
         if (bottomLeft.x() >= topRight.x() || bottomLeft.y() >= topRight.y()) {
             throw new IllegalArgumentException(
@@ -90,11 +91,11 @@ public final class Java2DCanvas implements Canvas {
     public void drawPolyLine(PolyLine polyline, LineStyle style) {
         int cap = style.cap().ordinal();
         int join = style.join().ordinal();
-        BasicStroke stroke = style.dashingPattern() == null
-                || style.dashingPattern().length == 0 ? new BasicStroke(
-                style.width() / scale, cap, join, 10.0f) : new BasicStroke(
-                style.width() / scale, cap, join, 10.0f,
-                style.dashingPattern(), 0f);
+        float[] dashingPattern = style.dashingPattern();
+        BasicStroke stroke = dashingPattern == null
+                || dashingPattern.length == 0 ? new BasicStroke(style.width()
+                / scale, cap, join, 10.0f) : new BasicStroke(style.width()
+                / scale, cap, join, 10.0f, dashingPattern, 0f);
         context.setStroke(stroke);
         context.setColor(style.color().convert());
 
