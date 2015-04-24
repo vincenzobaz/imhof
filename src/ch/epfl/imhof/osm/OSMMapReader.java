@@ -16,6 +16,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import java.lang.Long;
 import java.lang.Double;
 
+import static ch.epfl.imhof.osm.OSMRelation.Member.Type.*;
+
 import ch.epfl.imhof.PointGeo;
 
 /**
@@ -133,9 +135,7 @@ public final class OSMMapReader {
                                 entityBuilder.setIncomplete();
                             } else if (!entityBuilder.isIncomplete()) {
                                 ((OSMRelation.Builder) entityBuilder)
-                                        .addMember(
-                                                OSMRelation.Member.Type.NODE,
-                                                role, nodeOfRelation);
+                                        .addMember(NODE, role, nodeOfRelation);
                             }
                             break;
                         case "way":
@@ -144,8 +144,7 @@ public final class OSMMapReader {
                                 entityBuilder.setIncomplete();
                             } else if (!entityBuilder.isIncomplete()) {
                                 ((OSMRelation.Builder) entityBuilder)
-                                        .addMember(OSMRelation.Member.Type.WAY,
-                                                role, wayOfRelation);
+                                        .addMember(WAY, role, wayOfRelation);
                             }
                             break;
                         case "relation":
@@ -155,9 +154,8 @@ public final class OSMMapReader {
                                 entityBuilder.setIncomplete();
                             } else if (!entityBuilder.isIncomplete()) {
                                 ((OSMRelation.Builder) entityBuilder)
-                                        .addMember(
-                                                OSMRelation.Member.Type.RELATION,
-                                                role, relationOfRelation);
+                                        .addMember(RELATION, role,
+                                                relationOfRelation);
                             }
                             break;
                         default:
