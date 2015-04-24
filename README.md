@@ -13,6 +13,7 @@
 
 ## [Étape 8](http://cs108.epfl.ch/p08_canvas-painters.html)
 ### Canvas
+capValue et joinValue sont superflues : https://piazza.com/class/i39wbwd15v83mt?cid=259
 - [x] `interface Canvas`
     - [x] `drawPolyLine` dessine sur la toile un `PolyLine` à partir d'un `LineStyle`
     - [x] `drawPolygon` dessine sur la toile un `Polygon` à partir d'un `Color`
