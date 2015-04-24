@@ -1,12 +1,7 @@
 package ch.epfl.imhof.painting;
 
-import java.util.function.Predicate;
 import static ch.epfl.imhof.painting.LineStyle.LineCap;
 import static ch.epfl.imhof.painting.LineStyle.LineJoin;
-
-import ch.epfl.imhof.Attributed;
-import ch.epfl.imhof.geometry.PolyLine;
-
 public final class RoadPainterGenerator {
     private RoadPainterGenerator() {
     };
@@ -29,7 +24,8 @@ public final class RoadPainterGenerator {
                 Filters.tagged("bridge").and(spec.getFilter()));
         Painter<?> coNormRoadPainter = Painter.line(coNormRoad).when(
                 Filters.tagged("bridge").negate()
-                        .and(Filters.tagged("tunnel").negate()).and(spec.getFilter()));
+                        .and(Filters.tagged("tunnel").negate())
+                        .and(spec.getFilter()));
 
         return intBridgePainter.above(coBridgePainter.above(intBridgePainter
                 .above(coNormRoadPainter.above(tunnelPainter))));
