@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import static ch.epfl.imhof.osm.OSMRelation.Member.Type.WAY;
-
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
@@ -46,7 +45,6 @@ public final class OSMToGeoTransformer {
                     "waterway" })));
 
     private final Projection projection;
-    private final Map.Builder mapBuilder;
 
     /**
      * Construit un convertisseur OSM en géométrie qui utilise la projection
@@ -58,7 +56,6 @@ public final class OSMToGeoTransformer {
      */
     public OSMToGeoTransformer(Projection projection) {
         this.projection = projection;
-        mapBuilder = new Map.Builder();
     }
 
     /**
@@ -69,8 +66,9 @@ public final class OSMToGeoTransformer {
      * @return la carte projetée, une <code>Map</code>
      */
     public Map transform(OSMMap map) {
-        waysConversion(map.ways());
-        relationsConversion(map.relations());
+        Map.Builder mapBuilder = new Map.Builder();
+        waysConversion(map.ways(), mapBuilder);
+        relationsConversion(map.relations(), mapBuilder);
 
         return mapBuilder.build();
     }
@@ -81,8 +79,10 @@ public final class OSMToGeoTransformer {
      * 
      * @param ways
      *            la liste des chemins de la carte OSM à convertir
+     * @param mapBuilder
+     *            TODO
      */
-    private void waysConversion(List<OSMWay> ways) {
+    private void waysConversion(List<OSMWay> ways, Map.Builder mapBuilder) {
         // Parcours des chemins de la carte OSM
         for (OSMWay wayToConvert : ways) {
             boolean wayIsAPolygon = isAPolygon(wayToConvert);
@@ -109,8 +109,11 @@ public final class OSMToGeoTransformer {
      * 
      * @param relations
      *            la liste des relations de la carte OSM à convertir
+     * @param mapBuilder
+     *            TODO
      */
-    private void relationsConversion(List<OSMRelation> relations) {
+    private void relationsConversion(List<OSMRelation> relations,
+            Map.Builder mapBuilder) {
         // Parcours des relations de la carte OSM
         for (OSMRelation relationToConvert : relations) {
             Attributes filteredAttributes = relationToConvert.attributes()
@@ -301,14 +304,19 @@ public final class OSMToGeoTransformer {
         if (nonOrientedGraph.nodes().isEmpty()) {
             return false;
         } else {
-            boolean everyNodeHasTwoNeighbors = true;
+            // boolean everyNodeHasTwoNeighbors = true;
 
-            Iterator<OSMNode> iterator = nonOrientedGraph.nodes().iterator();
-            while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
-                everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
-                        iterator.next()).size() == 2);
+            // Iterator<OSMNode> iterator = nonOrientedGraph.nodes().iterator();
+            // while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
+            // everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
+            // iterator.next()).size() == 2);
+            for (OSMNode node : nonOrientedGraph.nodes()) {
+                if (!(nonOrientedGraph.neighborsOf(node).size() == 2)) {
+                    return false;
+                }
             }
-            return everyNodeHasTwoNeighbors;
+            return true;
+            // return everyNodeHasTwoNeighbors;
         }
     }
 
@@ -393,13 +401,18 @@ public final class OSMToGeoTransformer {
                 || "true".equals(areaValue)) {
             return way.isClosed();
         } else {
-            boolean hasSurfaceAttribute = false;
+            // boolean hasSurfaceAttribute = false;
 
-            Iterator<String> iterator = SURFACE_ATTRIBUTES.iterator();
-            while (!hasSurfaceAttribute && iterator.hasNext()) {
-                hasSurfaceAttribute = way.hasAttribute(iterator.next());
+            // Iterator<String> iterator = SURFACE_ATTRIBUTES.iterator();
+            // while (!hasSurfaceAttribute && iterator.hasNext()) {
+            // hasSurfaceAttribute = way.hasAttribute(iterator.next());
+            for (String attribute : SURFACE_ATTRIBUTES) {
+                if (way.hasAttribute(attribute)) {
+                    return way.isClosed();
+                }
             }
-            return (hasSurfaceAttribute && way.isClosed());
+            return false;
+            // return (hasSurfaceAttribute && way.isClosed());
         }
     }
 }

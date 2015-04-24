@@ -17,7 +17,6 @@ import java.lang.Long;
 import java.lang.Double;
 
 import static ch.epfl.imhof.osm.OSMRelation.Member.Type.*;
-
 import ch.epfl.imhof.PointGeo;
 
 /**
