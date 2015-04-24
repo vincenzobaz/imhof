@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import static ch.epfl.imhof.osm.OSMRelation.Member.Type.WAY;
+
 import ch.epfl.imhof.Attributes;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
@@ -256,7 +258,7 @@ public final class OSMToGeoTransformer {
         List<OSMWay> filteredWays = new ArrayList<>();
 
         for (Member member : members) {
-            if (role.equals(member.role())) {
+            if (member.type() == WAY && role.equals(member.role())) {
                 filteredWays.add((OSMWay) member.member());
             }
         }
