@@ -324,15 +324,6 @@ public final class OSMToGeoTransformer {
      * @return l'intersection des attributs du chemin et des attributs à garder
      */
     private Attributes filteredAttributes(OSMWay way, boolean isAPolygon) {
-        /*
-         * Attributes filteredAttributes;
-         * 
-         * if (isAPolygon) { filteredAttributes = way.attributes().keepOnlyKeys(
-         * POLYGON_ATTRIBUTES); } else { filteredAttributes =
-         * way.attributes().keepOnlyKeys( POLYLINE_ATTRIBUTES); } return
-         * filteredAttributes;
-         */
-
         return isAPolygon ? way.attributes().keepOnlyKeys(POLYGON_ATTRIBUTES)
                 : way.attributes().keepOnlyKeys(POLYLINE_ATTRIBUTES);
     }
@@ -346,11 +337,6 @@ public final class OSMToGeoTransformer {
      * @return une polyligne
      */
     private PolyLine OSMWayToPolyLine(OSMWay way) {
-        /*
-         * if (way.isClosed()) { return OSMWayToClosedPolyLine(way); } else {
-         * return OSMWayToOpenPolyLine(way); }
-         */
-
         return way.isClosed() ? OSMWayToClosedPolyLine(way)
                 : OSMWayToOpenPolyLine(way);
     }
