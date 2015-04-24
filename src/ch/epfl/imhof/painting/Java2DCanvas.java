@@ -88,10 +88,10 @@ public final class Java2DCanvas implements Canvas {
 
     @Override
     public void drawPolyLine(PolyLine polyline, LineStyle style) {
-        int cap = capValue(style.cap());
-        int join = joinValue(style.join());
-        BasicStroke stroke = style.dashingPattern().length == 0
-                || style.dashingPattern() == null ? new BasicStroke(
+        int cap = style.cap().ordinal();
+        int join = style.join().ordinal();
+        BasicStroke stroke = style.dashingPattern() == null
+                || style.dashingPattern().length == 0 ? new BasicStroke(
                 style.width() / scale, cap, join, 10.0f) : new BasicStroke(
                 style.width() / scale, cap, join, 10.0f,
                 style.dashingPattern(), 0f);
@@ -132,49 +132,5 @@ public final class Java2DCanvas implements Canvas {
             newPath.closePath();
         }
         return newPath;
-    }
-
-    /**
-     * Retoune la valeur entière correspondant au type de terminaison de la
-     * polyligne.
-     * 
-     * @param capStyle
-     *            la terminaison de la polyligne
-     * @return l'entier correspondant à la terminaison dans la classe
-     *         <code>BasicStroke</code>
-     */
-    private int capValue(LineStyle.LineCap capStyle) {
-        switch (capStyle) {
-        case BUTT:
-            return BasicStroke.CAP_BUTT;
-        case ROUND:
-            return BasicStroke.CAP_ROUND;
-        case SQUARE:
-            return BasicStroke.CAP_SQUARE;
-        default:
-            return 0;
-        }
-    }
-
-    /**
-     * Retourne la valeur entière correspondant au type de jointure entre deux
-     * segments.
-     * 
-     * @param joinStyle
-     *            la jointure
-     * @return l'entier correspondant à la jointure dans la classe
-     *         <code>BasicStroke</code>
-     */
-    private int joinValue(LineStyle.LineJoin joinStyle) {
-        switch (joinStyle) {
-        case BEVEL:
-            return BasicStroke.JOIN_BEVEL;
-        case MITER:
-            return BasicStroke.JOIN_MITER;
-        case ROUND:
-            return BasicStroke.JOIN_ROUND;
-        default:
-            return 0;
-        }
     }
 }

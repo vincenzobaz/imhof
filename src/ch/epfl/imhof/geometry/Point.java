@@ -66,20 +66,20 @@ public final class Point {
      */
     public static UnaryOperator<Point> alignedCoordinateChange(Point a1,
             Point a2, Point b1, Point b2) throws IllegalArgumentException {
-        if (a1.x() == b1.x()) {
+        if (a1.x == b1.x) {
             throw new IllegalArgumentException(
                     "Les deux points sont situés sur une même ligne horizontale.");
         }
-        if (a1.y() == b1.y()) {
+        if (a1.y == b1.y) {
             throw new IllegalArgumentException(
                     "Les deux points sont situés sur une même ligne verticale.");
         }
 
-        double a = (a2.x() - b2.x()) / (a1.x() - b1.x());
-        double b = (b2.x() * a1.x() - a2.x() * b1.x()) / (a1.x() - b1.x());
-        double c = (a2.y() - b2.y()) / (a1.y() - b1.y());
-        double d = (b2.y() * a1.y() - a2.y() * b1.y()) / (a1.y() - b1.y());
+        double a = (a2.x - b2.x) / (a1.x - b1.x);
+        double b = (b2.x * a1.x - a2.x * b1.x) / (a1.x - b1.x);
+        double c = (a2.y - b2.y) / (a1.y - b1.y);
+        double d = (b2.y * a1.y - a2.y * b1.y) / (a1.y - b1.y);
 
-        return p -> new Point(a * p.x() + b, c * p.y() + d);
+        return p -> new Point(a * p.x + b, c * p.y + d);
     }
 }

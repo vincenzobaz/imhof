@@ -36,7 +36,7 @@ public final class LineStyle {
      *             ou nul
      */
     public LineStyle(float width, Color color, LineCap cap, LineJoin join,
-            float[] dashingPattern) throws IllegalArgumentException {
+            float... dashingPattern) throws IllegalArgumentException {
         if (width < 0) {
             throw new IllegalArgumentException("negative line width");
         }
@@ -47,15 +47,19 @@ public final class LineStyle {
         this.join = join;
         // this.dashingPattern = new float[dashingPattern.length];
         // tester si dashingpattern est null??
-        float[] temp = new float[dashingPattern.length];
-        for (int i = 0; i < dashingPattern.length; i++) {
-            if (dashingPattern[i] <= 0) {
-                throw new IllegalArgumentException("negative line length");
-            } else {
-                temp[i] = dashingPattern[i];
+        if (dashingPattern == null) {
+            this.dashingPattern = dashingPattern;
+        } else {
+            float[] temp = new float[dashingPattern.length];
+            for (int i = 0; i < dashingPattern.length; i++) {
+                if (dashingPattern[i] <= 0) {
+                    throw new IllegalArgumentException("negative line length");
+                } else {
+                    temp[i] = dashingPattern[i];
+                }
             }
+            this.dashingPattern = temp;
         }
-        this.dashingPattern = temp;
     }
 
     /**
@@ -112,9 +116,7 @@ public final class LineStyle {
     public float[] dashingPattern() {
         // la classe étant immuable et les tableaux statiques java ne pouvant
         // pas être rendus imuables, on retourne une copie défensive du tableau.
-//        return dashingPattern == null ? null : Arrays.copyOf(dashingPattern,
- //               dashingPattern.length);
-        return dashingPattern.clone();
+        return dashingPattern == null ? null : dashingPattern.clone();
     }
 
     /**
