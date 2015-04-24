@@ -147,17 +147,17 @@ public interface Painter<E> {
      */
     public default Painter<?> when(Predicate<Attributed<?>> predicate) {
         return (map, canvas) -> {
-            Map.Builder mapB = new Map.Builder();
+            Map.Builder mapBuilder = new Map.Builder();
             for (Attributed<Polygon> p : map.polygons()) {
                 if (predicate.test(p))
-                    mapB.addPolygon(p);
+                    mapBuilder.addPolygon(p);
             }
             for (Attributed<PolyLine> l : map.polyLines()) {
                 if (predicate.test(l)) {
-                    mapB.addPolyLine(l);
+                    mapBuilder.addPolyLine(l);
                 }
             }
-            this.drawMap(mapB.build(), canvas);
+            this.drawMap(mapBuilder.build(), canvas);
         };
     }
 
@@ -185,12 +185,12 @@ public interface Painter<E> {
      */
     public default Painter<?> layered() {
         return (map, canvas) -> {
-            Painter<?> layered = this;
-            for (int layer = -5; layer < 5; layer++) {
-                layered = this.when(Filters.onLayer(layer + 1)).above(
-                        this.when(Filters.onLayer(layer)));
+            Painter<?> painter = when(Filters.onLayer(-5));
+            for (int layer = -4; layer <= 5; ++layer) {
+                Painter<?> top = when(Filters.onLayer(layer));
+                painter = top.above(painter);
             }
-            layered.drawMap(map, canvas);
+            painter.drawMap(map, canvas);
         };
     }
 }
