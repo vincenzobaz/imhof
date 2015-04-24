@@ -63,7 +63,7 @@ public interface Painter<E> {
      *         argument
      */
     public static Painter<PolyLine> line(float width, Color color, LineCap cap,
-            LineJoin join, float[] dashingPattern) {
+            LineJoin join, float... dashingPattern) {
         return line(new LineStyle(width, color, cap, join, dashingPattern));
     }
 
@@ -117,7 +117,7 @@ public interface Painter<E> {
      *         les cinq paramètres de style d'une ligne fournis en argument
      */
     public static Painter<PolyLine> outline(float width, Color color,
-            LineCap cap, LineJoin join, float[] dashingPattern) {
+            LineCap cap, LineJoin join, float... dashingPattern) {
         return outline(new LineStyle(width, color, cap, join, dashingPattern));
     }
 
