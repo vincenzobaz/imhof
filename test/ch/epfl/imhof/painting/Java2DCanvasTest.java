@@ -23,6 +23,7 @@ import ch.epfl.imhof.osm.OSMMapReader;
 import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
+import ch.epfl.imhof.SwissPainter;
 
 public final class Java2DCanvasTest {
     private final Projection projection = new CH1903Projection();
@@ -109,6 +110,38 @@ public final class Java2DCanvasTest {
     }
 
     @Test
+    public void correctlyDrawsInterlaken() throws IOException {
+        // Le peintre et ses filtres
+        Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
+        Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
+
+        Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
+        Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
+                isBuilding);
+
+        Predicate<Attributed<?>> isForest = Filters.tagged("natural", "wood");
+        Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
+
+        Painter<?> painter = buildingsPainter.above(forestPainter
+                .above(lakesPainter));
+        OSMMap osmMap = null;
+        try {
+            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm", false);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Map map = transformer.transform(osmMap);
+        Point bl = new Point(628764, 167585);
+        Point tr = new Point(634991, 172331);
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 72,
+                Color.WHITE);
+        painter.drawMap(map, canvas);
+
+        ImageIO.write(canvas.image(), "png", new File("interlaken.png"));
+    }
+
+    @Test
     public void correctlyDrawsLausanne() throws IOException {
         // Le peintre et ses filtres
         Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
@@ -133,19 +166,20 @@ public final class Java2DCanvasTest {
         Map map = transformer.transform(osmMap);
 
         // La toile
-        Point blBezak = projection.project(new PointGeo(Math.toRadians(6.0294),
-                Math.toRadians(47.2231)));
-        Point trBezak = projection.project(new PointGeo(Math.toRadians(6.0481),
-                Math.toRadians(47.2438)));
-        Point blSC = projection.project(new PointGeo(Math.toRadians(5.8634),
-                Math.toRadians(46.3638)));
-        Point trSC = projection.project(new PointGeo(Math.toRadians(5.9009),
-                Math.toRadians(46.4058)));
+        /*
+         * Point blBezak = projection.project(new
+         * PointGeo(Math.toRadians(6.0294), Math.toRadians(47.2231))); Point
+         * trBezak = projection.project(new PointGeo(Math.toRadians(6.0481),
+         * Math.toRadians(47.2438))); Point blSC = projection.project(new
+         * PointGeo(Math.toRadians(5.8634), Math.toRadians(46.3638))); Point
+         * trSC = projection.project(new PointGeo(Math.toRadians(5.9009),
+         * Math.toRadians(46.4058))); Point blInter = new Point(628764, 167585);
+         * Point trInter = new Point(634991, 172331);
+         */
+
         Point blLau = new Point(532510, 150590);
         Point trLau = new Point(539570, 155260);
-        Point blInter = new Point(628764, 167585);
-        Point trInter = new Point(634991, 172331);
-        Java2DCanvas canvas = new Java2DCanvas(blSC, trSC, 800, 530, 72,
+        Java2DCanvas canvas = new Java2DCanvas(blLau, trLau, 800, 530, 72,
                 Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier

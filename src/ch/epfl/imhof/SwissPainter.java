@@ -30,7 +30,7 @@ public final class SwissPainter {
         Color lightBlue = rgb(0.8, 0.9, 0.95);
         Color white = Color.WHITE;
 
-        Painter roadPainter = RoadPainterGenerator.painterForRoads(
+        Painter<?> roadPainter = RoadPainterGenerator.painterForRoads(
                 new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange, 0.5f, black),
                 new RoadSpec(tagged("highway", "primary"), 1.7f, lightRed, 0.35f, black),
                 new RoadSpec(tagged("highway", "motorway_link", "trunk_link"), 1.7f, orange, 0.35f, black),
@@ -41,9 +41,9 @@ public final class SwissPainter {
                 new RoadSpec(tagged("highway", "residential", "living_street", "unclassified"), 1.2f, white, 0.15f, black),
                 new RoadSpec(tagged("highway", "service", "pedestrian"), 0.5f, white, 0.15f, black));
 
-        Painter fgPainter =
+        Painter<?> fgPainter =
                 roadPainter
-                .above(line(0.5f, darkGray, LineCap.Round, LineJoin.Miter, 1f, 2f).when(tagged("highway", "footway", "steps", "path", "track", "cycleway")))
+                .above(line(0.5f, darkGray, LineCap.ROUND, LineJoin.MITER, 1f, 2f).when(tagged("highway", "footway", "steps", "path", "track", "cycleway")))
                 .above(polygon(darkGray).when(tagged("building")))
                 .above(polygon(lightBlue).when(tagged("leisure", "swimming_pool")))
                 .above(line(0.7f, darkRed).when(tagged("railway", "rail", "turntable")))
@@ -52,7 +52,7 @@ public final class SwissPainter {
                 .above(line(1, darkGray).when(tagged("man_made", "pier")))
                 .layered();
 
-        Painter bgPainter =
+        Painter<?> bgPainter =
                 outline(1, darkBlue).above(polygon(lightBlue)).when(tagged("natural", "water").or(tagged("waterway", "riverbank")))
                 .above(line(1, lightBlue).above(line(1.5f, darkBlue)).when(tagged("waterway", "river", "canal")))
                 .above(line(1, darkBlue).when(tagged("waterway", "stream")))
@@ -64,7 +64,7 @@ public final class SwissPainter {
         PAINTER = fgPainter.above(bgPainter);
     }
 
-    public static Painter painter() {
+    public static Painter<?> painter() {
         return PAINTER;
     }
 }
