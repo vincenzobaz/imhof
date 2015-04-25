@@ -71,7 +71,7 @@ public class PainterTest {
         Predicate<Attributed<?>> isForest = Filters.tagged("natural", "forest");
         Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
 
-        Painter<?> mapPainter = lakesPainter.above(forestPainter.above(buildingsPainter));
+        Painter<?> mapPainter = lakesPainter.above(forestPainter.above(buildingsPainter)).layered();
         Java2DCanvas canvas = new Java2DCanvas(new Point(-7d, -7d), new Point(
                 7d, 7d), 1280, 1280, 72, Color.WHITE);
         mapPainter.drawMap(testMap(), canvas);

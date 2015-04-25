@@ -10,10 +10,13 @@ import java.util.function.Predicate;
 import java.util.Set;
 
 import ch.epfl.imhof.Attributed;
+import java.util.function.Predicate;
+
+import ch.epfl.imhof.Attributed;
 
 public final class RoadPainterGenerator {
     private RoadPainterGenerator() {
-    };
+    }
 
     public static Painter<?> painterForRoads(RoadSpec... specifications) {
       return (map, canvas) -> {
@@ -28,20 +31,28 @@ public final class RoadPainterGenerator {
       };
     }
 
-    public static final class RoadSpec {
-        private final float wI;
-        private final float wC;
-        private final Color cI;
-        private final Color cC;
+
+    public final static class RoadSpec {
         private final Predicate<Attributed<?>> filter;
+        private final float wI;
+        private final Color cI;
+        private final float wC;
+        private final Color cC;
 
         public RoadSpec(Predicate<Attributed<?>> filter, float wI, Color cI,
                 float wC, Color cC) {
-            this.wI = wI;
-            this.wC = wC;
-            this.cI = cI;
-            this.cC = cC;
             this.filter = filter;
+            this.wI = wI;
+            this.cI = cI;
+            this.wC = wC;
+            this.cC = cC;
+        }
+
+        /**
+         * @return the filter
+         */
+        public Predicate<Attributed<?>> getFilter() {
+            return filter;
         }
 
         /**
@@ -49,13 +60,6 @@ public final class RoadPainterGenerator {
          */
         public float getwI() {
             return wI;
-        }
-
-        /**
-         * @return the wC
-         */
-        public float getwC() {
-            return wC;
         }
 
         /**
@@ -73,10 +77,14 @@ public final class RoadPainterGenerator {
         }
 
         /**
-         * @return the filter
+         * @return the wC
          */
-        public Predicate<Attributed<?>> getFilter() {
-            return filter;
+        public float getwC() {
+            return wC;
         }
+
+        /**
+         * @return the cC
+         */
     }
 }
