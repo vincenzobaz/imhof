@@ -186,11 +186,12 @@ public interface Painter<E> {
      */
     public default Painter<?> layered() {
         return (map, canvas) -> {
-            Painter<?> painter = when(Filters.onLayer(-5));
+            Painter<?> painter = this.when(Filters.onLayer(-5));
             for (int layer = -4; layer <= 5; ++layer) {
-                Painter<?> top = when(Filters.onLayer(layer));
+                Painter<?> top = this.when(Filters.onLayer(layer));
                 painter = top.above(painter);
             }
+            painter.drawMap(map, canvas);
         };
     }
 }
