@@ -176,7 +176,7 @@ public final class LineStyle {
      *            l'alternance de segments opaques et transparents
      * @return un nouveau <code> LineStyle </code>
      */
-    public LineStyle withDashingPattern(float[] dashingPattern) {
+    public LineStyle withDashingPattern(float... dashingPattern) {
         return new LineStyle(width, color, cap, join, dashingPattern);
     }
 

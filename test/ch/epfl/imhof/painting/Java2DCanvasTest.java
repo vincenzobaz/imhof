@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
 import ch.epfl.imhof.PointGeo;
+import ch.epfl.imhof.SwissPainter;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.geometry.PolyLine;
@@ -123,9 +124,11 @@ public final class Java2DCanvasTest {
 
         Painter<?> painter = buildingsPainter.above(forestPainter
                 .above(lakesPainter));
+        
+        Painter<?> swissPainter = SwissPainter.painter();
         OSMMap osmMap = null;
         try {
-            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm.gz", true);
+            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz", true);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -143,13 +146,13 @@ public final class Java2DCanvasTest {
                 Math.toRadians(46.4058)));
         Point blLau = new Point(532510, 150590);
         Point trLau = new Point(539570, 155260);
-        Point blInter = new Point(628764, 167585);
-        Point trInter = new Point(634991, 172331);
-        Java2DCanvas canvas = new Java2DCanvas(blSC, trSC, 800, 530, 72,
+        Point blInter = new Point(628590, 168210);
+        Point trInter = new Point(635660, 172870);
+        Java2DCanvas canvas = new Java2DCanvas(blInter, trInter, 800, 530, 72,
                 Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier
-        painter.drawMap(map, canvas);
-        ImageIO.write(canvas.image(), "png", new File("lausanne.png"));
+        swissPainter.drawMap(map, canvas);
+        ImageIO.write(canvas.image(), "png", new File("interlaken_swiss.png"));
     }
 }
