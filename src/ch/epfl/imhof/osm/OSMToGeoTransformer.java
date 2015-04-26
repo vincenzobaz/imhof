@@ -304,19 +304,12 @@ public final class OSMToGeoTransformer {
         if (nonOrientedGraph.nodes().isEmpty()) {
             return false;
         } else {
-            // boolean everyNodeHasTwoNeighbors = true;
-
-            // Iterator<OSMNode> iterator = nonOrientedGraph.nodes().iterator();
-            // while (everyNodeHasTwoNeighbors && iterator.hasNext()) {
-            // everyNodeHasTwoNeighbors = (nonOrientedGraph.neighborsOf(
-            // iterator.next()).size() == 2);
             for (OSMNode node : nonOrientedGraph.nodes()) {
                 if (!(nonOrientedGraph.neighborsOf(node).size() == 2)) {
                     return false;
                 }
             }
             return true;
-            // return everyNodeHasTwoNeighbors;
         }
     }
 
@@ -401,18 +394,12 @@ public final class OSMToGeoTransformer {
                 || "true".equals(areaValue)) {
             return way.isClosed();
         } else {
-            // boolean hasSurfaceAttribute = false;
-
-            // Iterator<String> iterator = SURFACE_ATTRIBUTES.iterator();
-            // while (!hasSurfaceAttribute && iterator.hasNext()) {
-            // hasSurfaceAttribute = way.hasAttribute(iterator.next());
             for (String attribute : SURFACE_ATTRIBUTES) {
                 if (way.hasAttribute(attribute)) {
                     return way.isClosed();
                 }
             }
             return false;
-            // return (hasSurfaceAttribute && way.isClosed());
         }
     }
 }
