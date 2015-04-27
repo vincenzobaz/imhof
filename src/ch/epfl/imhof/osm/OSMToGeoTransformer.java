@@ -75,12 +75,12 @@ public final class OSMToGeoTransformer {
 
     /**
      * Convertit les chemins de la carte OSM en entités géométriques attribuées
-     * et les ajoute à la carte en construction.
+     * et les ajoute à la carte en construction passée en paramètre.
      * 
      * @param ways
      *            la liste des chemins de la carte OSM à convertir
      * @param mapBuilder
-     *            TODO
+     *            le constructeur de carte auquel ajouter les chemins convertis
      */
     private void waysConversion(List<OSMWay> ways, Map.Builder mapBuilder) {
         // Parcours des chemins de la carte OSM
@@ -105,12 +105,13 @@ public final class OSMToGeoTransformer {
 
     /**
      * Convertit les relations de la carte OSM en polygones attribués et les
-     * ajoute à la carte en construction.
+     * ajoute à la carte en construction passée en paramètre.
      * 
      * @param relations
      *            la liste des relations de la carte OSM à convertir
      * @param mapBuilder
-     *            TODO
+     *            le constructeur de carte auquel ajouter les relations
+     *            converties
      */
     private void relationsConversion(List<OSMRelation> relations,
             Map.Builder mapBuilder) {

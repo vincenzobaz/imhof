@@ -109,38 +109,69 @@ public final class Java2DCanvasTest {
         }
     }
 
+    @Test
     public void correctlyDrawsInterlaken() throws IOException {
         // Le peintre et ses filtres
-        Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
-        Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
-
-        Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
-        Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
-                isBuilding);
-
-        Predicate<Attributed<?>> isForest = Filters.tagged("natural", "wood");
-        Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
-
-        Painter<?> painter = buildingsPainter.above(forestPainter
-                .above(lakesPainter));
         OSMMap osmMap = null;
         try {
-            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm", false);
+            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz", true);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         Map map = transformer.transform(osmMap);
-        Point bl = new Point(628764, 167585);
-        Point tr = new Point(634991, 172331);
-        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 72,
+        Point bl = new Point(628590, 168210);
+        Point tr = new Point(635660, 172870);
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800 * 2, 530 * 2, 150,
                 Color.WHITE);
-        painter.drawMap(map, canvas);
+        SwissPainter.painter().drawMap(map, canvas);
 
-        ImageIO.write(canvas.image(), "png", new File("interlaken.png"));
+        ImageIO.write(canvas.image(), "png", new File("interlaken_swiss.png"));
+    }
+
+    public void correctlyDrawsSaintClaude() throws IOException {
+        OSMMap osmMap = null;
+        try {
+            osmMap = OSMMapReader.readOSMFile("data/saintclaude.osm", false);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Map map = transformer.transform(osmMap);
+        Point bl = projection.project(new PointGeo(Math.toRadians(5.8136), Math
+                .toRadians(46.3662)));
+        Point tr = projection.project(new PointGeo(Math.toRadians(5.9209), Math
+                .toRadians(46.4097)));
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800 * 2, 530 * 2, 150,
+                Color.WHITE);
+
+        // Dessin de la carte et stockage dans un fichier
+        SwissPainter.painter().drawMap(map, canvas);
+        ImageIO.write(canvas.image(), "png", new File("saintclaude_swiss.png"));
     }
 
     @Test
+    public void correctlyDrawsBesancon() throws IOException {
+        OSMMap osmMap = null;
+        try {
+            osmMap = OSMMapReader.readOSMFile("data/besancon.osm", false);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Map map = transformer.transform(osmMap);
+        Point bl = projection.project(new PointGeo(Math.toRadians(6.0120), Math
+                .toRadians(47.2227)));
+        Point tr = projection.project(new PointGeo(Math.toRadians(6.0656), Math
+                .toRadians(47.2441)));
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800 * 2, 530 * 2, 150,
+                Color.WHITE);
+
+        // Dessin de la carte et stockage dans un fichier
+        SwissPainter.painter().drawMap(map, canvas);
+        ImageIO.write(canvas.image(), "png", new File("besancon_swiss.png"));
+    }
+
     public void correctlyDrawsLausanne() throws IOException {
         // Le peintre et ses filtres
         /*
