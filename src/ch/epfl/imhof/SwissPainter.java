@@ -31,24 +31,23 @@ public final class SwissPainter {
         Color white = Color.WHITE;
 
         Painter<?> roadPainter = RoadPainterGenerator.painterForRoads(
-                new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
-                        0.5f, black),
-                new RoadSpec(tagged("highway", "primary"), 1.7f, lightRed,
+                new RoadSpec(tagged("highway", "service", "pedestrian"), 0.5f,
+                        white, 0.15f, black),
+                new RoadSpec(tagged("highway", "residential", "living_street",
+                        "unclassified"), 1.2f, white, 0.15f, black),
+                new RoadSpec(tagged("highway", "secondary_link"), 1.7f,
+                        lightYellow, 0.35f, black),
+                new RoadSpec(tagged("highway", "tertiary"), 1.7f, white, 0.35f,
+                        black), new RoadSpec(tagged("highway", "primary_link"),
+                        1.7f, lightRed, 0.35f, black),
+                new RoadSpec(tagged("highway", "secondary"), 1.7f, lightYellow,
                         0.35f, black),
                 new RoadSpec(tagged("highway", "motorway_link", "trunk_link"),
                         1.7f, orange, 0.35f, black),
-                new RoadSpec(tagged("highway", "secondary"), 1.7f, lightYellow,
+                new RoadSpec(tagged("highway", "primary"), 1.7f, lightRed,
                         0.35f, black),
-                new RoadSpec(tagged("highway", "primary_link"), 1.7f, lightRed,
-                        0.35f, black),
-                new RoadSpec(tagged("highway", "tertiary"), 1.7f, white, 0.35f,
-                        black),
-                new RoadSpec(tagged("highway", "secondary_link"), 1.7f,
-                        lightYellow, 0.35f, black),
-                new RoadSpec(tagged("highway", "residential", "living_street",
-                        "unclassified"), 1.2f, white, 0.15f, black),
-                new RoadSpec(tagged("highway", "service", "pedestrian"), 0.5f,
-                        white, 0.15f, black));
+                new RoadSpec(tagged("highway", "motorway", "trunk"), 2, orange,
+                        0.5f, black));
 
         Painter<?> fgPainter = roadPainter
                 .above(line(0.5f, darkGray, LineCap.ROUND, LineJoin.MITER, 1f,
