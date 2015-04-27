@@ -2,24 +2,24 @@ package ch.epfl.imhof.painting;
 
 import java.util.function.Predicate;
 
-import ch.epfl.imhof.Attributed;
 import static ch.epfl.imhof.painting.LineStyle.LineCap;
 import static ch.epfl.imhof.painting.LineStyle.LineJoin;
+import ch.epfl.imhof.Attributed;
 
 public final class RoadPainterGenerator {
     private RoadPainterGenerator() {
     }
 
     public static Painter<?> painterForRoads(RoadSpec... specifications) {
-        LineStyle defaultBridgeCasingAndTunnel = new LineStyle(0f, Color.WHITE,
-                LineCap.BUTT, LineJoin.ROUND, null);
-        LineStyle defaultBridgeInteriorAndRoad = new LineStyle(0f, Color.WHITE,
-                LineCap.ROUND, LineJoin.ROUND, null);
+        LineStyle defaultBridgeCasingAndTunnelStyle = new LineStyle(0f,
+                Color.WHITE, LineCap.BUTT, LineJoin.ROUND, null);
+        LineStyle defaultBridgeInteriorAndRoadStyle = new LineStyle(0f,
+                Color.WHITE, LineCap.ROUND, LineJoin.ROUND, null);
 
         return (map, canvas) -> {
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeCasingAndTunnel
+                        defaultBridgeCasingAndTunnelStyle
                                 .withWidth(spec.getwI() / 2f)
                                 .withColor(spec.getcC())
                                 .withDashingPattern(2 * spec.getwI(),
@@ -30,7 +30,7 @@ public final class RoadPainterGenerator {
 
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeCasingAndTunnel
+                        defaultBridgeCasingAndTunnelStyle
                                 .withWidth(spec.getwI() + 2 * spec.getwC())
                                 .withColor(spec.getcC()).withCap(LineCap.ROUND))
                         .when(Filters.tagged("bridge").negate()
@@ -40,8 +40,8 @@ public final class RoadPainterGenerator {
 
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeInteriorAndRoad.withWidth(spec.getwI())
-                                .withColor(spec.getcI()))
+                        defaultBridgeInteriorAndRoadStyle.withWidth(
+                                spec.getwI()).withColor(spec.getcI()))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.getFilter())).drawMap(map, canvas);
@@ -49,7 +49,7 @@ public final class RoadPainterGenerator {
 
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeCasingAndTunnel.withWidth(
+                        defaultBridgeCasingAndTunnelStyle.withWidth(
                                 spec.getwI() + 2 * spec.getwC()).withColor(
                                 spec.getcC()))
                         .when(Filters.tagged("bridge").and(spec.getFilter()))
@@ -58,51 +58,11 @@ public final class RoadPainterGenerator {
 
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeInteriorAndRoad.withWidth(spec.getwI())
-                                .withColor(spec.getcI()))
+                        defaultBridgeInteriorAndRoadStyle.withWidth(
+                                spec.getwI()).withColor(spec.getcI()))
                         .when(Filters.tagged("bridge").and(spec.getFilter()))
                         .drawMap(map, canvas);
             }
-            /*
-            for (RoadSpec spec : specifications) {
-                LineStyle bridgeAndRoadInterior = defaultBridgeInteriorAndRoad
-                        .withWidth(spec.getwI()).withColor(spec.getcI());
-                LineStyle bridgeCasing = defaultBridgeCasingAndTunnel
-                        .withWidth(spec.getwI() + 2 * spec.getwC()).withColor(
-                                spec.getcC());
-                LineStyle roadCasing = bridgeCasing.withCap(LineCap.ROUND);
-                LineStyle tunnel = defaultBridgeCasingAndTunnel
-                        .withWidth(spec.getwI() / 2f).withColor(spec.getcC())
-                        .withDashingPattern(2 * spec.getwI(), 2 * spec.getwI());
-
-                Painter<?> tunnelPainter = Painter.line(tunnel).when(
-                        Filters.tagged("tunnel").and(spec.getFilter()));
-                Painter<?> bridgeInteriorPainter = Painter.line(
-                        bridgeAndRoadInterior).when(
-                        Filters.tagged("bridge").and(spec.getFilter()));
-                Painter<?> roadInteriorPainter = Painter.line(
-                        bridgeAndRoadInterior).when(
-                        Filters.tagged("bridge").negate()
-                                .and(Filters.tagged("tunnel").negate())
-                                .and(spec.getFilter()));
-                Painter<?> bridgeCasingPainter = Painter.line(bridgeCasing)
-                        .when(Filters.tagged("bridge").and(spec.getFilter()));
-                Painter<?> roadCasingPainter = Painter.line(roadCasing).when(
-                        Filters.tagged("bridge").negate()
-                                .and(Filters.tagged("tunnel").negate())
-                                .and(spec.getFilter()));
-
-                bridgeInteriorPainter
-                        .above(bridgeCasingPainter.above(roadInteriorPainter
-                                .above(roadCasingPainter.above(tunnelPainter))))
-                        .drawMap(map, canvas);
-
-                // tunnelPainter.drawMap(map, canvas);
-                // roadCasingPainter.drawMap(map, canvas);
-                // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
-                // bridgeCasingPainter.drawMap(map, canvas);
-                // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
-            }*/
         };
     }
 

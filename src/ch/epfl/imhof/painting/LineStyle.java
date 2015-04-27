@@ -44,8 +44,6 @@ public final class LineStyle {
         this.color = color;
         this.cap = cap;
         this.join = join;
-        // this.dashingPattern = new float[dashingPattern.length];
-        // tester si dashingpattern est null??
         if (dashingPattern == null) {
             this.dashingPattern = dashingPattern;
         } else {

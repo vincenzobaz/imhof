@@ -26,7 +26,6 @@ public final class Java2DCanvas implements Canvas {
     private final Function<Point, Point> basisChange;
     private final BufferedImage image;
     private final Graphics2D context;
-    private final float scale;
 
     /**
      * Construit une toile ayant pour coins les deux points fournis, la largeur,
@@ -64,7 +63,8 @@ public final class Java2DCanvas implements Canvas {
             throw new IllegalArgumentException(
                     "La position des coins n'est pas valide.");
         }
-        scale = dpi / 72f;
+
+        float scale = dpi / 72f;
         this.basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(
                 0d, height / scale), topRight, new Point(width / scale, 0d));
 
@@ -93,9 +93,9 @@ public final class Java2DCanvas implements Canvas {
         int join = style.join().ordinal();
         float[] dashingPattern = style.dashingPattern();
         BasicStroke stroke = dashingPattern == null
-                || dashingPattern.length == 0 ? new BasicStroke(style.width()
-                , cap, join, 10.0f) : new BasicStroke(style.width()
-                , cap, join, 10.0f, dashingPattern, 0f);
+                || dashingPattern.length == 0 ? new BasicStroke(style.width(),
+                cap, join, 10.0f) : new BasicStroke(style.width(), cap, join,
+                10.0f, dashingPattern, 0f);
         context.setStroke(stroke);
         context.setColor(style.color().convert());
 
