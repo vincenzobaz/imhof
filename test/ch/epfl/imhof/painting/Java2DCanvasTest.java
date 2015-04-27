@@ -109,7 +109,7 @@ public final class Java2DCanvasTest {
         }
     }
 
-    @Test
+    
     public void correctlyDrawsInterlaken() throws IOException {
         // Le peintre et ses filtres
         Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
@@ -144,7 +144,7 @@ public final class Java2DCanvasTest {
     @Test
     public void correctlyDrawsLausanne() throws IOException {
         // Le peintre et ses filtres
-        Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
+        /*Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
         Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
 
         Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
@@ -156,11 +156,12 @@ public final class Java2DCanvasTest {
 
         Painter<?> painter = buildingsPainter.above(forestPainter
                 .above(lakesPainter));
+        */
 
         Painter<?> swissPainter = SwissPainter.painter();
         OSMMap osmMap = null;
         try {
-            osmMap = OSMMapReader.readOSMFile("data/interlaken.osm.gz", true);
+            osmMap = OSMMapReader.readOSMFile("data/lausanne.osm.gz", true);
         } catch (IOException | SAXException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -186,6 +187,6 @@ public final class Java2DCanvasTest {
 
         // Dessin de la carte et stockage dans un fichier
         swissPainter.drawMap(map, canvas);
-        ImageIO.write(canvas.image(), "png", new File("interlaken_swiss.png"));
+        ImageIO.write(canvas.image(), "png", new File("lausanne_swiss.png"));
     }
 }

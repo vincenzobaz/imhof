@@ -40,13 +40,18 @@ public final class RoadPainterGenerator {
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.getFilter()));
 
-                bridgeAndRoadInteriorPainter
-                        .above(bridgeCasingPainter
-                                .above(bridgeAndRoadInteriorPainter
-                                        .above(roadCasingPainter
-                                                .above(tunnelPainter))))
-                        .drawMap(map, canvas);
-                ;
+                /*bridgeAndRoadInteriorPainter
+                        .above(bridgeCasingPainter)
+                                .above(bridgeAndRoadInteriorPainter)
+                                        .above(roadCasingPainter)
+                                                .above(tunnelPainter);
+                        .drawMap(map, canvas);*/
+                
+               tunnelPainter.drawMap(map, canvas);
+               //roadCasingPainter.drawMap(map, canvas);
+               bridgeAndRoadInteriorPainter.drawMap(map, canvas);
+               //bridgeCasingPainter.drawMap(map, canvas);
+               bridgeAndRoadInteriorPainter.drawMap(map, canvas);
             }
         };
     }
