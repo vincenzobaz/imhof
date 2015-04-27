@@ -54,8 +54,12 @@ public final class RoadPainterGeneratorTest {
         Painter<?> swissStands = SwissPainter.painter();
 
         // Dessin de la carte et stockage dans un fichier
+        long startTime = System.currentTimeMillis();
+        System.out.println("Début du dessin");
         swissStands.drawMap(newMap(), canvas);
         ImageIO.write(canvas.image(), "png",
                 new File("interlakenWithRoads.png"));
+        System.out.println("Fin du dessin, realisé en "
+                + (System.currentTimeMillis() - startTime) / 1000 + "secondes");
     }
 }

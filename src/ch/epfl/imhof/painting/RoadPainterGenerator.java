@@ -3,8 +3,8 @@ package ch.epfl.imhof.painting;
 import java.util.function.Predicate;
 
 import ch.epfl.imhof.Attributed;
-import ch.epfl.imhof.painting.LineStyle.LineCap;
-import ch.epfl.imhof.painting.LineStyle.LineJoin;
+import static ch.epfl.imhof.painting.LineStyle.LineCap;
+import static ch.epfl.imhof.painting.LineStyle.LineJoin;
 
 public final class RoadPainterGenerator {
     private RoadPainterGenerator() {
@@ -17,6 +17,53 @@ public final class RoadPainterGenerator {
                 LineCap.ROUND, LineJoin.ROUND, null);
 
         return (map, canvas) -> {
+            for (RoadSpec spec : specifications) {
+                Painter.line(
+                        defaultBridgeCasingAndTunnel
+                                .withWidth(spec.getwI() / 2f)
+                                .withColor(spec.getcC())
+                                .withDashingPattern(2 * spec.getwI(),
+                                        2 * spec.getwI()))
+                        .when(Filters.tagged("tunnel").and(spec.getFilter()))
+                        .drawMap(map, canvas);
+            }
+
+            for (RoadSpec spec : specifications) {
+                Painter.line(
+                        defaultBridgeCasingAndTunnel
+                                .withWidth(spec.getwI() + 2 * spec.getwC())
+                                .withColor(spec.getcC()).withCap(LineCap.ROUND))
+                        .when(Filters.tagged("bridge").negate()
+                                .and(Filters.tagged("tunnel").negate())
+                                .and(spec.getFilter())).drawMap(map, canvas);
+            }
+
+            for (RoadSpec spec : specifications) {
+                Painter.line(
+                        defaultBridgeInteriorAndRoad.withWidth(spec.getwI())
+                                .withColor(spec.getcI()))
+                        .when(Filters.tagged("bridge").negate()
+                                .and(Filters.tagged("tunnel").negate())
+                                .and(spec.getFilter())).drawMap(map, canvas);
+            }
+
+            for (RoadSpec spec : specifications) {
+                Painter.line(
+                        defaultBridgeCasingAndTunnel.withWidth(
+                                spec.getwI() + 2 * spec.getwC()).withColor(
+                                spec.getcC()))
+                        .when(Filters.tagged("bridge").and(spec.getFilter()))
+                        .drawMap(map, canvas);
+            }
+
+            for (RoadSpec spec : specifications) {
+                Painter.line(
+                        defaultBridgeInteriorAndRoad.withWidth(spec.getwI())
+                                .withColor(spec.getcI()))
+                        .when(Filters.tagged("bridge").and(spec.getFilter()))
+                        .drawMap(map, canvas);
+            }
+            /*
             for (RoadSpec spec : specifications) {
                 LineStyle bridgeAndRoadInterior = defaultBridgeInteriorAndRoad
                         .withWidth(spec.getwI()).withColor(spec.getcI());
@@ -45,16 +92,17 @@ public final class RoadPainterGenerator {
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.getFilter()));
 
-                bridgeInteriorPainter.above(bridgeCasingPainter
-                        .above(roadInteriorPainter.above(roadCasingPainter
-                        .above(tunnelPainter)))).drawMap(map, canvas);
+                bridgeInteriorPainter
+                        .above(bridgeCasingPainter.above(roadInteriorPainter
+                                .above(roadCasingPainter.above(tunnelPainter))))
+                        .drawMap(map, canvas);
 
                 // tunnelPainter.drawMap(map, canvas);
                 // roadCasingPainter.drawMap(map, canvas);
                 // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
                 // bridgeCasingPainter.drawMap(map, canvas);
                 // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
-            }
+            }*/
         };
     }
 

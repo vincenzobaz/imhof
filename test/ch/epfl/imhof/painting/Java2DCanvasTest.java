@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.Attributed;
 import ch.epfl.imhof.Map;
-import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.SwissPainter;
 import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Point;
