@@ -45,9 +45,9 @@ public final class RoadPainterGenerator {
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.getFilter()));
 
-                bridgeInteriorPainter.above(bridgeCasingPainter)
-                        .above(roadInteriorPainter).above(roadCasingPainter)
-                        .above(tunnelPainter).drawMap(map, canvas);
+                bridgeInteriorPainter.above(bridgeCasingPainter
+                        .above(roadInteriorPainter.above(roadCasingPainter
+                        .above(tunnelPainter)))).drawMap(map, canvas);
 
                 // tunnelPainter.drawMap(map, canvas);
                 // roadCasingPainter.drawMap(map, canvas);

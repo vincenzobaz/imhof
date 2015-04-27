@@ -94,8 +94,8 @@ public final class Java2DCanvas implements Canvas {
         float[] dashingPattern = style.dashingPattern();
         BasicStroke stroke = dashingPattern == null
                 || dashingPattern.length == 0 ? new BasicStroke(style.width()
-                / scale, cap, join, 10.0f) : new BasicStroke(style.width()
-                / scale, cap, join, 10.0f, dashingPattern, 0f);
+                , cap, join, 10.0f) : new BasicStroke(style.width()
+                , cap, join, 10.0f, dashingPattern, 0f);
         context.setStroke(stroke);
         context.setColor(style.color().convert());
 

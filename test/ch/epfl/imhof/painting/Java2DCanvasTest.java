@@ -109,7 +109,6 @@ public final class Java2DCanvasTest {
         }
     }
 
-    
     public void correctlyDrawsInterlaken() throws IOException {
         // Le peintre et ses filtres
         Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
@@ -144,19 +143,21 @@ public final class Java2DCanvasTest {
     @Test
     public void correctlyDrawsLausanne() throws IOException {
         // Le peintre et ses filtres
-        /*Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
-        Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
-
-        Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
-        Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
-                isBuilding);
-
-        Predicate<Attributed<?>> isForest = Filters.tagged("natural", "wood");
-        Painter<?> forestPainter = Painter.polygon(Color.GREEN).when(isForest);
-
-        Painter<?> painter = buildingsPainter.above(forestPainter
-                .above(lakesPainter));
-        */
+        /*
+         * Predicate<Attributed<?>> isLake = Filters.tagged("natural", "water");
+         * Painter<?> lakesPainter = Painter.polygon(Color.BLUE).when(isLake);
+         * 
+         * Predicate<Attributed<?>> isBuilding = Filters.tagged("building");
+         * Painter<?> buildingsPainter = Painter.polygon(Color.BLACK).when(
+         * isBuilding);
+         * 
+         * Predicate<Attributed<?>> isForest = Filters.tagged("natural",
+         * "wood"); Painter<?> forestPainter =
+         * Painter.polygon(Color.GREEN).when(isForest);
+         * 
+         * Painter<?> painter = buildingsPainter.above(forestPainter
+         * .above(lakesPainter));
+         */
 
         Painter<?> swissPainter = SwissPainter.painter();
         OSMMap osmMap = null;
@@ -182,8 +183,8 @@ public final class Java2DCanvasTest {
 
         Point blLau = new Point(532510, 150590);
         Point trLau = new Point(539570, 155260);
-        Java2DCanvas canvas = new Java2DCanvas(blLau, trLau, 800, 530, 72,
-                Color.WHITE);
+        Java2DCanvas canvas = new Java2DCanvas(blLau, trLau, 800 * 2, 530 * 2,
+                150, Color.WHITE);
 
         // Dessin de la carte et stockage dans un fichier
         swissPainter.drawMap(map, canvas);
