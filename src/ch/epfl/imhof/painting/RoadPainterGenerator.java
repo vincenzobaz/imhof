@@ -30,9 +30,14 @@ public final class RoadPainterGenerator {
 
                 Painter<?> tunnelPainter = Painter.line(tunnel).when(
                         Filters.tagged("tunnel").and(spec.getFilter()));
-                Painter<?> bridgeAndRoadInteriorPainter = Painter.line(
+                Painter<?> bridgeInteriorPainter = Painter.line(
                         bridgeAndRoadInterior).when(
                         Filters.tagged("bridge").and(spec.getFilter()));
+                Painter<?> roadInteriorPainter = Painter.line(
+                        bridgeAndRoadInterior).when(
+                        Filters.tagged("bridge").negate()
+                                .and(Filters.tagged("tunnel").negate())
+                                .and(spec.getFilter()));
                 Painter<?> bridgeCasingPainter = Painter.line(bridgeCasing)
                         .when(Filters.tagged("bridge").and(spec.getFilter()));
                 Painter<?> roadCasingPainter = Painter.line(roadCasing).when(
@@ -40,18 +45,15 @@ public final class RoadPainterGenerator {
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.getFilter()));
 
-                /*bridgeAndRoadInteriorPainter
-                        .above(bridgeCasingPainter)
-                                .above(bridgeAndRoadInteriorPainter)
-                                        .above(roadCasingPainter)
-                                                .above(tunnelPainter);
-                        .drawMap(map, canvas);*/
-                
-               tunnelPainter.drawMap(map, canvas);
-               //roadCasingPainter.drawMap(map, canvas);
-               bridgeAndRoadInteriorPainter.drawMap(map, canvas);
-               //bridgeCasingPainter.drawMap(map, canvas);
-               bridgeAndRoadInteriorPainter.drawMap(map, canvas);
+                bridgeInteriorPainter.above(bridgeCasingPainter)
+                        .above(roadInteriorPainter).above(roadCasingPainter)
+                        .above(tunnelPainter).drawMap(map, canvas);
+
+                // tunnelPainter.drawMap(map, canvas);
+                // roadCasingPainter.drawMap(map, canvas);
+                // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
+                // bridgeCasingPainter.drawMap(map, canvas);
+                // bridgeAndRoadInteriorPainter.drawMap(map, canvas);
             }
         };
     }
