@@ -6,7 +6,7 @@
 	- Non instanciable
 	- `public static Painter<?> painterForRoads....`
 		-> Nécéssité de `RoadSpec`
-- [ ] `Vector3`
+- [x] `Vector3` (doc [x])
 	- `norm`
 	- `normalized`
 	- `scalarProduct`

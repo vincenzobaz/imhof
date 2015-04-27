@@ -49,7 +49,7 @@ public final class FiltersTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void isOnLayerTHROWS (){
-        boolean exceptionBORDELE = Filters.isOnLayer(-7).test(rolex().polygons().get(1));
+        boolean exceptionBORDELE = Filters.onLayer(-7).test(rolex().polygons().get(1));
     }
     
     @Test
@@ -57,11 +57,11 @@ public final class FiltersTest {
         Map map = rolex();
         for (Attributed<PolyLine> line : map.polyLines()){
             if (Filters.tagged("layer").test(line)){
-                assertTrue(Filters.isOnLayer(1).test(line));
+                assertTrue(Filters.onLayer(1).test(line));
             } else 
-                assertTrue(Filters.isOnLayer(0).test(line));
+                assertTrue(Filters.onLayer(0).test(line));
         }
         
-        assertTrue(Filters.isOnLayer(0).test(map.polygons().get(0)));
+        assertTrue(Filters.onLayer(0).test(map.polygons().get(0)));
     }
 }
