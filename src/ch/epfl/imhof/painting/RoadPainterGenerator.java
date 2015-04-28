@@ -6,10 +6,30 @@ import static ch.epfl.imhof.painting.LineStyle.LineCap;
 import static ch.epfl.imhof.painting.LineStyle.LineJoin;
 import ch.epfl.imhof.Attributed;
 
+/**
+ * Classe non instanciable fournissant uniquement une méthode statique
+ * permettant de générer un peintre de routes.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class RoadPainterGenerator {
+    /**
+     * La classe étant non-instanciable, le constructeur est vidé et privé.
+     */
     private RoadPainterGenerator() {
     }
 
+    /**
+     * Méthode statique retournant un peintre du réseau routier à partir d'un
+     * nombre variable de <code> RoadSpec</code>
+     * 
+     * @param specifications
+     *            ellipse contenant toutes les specifications des routes à
+     *            peindre.
+     * @return le peintre dessinant le réseau routier
+     */
     public static Painter<?> painterForRoads(RoadSpec... specifications) {
         LineStyle defaultBridgeCasingAndTunnelStyle = new LineStyle(0f,
                 Color.WHITE, LineCap.BUTT, LineJoin.ROUND, null);
@@ -66,6 +86,13 @@ public final class RoadPainterGenerator {
         };
     }
 
+    /**
+     * Classe imbriqué statiquement définissant une spécification de route.
+     * 
+     * @author Vincenzo Bazzucchi (249733)
+     * @author Nicolas Phan Van (239293)
+     *
+     */
     public final static class RoadSpec {
         private final Predicate<Attributed<?>> filter;
         private final float wI;
@@ -73,6 +100,21 @@ public final class RoadPainterGenerator {
         private final float wC;
         private final Color cC;
 
+        /**
+         * Constructeur d'un objet de type <code> RoadSpec </code>
+         * 
+         * @param filter
+         *            le prédicat que la route doit satisfaire pour être
+         *            dessinée
+         * @param wI
+         *            la largeur de l'intérieur de la route
+         * @param cI
+         *            la couleur de l'intérieur de la route
+         * @param wC
+         *            la largeur de la bordure de la route
+         * @param cC
+         *            la couleur de la bordure de la route
+         */
         public RoadSpec(Predicate<Attributed<?>> filter, float wI, Color cI,
                 float wC, Color cC) {
             this.filter = filter;
@@ -83,6 +125,9 @@ public final class RoadPainterGenerator {
         }
 
         /**
+         * Accesseur du prédicat qui doit être satisfait pour que la route soit
+         * dessinée
+         * 
          * @return the filter
          */
         public Predicate<Attributed<?>> getFilter() {
@@ -90,6 +135,8 @@ public final class RoadPainterGenerator {
         }
 
         /**
+         * Accesseur de la largeur de l'intérieur de la route
+         * 
          * @return the wI
          */
         public float getwI() {
@@ -97,6 +144,8 @@ public final class RoadPainterGenerator {
         }
 
         /**
+         * Accesseur de la couleur de l'intérieur de la route
+         * 
          * @return the cI
          */
         public Color getcI() {
@@ -104,6 +153,8 @@ public final class RoadPainterGenerator {
         }
 
         /**
+         * Accesseur de la largeur de la bordure de la route
+         * 
          * @return the wC
          */
         public float getwC() {
@@ -111,6 +162,8 @@ public final class RoadPainterGenerator {
         }
 
         /**
+         * Accesseur de la couleur de la bordure de la route
+         * 
          * @return the cC
          */
         public Color getcC() {
