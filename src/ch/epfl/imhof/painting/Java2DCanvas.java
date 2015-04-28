@@ -49,9 +49,6 @@ public final class Java2DCanvas implements Canvas {
      *             sont négatives ou nulles, ou si le premier point se trouve
      *             plus en haut ou plus à doite que le deuxième point
      */
-    // changer le type de width, height et dpi en float? Je ne pense pas.
-    // Description étape 7 ils conseillent de mettre en float seulement
-    // l'épaisseur du trait et le tableau
     public Java2DCanvas(Point bottomLeft, Point topRight, int width,
             int height, int dpi, Color backgroundColor)
             throws IllegalArgumentException {
