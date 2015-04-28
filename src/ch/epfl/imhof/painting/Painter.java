@@ -9,6 +9,17 @@ import ch.epfl.imhof.geometry.Polygon;
 import ch.epfl.imhof.painting.LineStyle.LineCap;
 import ch.epfl.imhof.painting.LineStyle.LineJoin;
 
+/**
+ * Interface fonctionnelle fournissant une méthode abstraite dont le but est de
+ * dessiner la carte et des méthodes statiques et par défaut permettant de
+ * générer des peintres ou d'en obtenir des nouveaux en modifiant
+ * <code> this </code>
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ * @param <E>
+ */
 public interface Painter<E> {
     /**
      * Consommateur, il dessine une carte sur une toile
@@ -21,6 +32,8 @@ public interface Painter<E> {
     void drawMap(Map map, Canvas canvas);
 
     /**
+     * Retourne un peintre peignant l'intérieur des polygones
+     * 
      * @param fillColor
      *            la coulour de remplissage des polygones
      * @return un peintre dessinant l'intérieur de tous les polygones de la
@@ -34,6 +47,7 @@ public interface Painter<E> {
     }
 
     /**
+     * Rtourne un peintre dessinant les lignes de la carte
      * 
      * @param style
      *            le style de dessin du trait
@@ -47,6 +61,7 @@ public interface Painter<E> {
     }
 
     /**
+     * Retourne un peintre dessinant les lignes de la carte
      * 
      * @param width
      *            l'épaisseur du trait
@@ -69,6 +84,8 @@ public interface Painter<E> {
 
     /**
      * 
+     * Retourne un peintre dessinant les lignes de la carte
+     * 
      * @param width
      *            l'épaisseur du trait
      * @param color
@@ -82,6 +99,9 @@ public interface Painter<E> {
     }
 
     /**
+     * 
+     * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
+     * des polygones de la carte
      * 
      * @param style
      *            le style du trait à utiliser lors du dessin.
@@ -101,6 +121,8 @@ public interface Painter<E> {
     }
 
     /**
+     * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
+     * des polygones de la carte
      * 
      * @param width
      *            l'épaisseur du trait
@@ -122,6 +144,8 @@ public interface Painter<E> {
     }
 
     /**
+     * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
+     * des polygones de la carte
      * 
      * @param width
      *            l'épaisseur du trait
@@ -137,6 +161,9 @@ public interface Painter<E> {
     }
 
     /**
+     * 
+     * Retourne un peintre qui agit comme <code> this </code> mais qui n'agit
+     * que lorsque le prédicat est satisfait
      * 
      * @param predicate
      *            le prédicat permettant de sélectionner les éléments de la
@@ -164,6 +191,9 @@ public interface Painter<E> {
 
     /**
      * 
+     * Retourne un peintre se comportant comme <code> this </code> mais qui
+     * n'agit qu'après le peintre reçu en argument
+     * 
      * @param painter
      *            le peintre qu'on veut utiliser avant d'utiliser
      *            <code>this</code>
@@ -179,6 +209,10 @@ public interface Painter<E> {
     }
 
     /**
+     * 
+     * Retourne un peintre se comportant comme <code> this </code> mais qui
+     * dessine la carte par couche, en commençant par la plus basse (-5) jusqu'à
+     * la plus élévée (5)
      * 
      * @return un peintre dessinant la carte par couches: en commençant par le
      *         niveau le plus bas (<code>layer=-5"</code>) jusqu'au niveau le
