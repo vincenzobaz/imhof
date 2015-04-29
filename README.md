@@ -1,6 +1,18 @@
 # imhof
 ![Comment rédiger de la javadoc?](./Javadoc_Guidelines/javadocGuidelines.md)
 
+## [Étape 10](http://cs108.epfl.ch/p10_dem.html)
+- [ ] `public interface Earth` (conteneur constantes)
+- [ ] `interface DigitalElevationModel` qui éténd `AutoCloseable` (donc rédéfinit `close`)
+	- [ ] `normalAlt` prend un poitn en coord wgs84 et retourne le vecteur normal à la Terre en ce point. Exception si le point pour lequel la normale est demandé ne fait pas partie de la zone couverte par le MNT. le point en wgs84 est un point géo, le vect est un Vector3D
+- [ ] `class HGTDigitalElevationModel implements DigitalElevationModel`
+représente un MNT stocké dans un fichier au format HGT.
+	- constructeur: Point un objet de type [File](http://docs.oracle.com/javase/8/docs/api/java/io/File.html) qui désigne le fichier HGT contenant le modèle numérique. Le nom s'obtient avec `getName`
+	- Mappage de fichier
+		1. obtenir [FileChannel](http://docs.oracle.com/javase/8/docs/api/java/nio/channels/FileChannel.html). Pour  ce faire, on obtient tout d'abord un flot d'entrée sur le fichier de type [FileInputStream](http://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html) et après on utilise la méthode `http://docs.oracle.com/javase/8/docs/api/java/io/FileInputStream.html#getChannel--)
+		2. Le canal obtenu, on utilise la méthode [map](http://docs.oracle.com/javase/8/docs/api/java/nio/channels/FileChannel.html#map-java.nio.channels.FileChannel.MapMode-long-long-) pour mapper le fichier en mémoire.(map n'a rien à voir avec map de Stream). Elle retourne un objet [MappedByteBuffer](http://docs.oracle.com/javase/8/docs/api/java/nio/MappedByteBuffer.html) qui représente en gros un tableau d'octets, ceux du fichier mappé
+		3. Un tableau de ce type peut être vue comme un tableau d'entiers de 16 bits de type [ShortBuffer](http://docs.oracle.com/javase/8/docs/api/java/nio/ShortBuffer.html) au moyen de sa méthode [asShortBuffer](http://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html#asShortBuffer--). On peut obtenir un entier de 16 en utilisant son index au moyen de la méhtode [get](http://docs.oracle.com/javase/8/docs/api/java/nio/ByteBuffer.html#get-int-)
+
 ## [Étape 9](http://cs108.epfl.ch/p09_road-painting.html)
 - [ ] `RoadPainterGenerator`
 	- Non instanciable
