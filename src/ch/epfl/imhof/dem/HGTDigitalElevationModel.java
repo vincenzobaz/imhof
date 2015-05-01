@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
@@ -17,6 +18,8 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
     private final ShortBuffer buffer;
     private final double latitudeSW;
     private final double longitudeSW;
+    private final long HGTResolution;
+    private final InputStream stream;
 
     public HGTDigitalElevationModel(File model)
             throws IllegalArgumentException, IOException {
@@ -52,31 +55,40 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
         if (Math.floorMod(model.length(), 2) == 0)
             throw new IllegalArgumentException(
                     "dimensions du fichier invalides");
+        try (FileInputStream stream = new FileInputStream(model)) {
+            this.stream = stream;
+            buffer = stream.getChannel()
+                    .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
+        }
         latitudeSW = Math.toRadians(latitude);
         longitudeSW = Math.toRadians(longitude);
-        buffer = mapToMemory(model);
+        // FAUX pour la résolution: elle se calcule à partir de length. length
+        // nous donne le nombre de poitns décrit dans le fichier mais après je
+        // pense qu'il faut faire des calcules pour trouver la vrai resolution
+        HGTResolution = model.length();
     }
 
-    private ShortBuffer mapToMemory(File file) throws IOException {
-        try (FileInputStream stream = new FileInputStream(file)) {
-            return stream.getChannel().map(MapMode.READ_ONLY, 0, file.length())
-                    .asShortBuffer();
-        }
+    public void close() throws IOException {
+        stream.close();
     }
 
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        if (point.latitude() < latitude || point.latitude() > latitude
-                || point.longitude() < longitude
-                || point.longitude() > longitude) {
+        if (point.latitude() < latitudeSW || point.latitude() > latitudeSW
+                || point.longitude() < longitudeSW
+                || point.longitude() > longitudeSW) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
-        
+
+        // on doit convertir (i,j) en un k car notre buffer est un tableau/list à une dimension
+        // il y a un total de HGTResolution points
+        // comment trouver le i,j du point reçu en paramètre?
+
         double s = Earth.RADIUS * HGTResolution;
         Vector3D a = new Vector3D(s, 0d, );
         Vector3D b = new Vector3D(0d, s, z);
         Vector3D c = new Vector3D(-s, 0d, );
-        Vector3D d = new Vector3D(0, -s );
+        Vector3D d = new Vector3D(0d, -s );
         
     }
 }
