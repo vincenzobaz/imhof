@@ -102,7 +102,6 @@ public final class Java2DCanvasTest {
         ImageIO.write(canvas.image(), "png", new File("rolex.png"));
     }
 
-    @Test
     public void correctlyDrawsInterlaken() throws IOException {
         OSMMap osmMap = null;
         try {
@@ -162,6 +161,26 @@ public final class Java2DCanvasTest {
 
         SwissPainter.painter().drawMap(map, canvas);
         ImageIO.write(canvas.image(), "png", new File("besancon_swiss.png"));
+    }
+
+    @Test
+    public void correctlyDrawsBerne() throws IOException {
+        OSMMap osmMap = null;
+        try {
+            osmMap = OSMMapReader.readOSMFile("data/berne.osm.gz", true);
+        } catch (IOException | SAXException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Map map = transformer.transform(osmMap);
+
+        Point bl = new Point(597475, 197590);
+        Point tr = new Point(605705, 203363);
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800 * 2, 530 * 2, 150,
+                Color.WHITE);
+
+        SwissPainter.painter().drawMap(map, canvas);
+        ImageIO.write(canvas.image(), "png", new File("berne_swiss.png"));
     }
 
     public void correctlyDrawsLausanne() throws IOException {

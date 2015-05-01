@@ -66,7 +66,6 @@ public final class Color {
      *             si elle vaut 0 ou 1 (correspond au blanc et au noir)
      */
     public static Color gray(double ratio) throws IllegalArgumentException {
-        // Est-ce qu'on peut faire du blanc/noir??
         if (ratio <= 0d || ratio >= 1d) {
             throw new IllegalArgumentException(
                     "La composante n'est pas valide.");

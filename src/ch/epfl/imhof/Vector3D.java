@@ -50,7 +50,7 @@ public final class Vector3D {
     }
 
     /**
-     * Calcule et retounre le produit scalaire entre <code>this</code> et le
+     * Calcule et retourne le produit scalaire entre <code>this</code> et le
      * vecteur donné.
      * 
      * @param that
