@@ -73,9 +73,10 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
     }
 
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        if (point.latitude() < latitudeSW || point.latitude() > latitudeSW
+        double oneDegree = Math.PI/180;
+        if (point.latitude() < latitudeSW || point.latitude() > latitudeSW+oneDegree
                 || point.longitude() < longitudeSW
-                || point.longitude() > longitudeSW) {
+                || point.longitude() > longitudeSW+oneDegree) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
@@ -83,7 +84,6 @@ public class HGTDigitalElevationModel implements DigitalElevationModel {
         // on doit convertir (i,j) en un k car notre buffer est un tableau/list à une dimension
         // il y a un total de HGTResolution points
         // comment trouver le i,j du point reçu en paramètre?
-
         double s = Earth.RADIUS * HGTResolution;
         Vector3D a = new Vector3D(s, 0d, );
         Vector3D b = new Vector3D(0d, s, z);
