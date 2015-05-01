@@ -27,19 +27,19 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class OSMToGeoTransformer {
     // Ensemble contenant les attributs qualifiant une surface
-    private final static Set<String> SURFACE_ATTRIBUTES = Collections
+    private static final Set<String> SURFACE_ATTRIBUTES = Collections
             .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
                     "aeroway", "amenity", "building", "harbour", "historic",
                     "landuse", "leisure", "man_made", "military", "natural",
                     "office", "place", "power", "public_transport", "shop",
                     "sport", "tourism", "water", "waterway", "wetland" })));
     // Ensemble contenant les attributs à garder pour une polyligne
-    private final static Set<String> POLYLINE_ATTRIBUTES = Collections
+    private static final Set<String> POLYLINE_ATTRIBUTES = Collections
             .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
                     "bridge", "highway", "layer", "man_made", "railway",
                     "tunnel", "waterway" })));
     // Ensemble contenant les attributs à garder pour un polygone
-    private final static Set<String> POLYGON_ATTRIBUTES = Collections
+    private static final Set<String> POLYGON_ATTRIBUTES = Collections
             .unmodifiableSet(new HashSet<>(Arrays.asList(new String[] {
                     "building", "landuse", "layer", "leisure", "natural",
                     "waterway" })));
@@ -86,8 +86,12 @@ public final class OSMToGeoTransformer {
         // Parcours des chemins de la carte OSM
         for (OSMWay wayToConvert : ways) {
             boolean wayIsAPolygon = isAPolygon(wayToConvert);
-            Attributes filteredAttributes = filteredAttributes(wayToConvert,
-                    wayIsAPolygon);
+            // Filtrage des attributs du chemin courant selon son type,
+            // déterminé par le booléen wayIsAPolygon
+            Attributes filteredAttributes = wayIsAPolygon ? wayToConvert
+                    .attributes().keepOnlyKeys(POLYGON_ATTRIBUTES)
+                    : wayToConvert.attributes().keepOnlyKeys(
+                            POLYLINE_ATTRIBUTES);
 
             // Teste si le chemin doit être converti en polygone, polyligne, ou
             // ignoré, et ajoute l'entité correspondante à la carte en
@@ -97,8 +101,11 @@ public final class OSMToGeoTransformer {
                         OSMWayToClosedPolyLine(wayToConvert)),
                         filteredAttributes));
             } else if (!wayIsAPolygon && !filteredAttributes.isEmpty()) {
-                mapBuilder.addPolyLine(new Attributed<>(
-                        OSMWayToPolyLine(wayToConvert), filteredAttributes));
+                mapBuilder
+                        .addPolyLine(new Attributed<>(
+                                wayToConvert.isClosed() ? OSMWayToClosedPolyLine(wayToConvert)
+                                        : OSMWayToOpenPolyLine(wayToConvert),
+                                filteredAttributes));
             }
         }
     }
@@ -312,37 +319,6 @@ public final class OSMToGeoTransformer {
             }
             return true;
         }
-    }
-
-    /**
-     * Retourne une version filtrée des attributs du chemin donné. Utilise les
-     * ensembles d'attributs à garder stockés de façon statique dans la classe.
-     * Détermine si le chemin est un polygone ou une polyligne grâce au booléen
-     * passé en paramètre.
-     * 
-     * @param way
-     *            le chemin dont on veut filtrer les attributs
-     * @param isAPolygon
-     *            <code>true</code> si le chemin forme un polygone,
-     *            <code>false</code> sinon
-     * @return l'intersection des attributs du chemin et des attributs à garder
-     */
-    private Attributes filteredAttributes(OSMWay way, boolean isAPolygon) {
-        return isAPolygon ? way.attributes().keepOnlyKeys(POLYGON_ATTRIBUTES)
-                : way.attributes().keepOnlyKeys(POLYLINE_ATTRIBUTES);
-    }
-
-    /**
-     * Convertit le chemin donné en polyligne, ouverte ou fermée selon que le
-     * chemin est ouvert ou fermé.
-     * 
-     * @param way
-     *            le chemin à convertir
-     * @return une polyligne
-     */
-    private PolyLine OSMWayToPolyLine(OSMWay way) {
-        return way.isClosed() ? OSMWayToClosedPolyLine(way)
-                : OSMWayToOpenPolyLine(way);
     }
 
     /**
