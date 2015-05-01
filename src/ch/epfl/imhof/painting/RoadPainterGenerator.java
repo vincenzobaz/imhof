@@ -16,27 +16,30 @@ import ch.epfl.imhof.Attributed;
  */
 public final class RoadPainterGenerator {
     /**
-     * La classe étant non-instanciable, le constructeur est vidé et privé.
+     * La classe étant non instanciable, le constructeur est privé et vide.
      */
     private RoadPainterGenerator() {
     }
 
     /**
-     * Méthode statique retournant un peintre du réseau routier à partir d'un
-     * nombre variable de <code> RoadSpec</code>
+     * Retourne un peintre du réseau routier à partir d'un nombre variable de
+     * <code>RoadSpec</code>.
      * 
      * @param specifications
-     *            ellipse contenant toutes les specifications des routes à
-     *            peindre.
+     *            ellipse contenant toutes les spécifications de routes à
+     *            peindre
      * @return le peintre dessinant le réseau routier
      */
     public static Painter<?> painterForRoads(RoadSpec... specifications) {
+        // Styles de lignes par défaut à modifier pour chaque type de route à
+        // l'aide des méthodes withX de LineStyle
         LineStyle defaultBridgeCasingAndTunnelStyle = new LineStyle(0f,
                 Color.WHITE, LineCap.BUTT, LineJoin.ROUND, null);
         LineStyle defaultBridgeInteriorAndRoadStyle = new LineStyle(0f,
                 Color.WHITE, LineCap.ROUND, LineJoin.ROUND, null);
 
         return (map, canvas) -> {
+            // Dessin des tunnels
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle
@@ -48,6 +51,7 @@ public final class RoadPainterGenerator {
                         .drawMap(map, canvas);
             }
 
+            // Dessin des bordures de routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle
@@ -58,6 +62,7 @@ public final class RoadPainterGenerator {
                                 .and(spec.getFilter())).drawMap(map, canvas);
             }
 
+            // Dessin de l'intérieur des routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeInteriorAndRoadStyle.withWidth(
@@ -67,6 +72,7 @@ public final class RoadPainterGenerator {
                                 .and(spec.getFilter())).drawMap(map, canvas);
             }
 
+            // Dessin des bordures de pont
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle.withWidth(
@@ -76,6 +82,7 @@ public final class RoadPainterGenerator {
                         .drawMap(map, canvas);
             }
 
+            // Dessin de l'intérieur des ponts
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeInteriorAndRoadStyle.withWidth(
@@ -93,7 +100,7 @@ public final class RoadPainterGenerator {
      * @author Nicolas Phan Van (239293)
      *
      */
-    public final static class RoadSpec {
+    public static final class RoadSpec {
         private final Predicate<Attributed<?>> filter;
         private final float wI;
         private final Color cI;
@@ -101,19 +108,20 @@ public final class RoadPainterGenerator {
         private final Color cC;
 
         /**
-         * Constructeur d'un objet de type <code> RoadSpec </code>
+         * Construit une nouvelle spécification de route ayant les paramètres
+         * donnés.
          * 
          * @param filter
          *            le prédicat que la route doit satisfaire pour être
          *            dessinée
          * @param wI
-         *            la largeur de l'intérieur de la route
+         *            la largeur du trait de l'intérieur de la route
          * @param cI
-         *            la couleur de l'intérieur de la route
+         *            la couleur du trait de l'intérieur de la route
          * @param wC
-         *            la largeur de la bordure de la route
+         *            la largeur du trait de la bordure de la route
          * @param cC
-         *            la couleur de la bordure de la route
+         *            la couleur du trait de la bordure de la route
          */
         public RoadSpec(Predicate<Attributed<?>> filter, float wI, Color cI,
                 float wC, Color cC) {
@@ -125,46 +133,46 @@ public final class RoadPainterGenerator {
         }
 
         /**
-         * Accesseur du prédicat qui doit être satisfait pour que la route soit
-         * dessinée
+         * Retourne le filtre permettant de sélectionner ce type de route.
          * 
-         * @return the filter
+         * @return le prédicat qui doit être satisfait pour que la route soit
+         *         dessinée
          */
         public Predicate<Attributed<?>> getFilter() {
             return filter;
         }
 
         /**
-         * Accesseur de la largeur de l'intérieur de la route
+         * Retourne la largeur du trait de l'intérieur de la route.
          * 
-         * @return the wI
+         * @return la largeur intérieure
          */
         public float getwI() {
             return wI;
         }
 
         /**
-         * Accesseur de la couleur de l'intérieur de la route
+         * Retourne la couleur du trait de l'intérieur de la route.
          * 
-         * @return the cI
+         * @return la couleur intérieure
          */
         public Color getcI() {
             return cI;
         }
 
         /**
-         * Accesseur de la largeur de la bordure de la route
+         * Retourne la largeur du trait de la bordure de la route.
          * 
-         * @return the wC
+         * @return la largeur extérieure
          */
         public float getwC() {
             return wC;
         }
 
         /**
-         * Accesseur de la couleur de la bordure de la route
+         * Retourne la couleur du trait de la bordure de la route.
          * 
-         * @return the cC
+         * @return la couleur extérieure
          */
         public Color getcC() {
             return cC;
