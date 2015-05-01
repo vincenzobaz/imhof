@@ -13,31 +13,32 @@ import ch.epfl.imhof.painting.LineStyle.LineJoin;
  * Interface fonctionnelle fournissant une méthode abstraite dont le but est de
  * dessiner la carte et des méthodes statiques et par défaut permettant de
  * générer des peintres ou d'en obtenir des nouveaux en modifiant
- * <code> this </code>
+ * <code>this</code>.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  * @param <E>
+ *            le type d'entité géométrique dessinée par le peintre
  */
 public interface Painter<E> {
     /**
-     * Consommateur, il dessine une carte sur une toile
+     * Consommateur, il dessine une carte sur une toile.
      * 
      * @param map
-     *            la carte à dessinner
+     *            la carte à dessiner
      * @param canvas
      *            la toile sur laquelle dessiner la carte
      */
     void drawMap(Map map, Canvas canvas);
 
     /**
-     * Retourne un peintre peignant l'intérieur des polygones
+     * Retourne un peintre dessinant l'intérieur de tous les polygones de la
+     * carte fournie avec la couleur donnée.
      * 
      * @param fillColor
-     *            la coulour de remplissage des polygones
-     * @return un peintre dessinant l'intérieur de tous les polygones de la
-     *         carte qu'il reçoit
+     *            la couleur des polygones
+     * @return un peintre de polygones
      */
     public static Painter<Polygon> polygon(Color fillColor) {
         return (map, canvas) -> {
@@ -47,12 +48,12 @@ public interface Painter<E> {
     }
 
     /**
-     * Rtourne un peintre dessinant les lignes de la carte
+     * Retourne un peintre dessinant toutes les lignes de la carte fournie avec
+     * le style donné.
      * 
      * @param style
      *            le style de dessin du trait
-     * @return un peintre dessinant toutes les lignes de la carte qu'on lui
-     *         fournit en utilisant le style fourni en argument
+     * @return un peintre de polylignes
      */
     public static Painter<PolyLine> line(LineStyle style) {
         return (map, canvas) -> {
@@ -61,21 +62,20 @@ public interface Painter<E> {
     }
 
     /**
-     * Retourne un peintre dessinant les lignes de la carte
+     * Retourne un peintre dessinant toutes les lignes de la carte fournie avec
+     * les paramètres de style donnés.
      * 
      * @param width
-     *            l'épaisseur du trait
+     *            la largeur du trait
      * @param color
      *            la couleur du trait
      * @param cap
      *            le type de terminaison du trait
      * @param join
-     *            le type de jointure du segment
+     *            le type de jointure des segments
      * @param dashingPattern
      *            l'alternance de séquences opaques et transparentes du trait
-     * @return un peintre dessinant toutes les lignes de la carte qu'on lui
-     *         fournit en utilisant les cinq paramètres de style fournis en
-     *         argument
+     * @return un peintre de polyligne
      */
     public static Painter<PolyLine> line(float width, Color color, LineCap cap,
             LineJoin join, float... dashingPattern) {
@@ -84,15 +84,14 @@ public interface Painter<E> {
 
     /**
      * 
-     * Retourne un peintre dessinant les lignes de la carte
+     * Retourne un peintre dessinant toutes les lignes de la carte avec les deux
+     * paramètres de style donnés et des valeurs par défaut pour les autres.
      * 
      * @param width
-     *            l'épaisseur du trait
+     *            la largeur du trait
      * @param color
      *            la couleur du trait
-     * @return un peintre dessinant otutes les lignes de la carte qu'on lui
-     *         fournit en utilisant les deux paramètrs de style fournis en
-     *         argument et des valeurs par défaut pour les autres trois
+     * @return un peintre de polyligne
      */
     public static Painter<PolyLine> line(float width, Color color) {
         return line(new LineStyle(width, color));
@@ -101,13 +100,11 @@ public interface Painter<E> {
     /**
      * 
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * des polygones de la carte
+     * de tous les polygones de la carte avec le style donné.
      * 
      * @param style
-     *            le style du trait à utiliser lors du dessin.
-     * @return un peintre dessinant les pourtours de l'enveloppe et des trous de
-     *         toues les polygones de la carte qu'on lui forunit en utilisant le
-     *         style fourni en argument
+     *            le style de dessin du trait
+     * @return un peintre de polyligne
      */
     public static Painter<PolyLine> outline(LineStyle style) {
         return (map, canvas) -> {
@@ -122,21 +119,20 @@ public interface Painter<E> {
 
     /**
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * des polygones de la carte
+     * de tous les polygones de la carte qu'on lui fournit en utilisant les cinq
+     * paramètres de style donnés.
      * 
      * @param width
-     *            l'épaisseur du trait
+     *            la largeur du trait
      * @param color
      *            la couleur du trait
      * @param cap
      *            le type de terminaison du trait
      * @param join
-     *            le type de jointure du segment
+     *            le type de jointure des segments
      * @param dashingPattern
      *            l'alternance des séquences opaques et transparentes du trait
-     * @return un peintre dessinant les pourtours de l'enveloppe et des trous de
-     *         tous les polygones de la carte qu'on lui fournit en appliquant
-     *         les cinq paramètres de style d'une ligne fournis en argument
+     * @return un peintre de polyligne
      */
     public static Painter<PolyLine> outline(float width, Color color,
             LineCap cap, LineJoin join, float... dashingPattern) {
@@ -145,16 +141,15 @@ public interface Painter<E> {
 
     /**
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * des polygones de la carte
+     * de tous les polygones de la carte qu'on lui fournit en utilisant les deux
+     * paramètres de style donnés et des valeurs par défaut pour les autres.
      * 
      * @param width
-     *            l'épaisseur du trait
+     *            la largeur du trait
      * @param color
      *            la couleur du trait
-     * @return un peintre dessinant les pourtours de l'enveloppe et des trous de
-     *         tous les polygones de la carte qu'on lui fournit en appliquant
-     *         les deux paramètres de style d'une ligne fournis en argument et
-     *         en utilisant des valeurs par défaut pour les autres trois
+     * @return un peintre de polyligne
+     * 
      */
     public static Painter<PolyLine> outline(float width, Color color) {
         return outline(new LineStyle(width, color));
@@ -162,15 +157,13 @@ public interface Painter<E> {
 
     /**
      * 
-     * Retourne un peintre qui agit comme <code> this </code> mais qui n'agit
-     * que lorsque le prédicat est satisfait
+     * Retourne un peintre se comportant comme <code>this</code> mais qui ne
+     * dessine que les éléments satisfaisant le prédicat reçu en argument.
      * 
      * @param predicate
      *            le prédicat permettant de sélectionner les éléments de la
      *            carte à dessiner
-     * @return un peintre se comportant comme <code>this</code> mais qui ne
-     *         dessine que les éléments satisfaisant le prédicat réçu en
-     *         argument
+     * @return un peintre sélectif
      */
     public default Painter<?> when(Predicate<Attributed<?>> predicate) {
         return (map, canvas) -> {
@@ -191,15 +184,13 @@ public interface Painter<E> {
 
     /**
      * 
-     * Retourne un peintre se comportant comme <code> this </code> mais qui
-     * n'agit qu'après le peintre reçu en argument
+     * Retourne un peintre dessinant d'abord la carte produite par le peintre en
+     * argument puis, par dessus, celle produit par <code>this</code>.
      * 
      * @param painter
      *            le peintre qu'on veut utiliser avant d'utiliser
      *            <code>this</code>
-     * @return un noveuau peintre dessinant d'abord la carte produite par le
-     *         peintre en argument puis, par dessus, celle produit par
-     *         <code>this</code>
+     * @return un peintre empilant deux peintres
      */
     public default Painter<?> above(Painter<?> painter) {
         return (map, canvas) -> {
@@ -210,12 +201,11 @@ public interface Painter<E> {
 
     /**
      * 
-     * Retourne un peintre se comportant comme <code> this </code> mais qui
-     * dessine la carte par couche, en commençant par la plus basse (-5) jusqu'à
-     * la plus élévée (5)
+     * Retourne un peintre se comportant comme <code>this</code> mais qui
+     * dessine la carte par couche, de la plus basse à la plus élévée.
      * 
-     * @return un peintre dessinant la carte par couches: en commençant par le
-     *         niveau le plus bas (<code>layer=-5"</code>) jusqu'au niveau le
+     * @return un peintre dessinant la carte par couches, en commençant par le
+     *         niveau le plus bas (<code>layer=-5</code>) jusqu'au niveau le
      *         plus haut (<code>layer=5</code>)
      */
     public default Painter<?> layered() {
