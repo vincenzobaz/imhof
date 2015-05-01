@@ -1,7 +1,7 @@
 package ch.epfl.imhof;
 
 /**
- * Classe répresentant un vecteur tridimensonnel.
+ * Classe représentant un vecteur tridimensionnel. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -13,12 +13,15 @@ public final class Vector3D {
     private final double z;
 
     /**
-     * Construit un vecteur tridimensionnel à partir des ses trois composantes
-     * x,y,z
+     * Construit un vecteur tridimensionnel à partir des trois composantes
+     * données.
      * 
      * @param x
+     *            la première composante du vecteur
      * @param y
+     *            la deuxième composante du vecteur
      * @param z
+     *            la troisième composante du vecteur
      */
     public Vector3D(double x, double y, double z) {
         this.x = x;
@@ -27,7 +30,7 @@ public final class Vector3D {
     }
 
     /**
-     * Calcule la norme du vecteur
+     * Calcule et retourne la norme du vecteur.
      * 
      * @return la norme du vecteur
      */
@@ -36,10 +39,10 @@ public final class Vector3D {
     }
 
     /**
-     * Permet d'obtenir la version normalisée du vecteur
+     * Retourne la version normalisée du vecteur.
      * 
-     * @return un vecteur parallèle à <code> this </code> mais de longueur
-     *         unitaire
+     * @return un vecteur parallèle à <code>this</code> et de même direction,
+     *         mais de longueur unitaire
      */
     public Vector3D normalized() {
         double norm = norm();
@@ -47,12 +50,12 @@ public final class Vector3D {
     }
 
     /**
-     * Calcule le produit scalaire entre <code> this </code> et
-     * <code>that</code>
+     * Calcule et retounre le produit scalaire entre <code>this</code> et le
+     * vecteur donné.
      * 
      * @param that
-     *            le deuxième terme pour le calcul du produit scalaire
-     * @return le produit scalaire entre les deux vecteurs.
+     *            le vecteur avec lequel effectuer le produit scalaire
+     * @return le produit scalaire des deux vecteurs
      */
     public double scalarProduct(Vector3D that) {
         return x * that.x + y * that.y + z * that.z;
