@@ -26,11 +26,11 @@ public final class PointGeo {
      */
     public PointGeo(double longitude, double latitude)
             throws IllegalArgumentException {
-        if (coordinateIsInvalid(longitude, 1.0)) {
+        if (coordinateIsInvalid(longitude, 1d)) {
             throw new IllegalArgumentException(
                     "La longitude doit être comprise entre -π et π");
         }
-        if (coordinateIsInvalid(latitude, 2.0)) {
+        if (coordinateIsInvalid(latitude, 2d)) {
             throw new IllegalArgumentException(
                     "La latitude doit être comprise entre -π/2 et π/2");
         }

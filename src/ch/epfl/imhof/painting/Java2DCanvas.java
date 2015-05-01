@@ -15,8 +15,9 @@ import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
 /**
- * Classe représentant une toile. Elle permet de dessiner des polylignes et des
- * polygones dans une image discrète.
+ * Classe représentant une toile, implémentant l'interface <code>Canvas</code>.
+ * Elle permet de dessiner des polylignes et des polygones dans une image
+ * discrète.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -54,7 +55,7 @@ public final class Java2DCanvas implements Canvas {
             throws IllegalArgumentException {
         if (width <= 0 || height <= 0 || dpi <= 0) {
             throw new IllegalArgumentException(
-                    "La largeur, la hauteur et la résolution de l'image doivent être positives.");
+                    "La largeur, la hauteur et la résolution de l'image doivent être strictement positives.");
         }
         if (bottomLeft.x() >= topRight.x() || bottomLeft.y() >= topRight.y()) {
             throw new IllegalArgumentException(
@@ -75,39 +76,46 @@ public final class Java2DCanvas implements Canvas {
         context.fillRect(0, 0, width, height);
     }
 
-    /**
-     * Retourne l'image dessinée par la toile
-     * 
-     * @return l'image
-     */
-    public BufferedImage image() {
-        return image;
-    }
-
     @Override
     public void drawPolyLine(PolyLine polyline, LineStyle style) {
         int cap = style.cap().ordinal();
         int join = style.join().ordinal();
         float[] dashingPattern = style.dashingPattern();
-        BasicStroke stroke = dashingPattern == null
-                || dashingPattern.length == 0 ? new BasicStroke(style.width(),
-                cap, join, 10.0f) : new BasicStroke(style.width(), cap, join,
-                10.0f, dashingPattern, 0f);
-        context.setStroke(stroke);
+
+        // Définition du style de trait: on utilise deux constructeurs de
+        // BasicStroke différents selon que le trait est continu (dashingPattern
+        // null ou vide) ou bien pointillé
+        context.setStroke(dashingPattern == null || dashingPattern.length == 0 ? new BasicStroke(
+                style.width(), cap, join, 10f) : new BasicStroke(style.width(),
+                cap, join, 10f, dashingPattern, 0f));
         context.setColor(style.color().convert());
 
-        Path2D path = newPath(polyline);
-        context.draw(path);
+        context.draw(newPath(polyline));
     }
 
     @Override
     public void drawPolygon(Polygon polygon, Color color) {
+        // Création d'une nouvelle surface correspondant à l'enveloppe du
+        // polygone
         Area area = new Area(newPath(polygon.shell()));
+
+        // Parcours de l'ensemble des trous du polygone et soustraction de
+        // chacun de ceux-ci de la surface formée par l'enveloppe
         for (ClosedPolyLine hole : polygon.holes()) {
             area.subtract(new Area(newPath(hole)));
         }
+
         context.setColor(color.convert());
         context.fill(area);
+    }
+
+    /**
+     * Retourne l'image dessinée par la toile.
+     * 
+     * @return l'image
+     */
+    public BufferedImage image() {
+        return image;
     }
 
     /**
@@ -120,12 +128,21 @@ public final class Java2DCanvas implements Canvas {
     private Path2D newPath(PolyLine polyline) {
         Path2D newPath = new Path2D.Double();
         Iterator<Point> iterator = polyline.points().iterator();
+
+        // Conversion du premier point de la polyligne dans le repère de la
+        // toile
         Point firstPoint = basisChange.apply(iterator.next());
+
+        // Création du premier point du chemin
         newPath.moveTo(firstPoint.x(), firstPoint.y());
+
+        // Parcours des points de la polyligne et ajout au chemin
         while (iterator.hasNext()) {
             Point nextPoint = basisChange.apply(iterator.next());
             newPath.lineTo(nextPoint.x(), nextPoint.y());
         }
+
+        // Fermeture du chemin si la polyligne est fermée
         if (polyline.isClosed()) {
             newPath.closePath();
         }

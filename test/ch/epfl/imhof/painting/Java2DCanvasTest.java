@@ -115,7 +115,7 @@ public final class Java2DCanvasTest {
 
         Point bl = new Point(628590, 168210);
         Point tr = new Point(635660, 172870);
-        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800 * 2, 530 * 2, 150,
+        Java2DCanvas canvas = new Java2DCanvas(bl, tr, 800, 530, 72,
                 Color.WHITE);
 
         SwissPainter.painter().drawMap(map, canvas);
@@ -164,7 +164,6 @@ public final class Java2DCanvasTest {
         ImageIO.write(canvas.image(), "png", new File("besancon_swiss.png"));
     }
 
-    @Test
     public void correctlyDrawsLausanne() throws IOException {
         OSMMap osmMap = null;
         try {

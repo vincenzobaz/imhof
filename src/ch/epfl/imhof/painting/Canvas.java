@@ -12,8 +12,8 @@ import ch.epfl.imhof.geometry.Polygon;
  */
 public interface Canvas {
     /**
-     * Dessine sur la toile la polyligne donnée, suivant le style de ligne donné
-     * et retourne le chemin correspondant.
+     * Dessine sur la toile la polyligne donnée, suivant le style de ligne
+     * donné.
      * 
      * @param polyline
      *            la polyligne à dessiner
