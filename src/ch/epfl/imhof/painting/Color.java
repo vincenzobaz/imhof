@@ -10,12 +10,12 @@ package ch.epfl.imhof.painting;
  */
 public final class Color {
     // Les couleurs rouge, vert et bleu purs
-    public final static Color RED = Color.rgb(1.0, 0.0, 0.0);
-    public final static Color GREEN = Color.rgb(0.0, 1.0, 0.0);
-    public final static Color BLUE = Color.rgb(0.0, 0.0, 1.0);
+    public static final Color RED = Color.rgb(1d, 0d, 0d);
+    public static final Color GREEN = Color.rgb(0d, 1d, 0d);
+    public static final Color BLUE = Color.rgb(0d, 0d, 1d);
     // Les couleurs blanc et noir
-    public final static Color WHITE = Color.rgb(1.0, 1.0, 1.0);
-    public final static Color BLACK = Color.rgb(0.0, 0.0, 0.0);
+    public static final Color WHITE = Color.rgb(1d, 1d, 1d);
+    public static final Color BLACK = Color.rgb(0d, 0d, 0d);
 
     private final double redRatio;
     private final double greenRatio;
@@ -33,18 +33,17 @@ public final class Color {
      * @param blueRatio
      *            la composante bleue de la couleur
      */
-
     private Color(double redRatio, double greenRatio, double blueRatio)
             throws IllegalArgumentException {
-        if (redRatio < 0 || redRatio > 1) {
+        if (redRatio < 0d || redRatio > 1d) {
             throw new IllegalArgumentException(
                     "La composante rouge est invalide.");
         }
-        if (greenRatio < 0 || greenRatio > 1) {
+        if (greenRatio < 0d || greenRatio > 1d) {
             throw new IllegalArgumentException(
                     "La composante verte est invalide.");
         }
-        if (blueRatio < 0 || blueRatio > 1) {
+        if (blueRatio < 0d || blueRatio > 1d) {
             throw new IllegalArgumentException(
                     "La composante bleue est invalide.");
         }
@@ -68,7 +67,7 @@ public final class Color {
      */
     public static Color gray(double ratio) throws IllegalArgumentException {
         // Est-ce qu'on peut faire du blanc/noir??
-        if (ratio <= 0.0 || ratio >= 1.0) {
+        if (ratio <= 0d || ratio >= 1d) {
             throw new IllegalArgumentException(
                     "La composante n'est pas valide.");
         }
@@ -141,21 +140,19 @@ public final class Color {
         return blueRatio;
     }
 
-    // on multiplie deux couleurs ou this avec une autre couleur?
     /**
      * Retourne le produit de l'instance de couleur en cours et de la couleur
      * passée en argument.
      * 
-     * @param c
+     * @param that
      *            la couleur à multiplier avec l'instance en cours
      * @return le produit, composante par composante, des deux couleurs
      */
-    public Color multiplyWith(Color c) {
-        return new Color(redRatio * c.redRatio, greenRatio * c.greenRatio,
-                blueRatio * c.blueRatio);
+    public Color multiplyWith(Color that) {
+        return new Color(redRatio * that.redRatio,
+                greenRatio * that.greenRatio, blueRatio * that.blueRatio);
     }
 
-    // idem que pour la multiplication
     /**
      * Convertit et retourne la couleur en couleur de l'API Java.
      * 
