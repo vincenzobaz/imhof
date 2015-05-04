@@ -1,14 +1,10 @@
 package ch.epfl.imhof.dem;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import static java.lang.Math.toRadians;
 
@@ -79,9 +75,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         latitudeNW = toRadians(latitude+1);
         longitudeNW = toRadians(longitude);
-        // FAUX pour la résolution: elle se calcule à partir de length. length
-        // nous donne le nombre de poitns décrit dans le fichier mais après je
-        // pense qu'il faut faire des calcules pour trouver la vrai resolution
         angularResolution = toRadians(1d / points);
     }
 
