@@ -15,9 +15,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
-    private final double angularResolution;
     private final InputStream stream;
-    private final int  pointsPerLine;
+    private final int pointsPerLine;
 
     public HGTDigitalElevationModel(File model)
             throws IllegalArgumentException, IOException {
@@ -26,7 +25,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "La taille du nom de fichier n'est pas valide.");
         }
-        
+
         int latitude = 0;
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
@@ -41,7 +40,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "La deuxième ou la troisième lettre n'est pas un entier.");
         }
-        
+
         int longitude = 0;
         if (filename.charAt(3) != 'E' && filename.charAt(3) != 'W') {
             throw new IllegalArgumentException(
@@ -49,7 +48,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         } else {
             longitude = filename.charAt(3) == 'E' ? 1 : -1;
         }
-        
+
         try {
             longitude = longitude * Integer.parseInt(filename.substring(4, 6));
         } catch (NumberFormatException e) {
@@ -62,7 +61,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         // pas sûr de ça, voir piazza checker si resolution est bien valide, si
         // oui l'affecter à hgtresolution, si non erreur
-        double points= Math.sqrt(model.length()/2L);
+        double points = Math.sqrt(model.length() / 2L);
         if (points % 1 != 0) {
             throw new IllegalArgumentException(
                     "dimensions du fichier invalides");
@@ -73,9 +72,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
-        latitudeNW = toRadians(latitude+1);
+        latitudeNW = toRadians(latitude + 1);
         longitudeNW = toRadians(longitude);
-        angularResolution = toRadians(1d / points);
     }
 
     @Override
@@ -86,7 +84,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        double oneDegree =toRadians(1);
+        double oneDegree = toRadians(1);
         if (point.latitude() < latitudeNW
                 || point.latitude() > latitudeNW + oneDegree
                 || point.longitude() < longitudeNW
@@ -94,22 +92,24 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
-        
-        int j = (int) Math.ceil((latitudeNW - point.latitude()) / angularResolution);
-        int i = (int) Math.floor((longitudeNW + 1 - point.longitude()) / angularResolution);
-        
-        
-        double s = Earth.RADIUS * angularResolution;
-        
-        double zA =  altitudeAt(i+1,j)-altitudeAt(i,j);
-        double zB = altitudeAt(i, j+1)-altitudeAt(i,j);
-        double zC = altitudeAt(i,j+1) - altitudeAt(i+1,j+1);
-        double zD = altitudeAt(i+1,j) - altitudeAt(i+1, j+1 );
 
-        return new Vector3D(0.5*s*(zC - zA), 0.5*s*(zD-zB), s*s);
+        double angularResolution = toRadians(1d / ((double) pointsPerLine));
+        int j = (int) Math.ceil((latitudeNW - point.latitude())
+                / angularResolution);
+        int i = (int) Math.floor((longitudeNW + 1 - point.longitude())
+                / angularResolution);
+
+        double s = Earth.RADIUS * angularResolution;
+
+        double zA = altitudeAt(i + 1, j) - altitudeAt(i, j);
+        double zB = altitudeAt(i, j + 1) - altitudeAt(i, j);
+        double zC = altitudeAt(i, j + 1) - altitudeAt(i + 1, j + 1);
+        double zD = altitudeAt(i + 1, j) - altitudeAt(i + 1, j + 1);
+
+        return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
-    
-    private double altitudeAt(int i, int j){
-        return (double) buffer.get(j*pointsPerLine +i);
+
+    private double altitudeAt(int i, int j) {
+        return (double) buffer.get(j * pointsPerLine + i);
     }
 }
