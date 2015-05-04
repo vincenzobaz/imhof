@@ -85,9 +85,9 @@ public final class Java2DCanvas implements Canvas {
         // Définition du style de trait: on utilise deux constructeurs de
         // BasicStroke différents selon que le trait est continu (dashingPattern
         // null ou vide) ou bien pointillé
-        context.setStroke(dashingPattern == null || dashingPattern.length == 0 ? new BasicStroke(
-                style.width(), cap, join, 10f) : new BasicStroke(style.width(),
-                cap, join, 10f, dashingPattern, 0f));
+        context.setStroke(dashingPattern == null ? new BasicStroke(style
+                .width(), cap, join, 10f) : new BasicStroke(style.width(), cap,
+                join, 10f, dashingPattern, 0f));
         context.setColor(style.color().convert());
 
         context.draw(newPath(polyline));

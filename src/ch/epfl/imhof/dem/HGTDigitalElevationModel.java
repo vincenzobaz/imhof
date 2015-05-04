@@ -30,6 +30,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "La taille du nom de fichier n'est pas valide.");
         }
+        
         int latitude = 0;
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
@@ -44,6 +45,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "La deuxième ou la troisième lettre n'est pas un entier.");
         }
+        
         int longitude = 0;
         if (filename.charAt(3) != 'E' && filename.charAt(3) != 'W') {
             throw new IllegalArgumentException(
@@ -51,6 +53,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         } else {
             longitude = filename.charAt(3) == 'E' ? 1 : -1;
         }
+        
         try {
             longitude = longitude * Integer.parseInt(filename.substring(4, 6));
         } catch (NumberFormatException e) {

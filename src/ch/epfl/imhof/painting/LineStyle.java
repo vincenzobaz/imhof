@@ -48,8 +48,8 @@ public final class LineStyle {
 
         // Test de validité des éléments du tableau passé en argument et copie
         // de celui-ci
-        if (dashingPattern == null) {
-            this.dashingPattern = dashingPattern;
+        if (dashingPattern == null || dashingPattern.length == 0) {
+            this.dashingPattern = null;
         } else {
             float[] temp = new float[dashingPattern.length];
             for (int i = 0; i < dashingPattern.length; i++) {
