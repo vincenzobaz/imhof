@@ -6,17 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel.MapMode;
-
 import static java.lang.Math.toRadians;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
-    private final ShortBuffer buffer;
+    private ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
-    private final double angularResolution;
     private final InputStream stream;
     private final int pointsPerLine;
 
@@ -74,12 +72,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         latitudeNW = toRadians(latitude + 1);
         longitudeNW = toRadians(longitude);
-        angularResolution = toRadians(1d / points);
     }
 
     @Override
     public void close() throws IOException {
         stream.close();
+        buffer = null;
     }
 
     @Override
@@ -93,6 +91,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
+		double angularResolution = toRadians(1d / ((double) pointsPerLine));
         int j = (int) Math.ceil((latitudeNW - point.latitude())
                 / angularResolution);
         int i = (int) Math.floor((longitudeNW + 1 - point.longitude())
