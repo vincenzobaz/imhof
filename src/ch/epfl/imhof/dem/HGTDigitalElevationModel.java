@@ -19,8 +19,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
-    private final double HGTResolution;
+    private final double angularResolution;
     private final InputStream stream;
+    private final int  pointsPerLine;
 
     public HGTDigitalElevationModel(File model)
             throws IllegalArgumentException, IOException {
@@ -62,12 +63,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         // pas sûr de ça, voir piazza checker si resolution est bien valide, si
         // oui l'affecter à hgtresolution, si non erreur
-        if (Math.floorMod(model.length(), 2) == 0) {
+        double points= Math.sqrt(model.length()/2L);
+        if (points % 1 != 0) {
             throw new IllegalArgumentException(
                     "dimensions du fichier invalides");
         }
-
-        double bufferSize = model.length() / 2L;
+        pointsPerLine = (int) points;
         try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
             buffer = stream.getChannel()
@@ -78,7 +79,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // FAUX pour la résolution: elle se calcule à partir de length. length
         // nous donne le nombre de poitns décrit dans le fichier mais après je
         // pense qu'il faut faire des calcules pour trouver la vrai resolution
-        HGTResolution = toRadians(1d / Math.sqrt(bufferSize));
+        angularResolution = toRadians(1d / points);
     }
 
     @Override
@@ -97,19 +98,21 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
         
-        // on doit convertir (i,j) en un k car notre buffer est un tableau/list
-        // à une dimension
-        // il y a un total de HGTResolution points
-        // comment trouver le i,j du point reçu en paramètre?
-        long zIJ = buffer.get();
-        double s = Earth.RADIUS * HGTResolution;
+        int j = (int) Math.ceil((latitudeNW - point.latitude()) / angularResolution);
+        int i = (int) Math.floor((longitudeNW + 1 - point.longitude()) / angularResolution);
         
         
-        /*
-         * Vector3D a = new Vector3D(s, 0d, ); Vector3D b = new Vector3D(0d, s,
-         * z); Vector3D c = new Vector3D(-s, 0d, ); Vector3D d = new
-         * Vector3D(0d, -s );
-         */
-        return new Vector3D(0, 0, 0);
+        double s = Earth.RADIUS * angularResolution;
+        
+        double zA =  altitudeAt(i+1,j)-altitudeAt(i,j);
+        double zB = altitudeAt(i, j+1)-altitudeAt(i,j);
+        double zC = altitudeAt(i,j+1) - altitudeAt(i+1,j+1);
+        double zD = altitudeAt(i+1,j) - altitudeAt(i+1, j+1 );
+
+        return new Vector3D(0.5*s*(zC - zA), 0.5*s*(zD-zB), s*s);
+    }
+    
+    private double altitudeAt(int i, int j){
+        return (double) buffer.get(j*pointsPerLine +i);
     }
 }
