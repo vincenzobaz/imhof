@@ -16,7 +16,7 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
-    private final ShortBuffer buffer;
+    private ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
     private final double angularResolution;
@@ -88,6 +88,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public void close() throws IOException {
         stream.close();
+        buffer = null;
     }
 
     @Override
