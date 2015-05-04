@@ -10,15 +10,16 @@ import java.nio.MappedByteBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import static java.lang.Math.toRadians;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final ShortBuffer buffer;
-    private final double latitudeSW;
-    private final double longitudeSW;
-    private final long HGTResolution;
+    private final double latitudeNW;
+    private final double longitudeNW;
+    private final double HGTResolution;
     private final InputStream stream;
 
     public HGTDigitalElevationModel(File model)
@@ -62,25 +63,25 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         if (!filename.substring(7).equals(".hgt")) {
             throw new IllegalArgumentException("Extension du fichier invalide.");
         }
-        double resolution = Math.sqrt(model.length() / 2L);
         // pas sûr de ça, voir piazza checker si resolution est bien valide, si
         // oui l'affecter à hgtresolution, si non erreur
         if (Math.floorMod(model.length(), 2) == 0) {
             throw new IllegalArgumentException(
                     "dimensions du fichier invalides");
         }
-        
+
+        double bufferSize = model.length() / 2L;
         try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
-        latitudeSW = Math.toRadians(latitude);
-        longitudeSW = Math.toRadians(longitude);
+        latitudeNW = toRadians(latitude+1);
+        longitudeNW = toRadians(longitude);
         // FAUX pour la résolution: elle se calcule à partir de length. length
         // nous donne le nombre de poitns décrit dans le fichier mais après je
         // pense qu'il faut faire des calcules pour trouver la vrai resolution
-        HGTResolution = (long) resolution;
+        HGTResolution = toRadians(1d / Math.sqrt(bufferSize));
     }
 
     @Override
@@ -90,19 +91,20 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        double oneDegree = Math.PI / 180d;
-        if (point.latitude() < latitudeSW
-                || point.latitude() > latitudeSW + oneDegree
-                || point.longitude() < longitudeSW
-                || point.longitude() > longitudeSW + oneDegree) {
+        double oneDegree =toRadians(1);
+        if (point.latitude() < latitudeNW
+                || point.latitude() > latitudeNW + oneDegree
+                || point.longitude() < longitudeNW
+                || point.longitude() > longitudeNW + oneDegree) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
-
+        
         // on doit convertir (i,j) en un k car notre buffer est un tableau/list
         // à une dimension
         // il y a un total de HGTResolution points
         // comment trouver le i,j du point reçu en paramètre?
+        long zIJ = buffer.get();
         double s = Earth.RADIUS * HGTResolution;
         
         
