@@ -42,14 +42,10 @@ public class HGTDigitalElevationModelTest {
         final double POINT_DISTANCE = Math.toRadians(0.6) / 800d;
         for (int i = 0; i < 800; ++i) {
             for (int j = 0; i < 800; ++j) {
-
                 int greyLevel = (int) (0.5 * (rhoneValley
                         .normalAt(new PointGeo(Math.toRadians(7.2) + i
                                 * POINT_DISTANCE, Math.toRadians(46.8) - j
                                 * POINT_DISTANCE)).y()) * 255.99);
-
-                rhoneValley.normalAt(new PointGeo(Math.toRadians(7.5), Math
-                        .toRadians(46.5)));
                 int grey = greyLevel & greyLevel << 8 & greyLevel << 16;
                 image.setRGB(i, j, grey);
             }
