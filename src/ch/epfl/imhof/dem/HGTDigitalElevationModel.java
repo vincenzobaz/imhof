@@ -35,7 +35,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         try {
-            latitude = latitude * Integer.parseInt(filename.substring(1, 2));
+            latitude = latitude * Integer.parseInt(filename.substring(1, 3));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "La deuxième ou la troisième lettre n'est pas un entier.");
@@ -50,7 +50,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         try {
-            longitude = longitude * Integer.parseInt(filename.substring(4, 6));
+            longitude = longitude * Integer.parseInt(filename.substring(4, 7));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "La cinquième, sixième ou septième lettre du nom du fichier n'est pas un entier.");
@@ -94,7 +94,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 		double angularResolution = toRadians(1d / ((double) pointsPerLine));
         int j = (int) Math.ceil((latitudeNW - point.latitude())
                 / angularResolution);
-        int i = (int) Math.floor((longitudeNW + 1 - point.longitude())
+        int i = (int) Math.floor((point.longitude() - longitudeNW)
                 / angularResolution);
 
         double s = Earth.RADIUS * angularResolution;
