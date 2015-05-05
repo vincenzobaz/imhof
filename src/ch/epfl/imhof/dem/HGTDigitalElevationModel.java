@@ -1,12 +1,12 @@
 package ch.epfl.imhof.dem;
 
+import static java.lang.Math.toRadians;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel.MapMode;
-import static java.lang.Math.toRadians;
 
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
@@ -76,8 +76,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public void close() throws IOException {
-        stream.close();
         buffer = null;
+        stream.close();
     }
 
     @Override

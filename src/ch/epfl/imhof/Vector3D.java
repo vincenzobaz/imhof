@@ -29,6 +29,18 @@ public final class Vector3D {
         this.z = z;
     }
 
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    public double z() {
+        return z;
+    }
+
     /**
      * Calcule et retourne la norme du vecteur.
      * 
