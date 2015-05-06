@@ -41,8 +41,9 @@ public class HGTDigitalElevationModelTest {
                         .toRadians(46.8) - j * POINT_DISTANCE));
                 double greyLevel = (normal.normalized().y() + 1) / 2d;
                 int newInt = (int) (greyLevel * 255.9999);
-                int grey = newInt & (newInt << 8)
-                        & (newInt << 16);
+                int red = 0xFF;
+                int grey = newInt + (newInt << 8)
+                        + (newInt << 16);
                 image.setRGB(i, j, grey);
             }
         }
