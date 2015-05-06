@@ -35,7 +35,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         try {
-            latitude = latitude * Integer.parseInt(filename.substring(1, 2));
+            latitude = latitude * Integer.parseInt(filename.substring(1, 3));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "La deuxième ou la troisième lettre n'est pas un entier.");
@@ -50,7 +50,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         try {
-            longitude = longitude * Integer.parseInt(filename.substring(4, 6));
+            longitude = longitude * Integer.parseInt(filename.substring(4, 7));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "La cinquième, sixième ou septième lettre du nom du fichier n'est pas un entier.");
@@ -91,23 +91,23 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
-		double angularResolution = toRadians(1d / ((double) pointsPerLine));
-        int j = (int) Math.ceil((latitudeNW - point.latitude())
+        double angularResolution = oneDegree / ((double) pointsPerLine);
+        int i = (int) Math.floor((point.longitude() - longitudeNW)
                 / angularResolution);
-        int i = (int) Math.floor((longitudeNW + 1 - point.longitude())
+        int j = (int) Math.ceil((latitudeNW - point.latitude())
                 / angularResolution);
 
         double s = Earth.RADIUS * angularResolution;
 
-        double zA = altitudeAt(i + 1, j) - altitudeAt(i, j);
-        double zB = altitudeAt(i, j + 1) - altitudeAt(i, j);
-        double zC = altitudeAt(i, j + 1) - altitudeAt(i + 1, j + 1);
-        double zD = altitudeAt(i + 1, j) - altitudeAt(i + 1, j + 1);
+        double zA = altitudeAt(i + 1, j + 1) - altitudeAt(i, j + 1);
+        double zB = altitudeAt(i, j) - altitudeAt(i, j + 1);
+        double zC = altitudeAt(i, j) - altitudeAt(i + 1, j);
+        double zD = altitudeAt(i + 1, j + 1) - altitudeAt(i + 1, j);
 
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
-    private double altitudeAt(int i, int j) {
-        return (double) buffer.get(j * pointsPerLine + i);
+    private short altitudeAt(int i, int j) {
+        return buffer.get(j * pointsPerLine + i);
     }
 }

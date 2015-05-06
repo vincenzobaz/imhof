@@ -40,7 +40,7 @@ public final class Java2DCanvas implements Canvas {
      * @param width
      *            la largeur de la toile
      * @param height
-     *            l hauteur de la toile
+     *            la hauteur de la toile
      * @param dpi
      *            la résolution de la toile
      * @param backgroundColor
@@ -84,7 +84,7 @@ public final class Java2DCanvas implements Canvas {
 
         // Définition du style de trait: on utilise deux constructeurs de
         // BasicStroke différents selon que le trait est continu (dashingPattern
-        // null ou vide) ou bien pointillé
+        // null) ou bien pointillé
         context.setStroke(dashingPattern == null ? new BasicStroke(style
                 .width(), cap, join, 10f) : new BasicStroke(style.width(), cap,
                 join, 10f, dashingPattern, 0f));

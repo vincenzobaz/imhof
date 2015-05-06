@@ -76,7 +76,7 @@ public final class LineStyle {
      *            la couleur du trait
      */
     public LineStyle(float width, Color color) throws IllegalArgumentException {
-        this(width, color, LineCap.BUTT, LineJoin.MITER, new float[0]);
+        this(width, color, LineCap.BUTT, LineJoin.MITER, null);
     }
 
     /**

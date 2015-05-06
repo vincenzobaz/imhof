@@ -94,7 +94,7 @@ public final class RoadPainterGenerator {
     }
 
     /**
-     * Classe imbriqué statiquement définissant une spécification de route.
+     * Classe imbriquée statiquement définissant une spécification de route.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
