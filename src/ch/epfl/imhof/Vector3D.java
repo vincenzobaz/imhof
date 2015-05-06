@@ -29,14 +29,29 @@ public final class Vector3D {
         this.z = z;
     }
 
+    /**
+     * Accesseur de la composante x du vecteur
+     * 
+     * @return la valeur de la composante x du vecteur
+     */
     public double x() {
         return x;
     }
 
+    /**
+     * Accesseur de la composante y du vecteur
+     * 
+     * @return ila valeur de la composante y du vecteur
+     */
     public double y() {
         return y;
     }
 
+    /**
+     * Accesseur de la composante z du vecteur
+     * 
+     * @return la valeur de la composante z du vecteur
+     */
     public double z() {
         return z;
     }
