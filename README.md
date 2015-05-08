@@ -1,6 +1,39 @@
 # imhof
 ![Comment rédiger de la javadoc?](./Javadoc_Guidelines/javadocGuidelines.md)
 
+## [Etape 11](http://cs108.epfl.ch/p11_relief-shading_main.html)
+
+###ShadedRelief: `class ReliefShader` (dem)
+= représentation **bidimensionnelle** de la topographie d'une zone de la Terre.
+Nous allons choisir la position de la source lumineuse puis dessiner en teintes claires les parties y faisant face, en teintes foncées celles n'y faisant pas face.
+
+
+#### La source lumineuse
+D'habitude la source lumineuse est supposée provenir du coin haut gauche de la carte. (NW)
+Le rayons arrivent parallèles. La lumière est donc représentée par un vecteur *l=-1,1,1)* (source lumineuse venant de nord-ouest, angle de 35 deg avec l'horizon)
+
+#### Déterminer la teinte de chaque point du relief.
+voir formules
+
+#### Floutage
+Nécessaire pour compenser le pixelage causé par le calcul simpliste du vecteur normal et la basse résolution des fichiers hgt.
+
+On veut donc flouter légèrement les images des reliefs ombrés **AVANT DE LES COMBINER AVEC LES IMAGES DES CARTES**
+Pour faire ceci on calcule, pour chaque pixel, une moyenne pondérée de sa couleur à li et de celle d'un certain nombre de ses voisins. Voir formules
+
+#### Combinaison
+Une fois les images de la carte et du relief obtenues, il reste à les composer.
+Cela se fait par *multiplication*: la couleur de chaque pixel de l'image finale est obtenue par multiplication des couleurs des pixels correspondants dans l'image de la carte et dans celle du relief. Utiliser méthode.
+
+Pour mémoire, la multiplication de deux couleurs, décrite à l'étape 7, se fait par multiplications des composantes deux à deux.
+
+
+
+####
+
+### Main
+
+
 ## [Étape 10](http://cs108.epfl.ch/p10_dem.html)
 - [ ] `public interface Earth` (conteneur constantes)
 - [ ] `interface DigitalElevationModel` qui éténd `AutoCloseable` (donc rédéfinit `close`)
