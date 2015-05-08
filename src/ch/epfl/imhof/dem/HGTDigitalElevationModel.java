@@ -1,6 +1,5 @@
 package ch.epfl.imhof.dem;
 
-import static java.lang.Math.toRadians;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -70,8 +69,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
-        latitudeNW = toRadians(latitude + 1);
-        longitudeNW = toRadians(longitude);
+        latitudeNW = Math.toRadians(latitude + 1);
+        longitudeNW = Math.toRadians(longitude);
     }
 
     @Override
@@ -82,7 +81,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        double oneDegree = toRadians(1);
+        double oneDegree = Math.toRadians(1);
         if (point.latitude() > latitudeNW
                 || point.latitude() < latitudeNW - oneDegree
                 || point.longitude() < longitudeNW
