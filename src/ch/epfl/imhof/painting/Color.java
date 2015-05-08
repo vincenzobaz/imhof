@@ -62,14 +62,9 @@ public final class Color {
      * @return la couleur grise voulue
      * @throws IllegalArgumentException
      *             lève une exception si la valeur des composantes est hors des
-     *             valeurs acceptées par le constructeur (intervalle 0 à 1) ou
-     *             si elle vaut 0 ou 1 (correspond au blanc et au noir)
+     *             valeurs acceptées par le constructeur (intervalle 0 à 1)
      */
     public static Color gray(double ratio) throws IllegalArgumentException {
-        if (ratio <= 0d || ratio >= 1d) {
-            throw new IllegalArgumentException(
-                    "La composante n'est pas valide.");
-        }
         return new Color(ratio, ratio, ratio);
     }
 
