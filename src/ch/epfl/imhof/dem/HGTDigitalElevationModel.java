@@ -10,22 +10,48 @@ import java.nio.channels.FileChannel.MapMode;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
+/**
+ * Classe représentant un modèle numérique de terrain stocké dans un fichier au
+ * format HGT. Elle implémente l'interface <code>DigitalElevationModel</code>.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
+    // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
+    // redéfinition de la méthode close
     private ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
     private final InputStream stream;
     private final int pointsPerLine;
 
+    /**
+     * Construit un modèle numérique de terrain à partir du fichier HGT passé en
+     * argument.
+     * 
+     * @param model
+     *            le fichier HGT contenant le modèle numérique du terrain
+     * @throws IllegalArgumentException
+     *             lève une exception si le nom du fichier HGT n'obéit pas aux
+     *             conventions de nommage, ou si sa taille en octets divisée par
+     *             deux n'a pas une racine carrée entière
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée/sortie
+     */
     public HGTDigitalElevationModel(File model)
             throws IllegalArgumentException, IOException {
         String filename = model.getName();
+
+        // Teste si le nom du fichier a la bonne longueur
         if (filename.length() != 11) {
             throw new IllegalArgumentException(
                     "La taille du nom de fichier n'est pas valide.");
         }
 
         int latitude = 0;
+        // Teste si la première lettre du nom est bien N ou S
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
                     "La première lettre du nom du fichier n'est pas valide.");
@@ -81,7 +107,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        double oneDegree = Math.toRadians(1);
+        final double oneDegree = Math.toRadians(1);
         if (point.latitude() > latitudeNW
                 || point.latitude() < latitudeNW - oneDegree
                 || point.longitude() < longitudeNW
@@ -106,6 +132,16 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
+    /**
+     * Retourne l'altitude du point situé aux coordonnées passées en argument
+     * dans le fichier HGT.
+     * 
+     * @param i
+     *            la coordonnée corrrespondant à la longitude du point
+     * @param j
+     *            la coordonnée correspondant à la latitude du point
+     * @return l'altitude du point
+     */
     private short altitudeAt(int i, int j) {
         return buffer.get(j * pointsPerLine + i);
     }

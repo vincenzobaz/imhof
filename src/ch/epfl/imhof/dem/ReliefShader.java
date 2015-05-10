@@ -54,12 +54,25 @@ public final class ReliefShader {
     private Kernel shadingKernel(double radius) {
         double sigma = radius / 3d;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
-        float[] data = 
-        Kernel kernel = new Kernel(n, n, data);
+        float[] semiHVector = new float[(n + 1) / 2];
+        float sum = 1f;
+        semiHVector[0] = 1f;
+        for (int i = 1; i < semiHVector.length; ++i) {
+            semiHVector[i] = (float) Math.exp(- (i * i) / (2 * sigma * sigma));
+            sum += semiHVector[i] * 2f;
+        }
+        for (int i = 0; i < semiHVector.length; ++i) {
+            semiHVector[i] /= sum;
+        }
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+            }
+        }
+        
+        Kernel kernel = new Kernel(n, n, );
     }
 
     private BufferedImage blurringImage(BufferedImage image, double[][] kernel) {
 
     }
-
 }
