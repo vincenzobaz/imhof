@@ -3,6 +3,23 @@
 
 ## [Etape 11](http://cs108.epfl.ch/p11_relief-shading_main.html)
 
+### Bonus
+
+#### Autodownload osm and hgt files
+Ressources:
+http://wiki.openstreetmap.org/wiki/Downloading_data
+http://wiki.openstreetmap.org/wiki/Contours
+
+On pourrait même eviter de télécharger le fichier: ouvrir un flot de réseau.
+
+#### Legende et décorations
+Ressources:
+Méthode drawString de Graphics2D.
+
+#### Interface graphique
+petit gui où on rentre les coordonnées et on decide si on a déjà téléchargé le fichier ou si on veut le prendre du net.
+offrir des presets comme lausanne, geneve, interlaken, berne...
+
 ###ShadedRelief: `class ReliefShader` (dem)
 = représentation **bidimensionnelle** de la topographie d'une zone de la Terre.
 Nous allons choisir la position de la source lumineuse puis dessiner en teintes claires les parties y faisant face, en teintes foncées celles n'y faisant pas face.

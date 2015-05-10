@@ -1,6 +1,8 @@
 package ch.epfl.imhof.dem;
 
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.function.Function;
 
@@ -22,7 +24,7 @@ public final class ReliefShader {
     }
 
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, double radius) {
+            int height, float radius) {
         BufferedImage rawRelief = raw(width, height,
                 Point.alignedCoordinateChange(new Point(0d, height), BL,
                         new Point(width, 0d), TR));
@@ -34,12 +36,11 @@ public final class ReliefShader {
             Function<Point, Point> imageToPlan) {
         BufferedImage rawRelief = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
-        double cosTheta;
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 Vector3D normal = model.normalAt(projection.inverse(imageToPlan
                         .apply(new Point(x, y))));
-                cosTheta = lightSource.scalarProduct(normal)
+                double cosTheta = lightSource.scalarProduct(normal)
                         / (lightSource.norm() * normal.norm());
                 int redAndGreenLevel = (int) (0.5 * (cosTheta + 1) * 255);
                 int blueLevel = (int) (0.5 * (0.7 * cosTheta + 1) * 255);
@@ -51,28 +52,32 @@ public final class ReliefShader {
         return rawRelief;
     }
 
-    private Kernel shadingKernel(double radius) {
-        double sigma = radius / 3d;
+    private Kernel shadingKernel(float radius) {
+        float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
-        float[] semiHVector = new float[(n + 1) / 2];
-        float sum = 1f;
-        semiHVector[0] = 1f;
-        for (int i = 1; i < semiHVector.length; ++i) {
-            semiHVector[i] = (float) Math.exp(- (i * i) / (2 * sigma * sigma));
-            sum += semiHVector[i] * 2f;
+
+        float[] line = new float[n];
+        int indexBase = (n - 1) / 2;
+        float totalWeight = 0f;
+        for (int i = 0; i < indexBase; i++) {
+            float weight = (float) Math.exp(-i * i / (2 * sigma * sigma));
+            line[indexBase + i] = line[indexBase - i] = weight;
+            totalWeight += weight;
         }
-        for (int i = 0; i < semiHVector.length; ++i) {
-            semiHVector[i] /= sum;
+        for (int i = 0; i < line.length; ++i) {
+            line[i] /= totalWeight;
         }
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-            }
-        }
-        
-        Kernel kernel = new Kernel(n, n, );
+
+        float[] data = new float[n * n];
+
+        return new Kernel(n, n, data);
     }
 
-    private BufferedImage blurringImage(BufferedImage image, double[][] kernel) {
+    private BufferedImage blurringImage(BufferedImage image, Kernel kernel) {
+        int edgeCondition = 0;
+        ConvolveOp convolveop = new ConvolveOp(kernel, edgeCondition,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
+        return convolveop.filter(image, null);
     }
 }
