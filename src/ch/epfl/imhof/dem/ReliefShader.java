@@ -1,6 +1,8 @@
 package ch.epfl.imhof.dem;
 
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.function.Function;
 
@@ -22,7 +24,7 @@ public final class ReliefShader {
     }
 
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, double radius) {
+            int height, float radius) {
         BufferedImage rawRelief = raw(width, height,
                 Point.alignedCoordinateChange(new Point(0d, height), BL,
                         new Point(width, 0d), TR));
@@ -51,15 +53,27 @@ public final class ReliefShader {
         return rawRelief;
     }
 
-    private Kernel shadingKernel(double radius) {
-        double sigma = radius / 3d;
+    private Kernel shadingKernel(float radius) {
+        float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
-        float[] data = 
-        Kernel kernel = new Kernel(n, n, data);
+        float[] line = new float[n];
+        int indexBase = (n-1)/2;
+        float totalWeight = 0;
+        for (int i = 0; i < indexBase; i++){
+            float weight = (float) Math.exp(- i*i / (2 * sigma*sigma));
+            line[indexBase + i] = line[indexBase - i] = weight;
+            totalWeight += weight;
+        }
+
+        float[] data = new float[n*n];
+
+        return new Kernel(n, n, data);
     }
 
-    private BufferedImage blurringImage(BufferedImage image, double[][] kernel) {
-
+    private BufferedImage blurringImage(BufferedImage image, Kernel kernel) {
+        int edgeCondition = 0;
+        ConvolveOp convolveop = new ConvolveOp(kernel, edgeCondition, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        return  convolveop.filter(image, null);
     }
-
 }
