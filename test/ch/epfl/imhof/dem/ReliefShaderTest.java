@@ -21,7 +21,7 @@ public final class ReliefShaderTest {
         File file = new File("data/N46E007.hgt");
         HGTDigitalElevationModel simmental = new HGTDigitalElevationModel(file);
         ReliefShader reliefShader = new ReliefShader(projection, simmental,
-                new Vector3D(1, -1, 1));
+                new Vector3D(-1, 1, 1));
         BufferedImage rawRelief = reliefShader.shadedRelief(
                 projection.project(new PointGeo(Math.toRadians(7.2), Math
                         .toRadians(46.2))), projection.project(new PointGeo(

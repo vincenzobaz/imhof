@@ -28,16 +28,17 @@ public final class ReliefShader {
         BufferedImage rawRelief = raw(width, height,
                 Point.alignedCoordinateChange(new Point(0d, height), BL,
                         new Point(width, 0d), TR));
-        return radius == 0d ? rawRelief : blurringImage(rawRelief,
-                shadingkernel(radius));
+        return rawRelief;
+        //return radius == 0d ? rawRelief : blurringImage(rawRelief,
+                //shadingkernel(radius));
     }
 
     private BufferedImage raw(int width, int height,
             Function<Point, Point> imageToPlan) {
         BufferedImage rawRelief = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
+        for (int x = 0; x < height; ++x) {
+            for (int y = 0; y < width; ++y) {
                 Vector3D normal = model.normalAt(projection.inverse(imageToPlan
                         .apply(new Point(x, y))));
                 double cosTheta = lightSource.scalarProduct(normal)
