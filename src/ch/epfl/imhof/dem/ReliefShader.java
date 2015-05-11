@@ -42,8 +42,8 @@ public final class ReliefShader {
             Function<Point, Point> imageToPlan) {
         BufferedImage rawRelief = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
+        for (int x = 0; x < height; ++x) {
+            for (int y = 0; y < width; ++y) {
                 Vector3D normal = model.normalAt(projection.inverse(imageToPlan
                         .apply(new Point(x, y))));
                 double cosTheta = lightSource.scalarProduct(normal)
