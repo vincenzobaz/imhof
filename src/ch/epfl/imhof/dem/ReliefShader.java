@@ -1,12 +1,10 @@
 package ch.epfl.imhof.dem;
 
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.function.Function;
 
-import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.projection.Projection;
@@ -25,11 +23,19 @@ public final class ReliefShader {
 
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
             int height, float radius) {
-        BufferedImage rawRelief = raw(width, height,
-                Point.alignedCoordinateChange(new Point(0d, height), BL,
-                        new Point(width, 0d), TR));
-        return radius == 0d ? rawRelief : blurringImage(rawRelief,
-                shadingkernel(radius));
+        if (radius == 0) {
+            return raw(width, height, Point.alignedCoordinateChange(new Point(
+                    0d, height), BL, new Point(width, 0d), TR));
+        } else {
+            float[] gaussValues = shadingKernel(radius);
+            int bufferZoneSize = (gaussValues.length - 1) / 2;
+            BufferedImage rawImage = raw(width, height,
+                    Point.alignedCoordinateChange(new Point(0d, height), BL,
+                            new Point(width, 0d), TR));
+            BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
+            return blurredImage.getSubimage(bufferZoneSize, bufferZoneSize,
+                    width - 2 * bufferZoneSize, height - 2 * bufferZoneSize);
+        }
     }
 
     private BufferedImage raw(int width, int height,
@@ -52,7 +58,7 @@ public final class ReliefShader {
         return rawRelief;
     }
 
-    private Kernel shadingKernel(float radius) {
+    private float[] shadingKernel(float radius) {
         float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
 
@@ -67,17 +73,15 @@ public final class ReliefShader {
         for (int i = 0; i < line.length; ++i) {
             line[i] /= totalWeight;
         }
-
-        float[] data = new float[n * n];
-
-        return new Kernel(n, n, data);
+        return line;
     }
 
-    private BufferedImage blurringImage(BufferedImage image, Kernel kernel) {
-        int edgeCondition = 0;
-        ConvolveOp convolveop = new ConvolveOp(kernel, edgeCondition,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        return convolveop.filter(image, null);
+    private BufferedImage blurredImage(BufferedImage image, float[] kernel) {
+        ConvolveOp horizontalConvolution = new ConvolveOp(new Kernel(
+                kernel.length, 1, kernel), ConvolveOp.EDGE_NO_OP, null);
+        ConvolveOp verticalConvolution = new ConvolveOp(new Kernel(1,
+                kernel.length, kernel), ConvolveOp.EDGE_NO_OP, null);
+        return verticalConvolution.filter(
+                horizontalConvolution.filter(image, null), null);
     }
 }
