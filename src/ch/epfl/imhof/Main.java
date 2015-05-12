@@ -1,7 +1,12 @@
+package ch.epfl.imhof;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import org.xml.sax.SAXException;
 
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
@@ -17,7 +22,7 @@ import ch.epfl.imhof.projection.Projection;
 
 public final class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, SAXException {
 
         PointGeo topRight = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[4])), Math.toRadians(Double
@@ -66,7 +71,7 @@ public final class Main {
 
         BufferedImage finalImage = combine(reliefs, paintedMap);
 
-        ImageIO.write(finalImage, "png", new File("map.png"));
+        ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     private static BufferedImage combine(BufferedImage shaderRelief,
