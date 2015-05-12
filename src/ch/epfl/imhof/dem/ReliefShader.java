@@ -22,7 +22,7 @@ public final class ReliefShader {
     }
 
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, float radius) {
+            int height, long radius) {
         if (radius == 0) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(
                     0d, height), BL, new Point(width, 0d), TR));
@@ -58,7 +58,7 @@ public final class ReliefShader {
         return rawRelief;
     }
 
-    private float[] shadingKernel(float radius) {
+    private float[] shadingKernel(long radius) {
         float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
 

@@ -1,5 +1,17 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
 import ch.epfl.imhof.dem.Earth;
+import ch.epfl.imhof.dem.HGTDigitalElevationModel;
+import ch.epfl.imhof.dem.ReliefShader;
 import ch.epfl.imhof.geometry.Point;
+import ch.epfl.imhof.osm.OSMMap;
+import ch.epfl.imhof.osm.OSMMapReader;
+import ch.epfl.imhof.osm.OSMToGeoTransformer;
+import ch.epfl.imhof.painting.Color;
+import ch.epfl.imhof.painting.Java2DCanvas;
 import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
@@ -13,8 +25,8 @@ public final class Main {
         PointGeo bottomLeft = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[2])), Math.toRadians(Double
                 .parseDouble(args[3])));
-        int resolutionPixelPerMeter = (int) Math.round(Integer.parseInt(args[6])
-                * (5000d / 127d));
+        int resolutionPixelPerMeter = (int) Math.round(Integer
+                .parseInt(args[6]) * (5000d / 127d));
         int height = (int) Math.round(resolutionPixelPerMeter
                 * (1 / 25000d)
                 * Math.toRadians(Double.parseDouble(args[5])
@@ -28,15 +40,46 @@ public final class Main {
                 .round((projectedTopRight.x() - projectedBottomLeft.x())
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
-        int shadingRadiusPixels = (int) Math.round((1.7 * resolutionPixelPerMeter) / 1000d);
-        
-        
+        int shadingRadiusPixels = (int) Math
+                .round((1.7 * resolutionPixelPerMeter) / 1000d);
 
+        OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
+        OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
+                ch1903);
+        Map map = osmToGeoTransformer.transform(osmMap);
+        Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
+                projectedTopRight, width, height, resolutionPixelPerMeter,
+                Color.WHITE);
+
+        SwissPainter.painter().drawMap(map, canvas);
+        BufferedImage paintedMap = canvas.image();
+
+        HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
+                args[1]));
+
+        ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
+                -1, 1, 1));
+
+        int bufferZone = (shadingRadiusPixels - 1) / 2;
+        BufferedImage reliefs = reliefShader.shadedRelief(projectedBottomLeft,
+                projectedTopRight, width + 2*bufferZone, height+2*bufferZone, shadingRadiusPixels);
+
+        BufferedImage finalImage = combine(reliefs, paintedMap);
+
+        ImageIO.write(finalImage, "png", new File("map.png"));
     }
-    
-    private BufferedImage combine(BufferedImage shaderRelief, BufferedImage flatMap){
-        
+
+    private static BufferedImage combine(BufferedImage shaderRelief,
+            BufferedImage flatMap) {
+        BufferedImage result = new BufferedImage(flatMap.getWidth(),
+                flatMap.getHeight(), BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < result.getWidth(); x++) {
+            for (int y = 0; y < result.getHeight(); y++) {
+                result.setRGB(x, y, (Color.rgb(shaderRelief.getRGB(x, y))
+                        .multiplyWith(Color.rgb(flatMap.getRGB(x, y))))
+                        .convert().getRGB());
+            }
+        }
+        return result;
     }
-    
-    
 }
