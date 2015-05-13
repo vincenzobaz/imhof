@@ -38,16 +38,9 @@ public final class ReliefShader {
                     bufferZoneSize - 1, height + bufferZoneSize - 2), BL,
                     new Point(width + bufferZoneSize - 2, bufferZoneSize - 1),
                     TR));
-//            try {
-//                ImageIO.write(rawImage, "png", new File("raw_relief_debug.png"));
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
-            return blurredImage.getSubimage(bufferZoneSize - 1,
-                    bufferZoneSize - 1, width - 2 * bufferZoneSize, height - 2
-                            * bufferZoneSize);
+            return blurredImage.getSubimage(bufferZoneSize, bufferZoneSize,
+                    width, height);
         }
     }
 
@@ -74,14 +67,13 @@ public final class ReliefShader {
     private float[] shadingKernel(float radius) {
         float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
-
         float[] line = new float[n];
         int indexBase = (n - 1) / 2;
-        float totalWeight = 0f;
-        for (int i = 0; i < indexBase; i++) {
+        float totalWeight = line[indexBase] = 1f;
+        for (int i = 1; i < indexBase; i++) {
             float weight = (float) Math.exp(-i * i / (2 * sigma * sigma));
             line[indexBase + i] = line[indexBase - i] = weight;
-            totalWeight += weight;
+            totalWeight += 2 * weight;
         }
         for (int i = 0; i < line.length; ++i) {
             line[i] /= totalWeight;
@@ -94,17 +86,7 @@ public final class ReliefShader {
                 kernel.length, 1, kernel), ConvolveOp.EDGE_NO_OP, null);
         ConvolveOp verticalConvolution = new ConvolveOp(new Kernel(1,
                 kernel.length, kernel), ConvolveOp.EDGE_NO_OP, null);
-        System.out.println(image.getHeight() +" "+ image.getWidth());
-        //BufferedImage horizontalBlur = horizontalConvolution
-                //.filter(image, null);
-        BufferedImage verticalBlur = verticalConvolution.filter(image,
-                null);
-        try {
-            ImageIO.write(verticalBlur, "png", new File("vertical_blur_debug.png"));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return verticalBlur;
+        return verticalConvolution.filter(
+                horizontalConvolution.filter(image, null), null);
     }
 }

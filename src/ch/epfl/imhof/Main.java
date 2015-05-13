@@ -56,7 +56,6 @@ public final class Main {
 
         SwissPainter.painter().drawMap(map, canvas);
         BufferedImage paintedMap = canvas.image();
-        ImageIO.write(paintedMap, "png", new File("painted_map.png"));
 
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
@@ -65,12 +64,12 @@ public final class Main {
                 -1, 1, 1));
 
         BufferedImage reliefs = reliefShader.shadedRelief(projectedBottomLeft,
-                projectedTopRight, width, height, 0.0017f * resolutionPixelPerMeter);
-        ImageIO.write(reliefs, "png", new File("relief.png"));
+                projectedTopRight, width, height,
+                0.0017f * resolutionPixelPerMeter);
 
-        // BufferedImage finalImage = combine(reliefs, paintedMap);
+        BufferedImage finalImage = combine(reliefs, paintedMap);
 
-        // ImageIO.write(finalImage, "png", new File(args[7]));
+        ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     private static BufferedImage combine(BufferedImage shaderRelief,
