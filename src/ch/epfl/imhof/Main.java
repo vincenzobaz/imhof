@@ -45,9 +45,6 @@ public final class Main {
                 .round((projectedTopRight.x() - projectedBottomLeft.x())
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
-        //arrondi...
-        int shadingRadiusPixels = (int) Math
-                .ceil(0.0017 * resolutionPixelPerMeter);
 
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
@@ -68,7 +65,7 @@ public final class Main {
                 -1, 1, 1));
 
         BufferedImage reliefs = reliefShader.shadedRelief(projectedBottomLeft,
-                projectedTopRight, width, height, shadingRadiusPixels);
+                projectedTopRight, width, height, 0.0017f * resolutionPixelPerMeter);
         ImageIO.write(reliefs, "png", new File("relief.png"));
 
         // BufferedImage finalImage = combine(reliefs, paintedMap);

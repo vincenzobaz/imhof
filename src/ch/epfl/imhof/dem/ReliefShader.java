@@ -3,7 +3,11 @@ package ch.epfl.imhof.dem;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
+import java.io.File;
+import java.io.IOException;
 import java.util.function.Function;
+
+import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.Vector3D;
 import ch.epfl.imhof.geometry.Point;
@@ -22,7 +26,7 @@ public final class ReliefShader {
     }
 
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, long radius) {
+            int height, float radius) {
         if (radius == 0) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(
                     0d, height - 1), BL, new Point(width - 1, 0d), TR));
@@ -34,6 +38,12 @@ public final class ReliefShader {
                     bufferZoneSize - 1, height + bufferZoneSize - 2), BL,
                     new Point(width + bufferZoneSize - 2, bufferZoneSize - 1),
                     TR));
+//            try {
+//                ImageIO.write(rawImage, "png", new File("raw_relief_debug.png"));
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
             return blurredImage.getSubimage(bufferZoneSize - 1,
                     bufferZoneSize - 1, width - 2 * bufferZoneSize, height - 2
@@ -61,7 +71,7 @@ public final class ReliefShader {
         return rawRelief;
     }
 
-    private float[] shadingKernel(long radius) {
+    private float[] shadingKernel(float radius) {
         float sigma = radius / 3f;
         int n = 2 * ((int) Math.ceil(radius)) + 1;
 
@@ -85,10 +95,16 @@ public final class ReliefShader {
         ConvolveOp verticalConvolution = new ConvolveOp(new Kernel(1,
                 kernel.length, kernel), ConvolveOp.EDGE_NO_OP, null);
         System.out.println(image.getHeight() +" "+ image.getWidth());
-        BufferedImage horizontalBlur = horizontalConvolution
-                .filter(image, null);
-        BufferedImage verticalBlur = verticalConvolution.filter(horizontalBlur,
+        //BufferedImage horizontalBlur = horizontalConvolution
+                //.filter(image, null);
+        BufferedImage verticalBlur = verticalConvolution.filter(image,
                 null);
+        try {
+            ImageIO.write(verticalBlur, "png", new File("vertical_blur_debug.png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return verticalBlur;
     }
 }
