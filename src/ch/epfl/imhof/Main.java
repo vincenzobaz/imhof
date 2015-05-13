@@ -45,19 +45,21 @@ public final class Main {
                 .round((projectedTopRight.x() - projectedBottomLeft.x())
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
+        //arrondi...
         int shadingRadiusPixels = (int) Math
-                .round((1.7 * resolutionPixelPerMeter) / 1000d);
+                .ceil(0.0017 * resolutionPixelPerMeter);
 
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
                 ch1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
-                projectedTopRight, width, height, resolutionPixelPerMeter,
+                projectedTopRight, width, height, Integer.parseInt(args[6]),
                 Color.WHITE);
 
         SwissPainter.painter().drawMap(map, canvas);
         BufferedImage paintedMap = canvas.image();
+        ImageIO.write(paintedMap, "png", new File("painted_map.png"));
 
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
@@ -65,13 +67,13 @@ public final class Main {
         ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
                 -1, 1, 1));
 
-        int bufferZone = (shadingRadiusPixels - 1) / 2;
         BufferedImage reliefs = reliefShader.shadedRelief(projectedBottomLeft,
-                projectedTopRight, width + 2*bufferZone, height+2*bufferZone, shadingRadiusPixels);
+                projectedTopRight, width, height, shadingRadiusPixels);
+        ImageIO.write(reliefs, "png", new File("relief.png"));
 
-        BufferedImage finalImage = combine(reliefs, paintedMap);
+        // BufferedImage finalImage = combine(reliefs, paintedMap);
 
-        ImageIO.write(finalImage, "png", new File(args[7]));
+        // ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     private static BufferedImage combine(BufferedImage shaderRelief,

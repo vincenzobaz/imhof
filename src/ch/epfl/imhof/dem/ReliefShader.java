@@ -25,16 +25,19 @@ public final class ReliefShader {
             int height, long radius) {
         if (radius == 0) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(
-                    0d, height), BL, new Point(width, 0d), TR));
+                    0d, height - 1), BL, new Point(width - 1, 0d), TR));
         } else {
             float[] gaussValues = shadingKernel(radius);
             int bufferZoneSize = (gaussValues.length - 1) / 2;
-            BufferedImage rawImage = raw(width, height,
-                    Point.alignedCoordinateChange(new Point(0d, height), BL,
-                            new Point(width, 0d), TR));
+            BufferedImage rawImage = raw(width + 2 * bufferZoneSize, height + 2
+                    * bufferZoneSize, Point.alignedCoordinateChange(new Point(
+                    bufferZoneSize - 1, height + bufferZoneSize - 2), BL,
+                    new Point(width + bufferZoneSize - 2, bufferZoneSize - 1),
+                    TR));
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
-            return blurredImage.getSubimage(bufferZoneSize, bufferZoneSize,
-                    width - 2 * bufferZoneSize, height - 2 * bufferZoneSize);
+            return blurredImage.getSubimage(bufferZoneSize - 1,
+                    bufferZoneSize - 1, width - 2 * bufferZoneSize, height - 2
+                            * bufferZoneSize);
         }
     }
 
@@ -42,8 +45,8 @@ public final class ReliefShader {
             Function<Point, Point> imageToPlan) {
         BufferedImage rawRelief = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < height; ++x) {
-            for (int y = 0; y < width; ++y) {
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
                 Vector3D normal = model.normalAt(projection.inverse(imageToPlan
                         .apply(new Point(x, y))));
                 double cosTheta = lightSource.scalarProduct(normal)
@@ -81,7 +84,11 @@ public final class ReliefShader {
                 kernel.length, 1, kernel), ConvolveOp.EDGE_NO_OP, null);
         ConvolveOp verticalConvolution = new ConvolveOp(new Kernel(1,
                 kernel.length, kernel), ConvolveOp.EDGE_NO_OP, null);
-        return verticalConvolution.filter(
-                horizontalConvolution.filter(image, null), null);
+        System.out.println(image.getHeight() +" "+ image.getWidth());
+        BufferedImage horizontalBlur = horizontalConvolution
+                .filter(image, null);
+        BufferedImage verticalBlur = verticalConvolution.filter(horizontalBlur,
+                null);
+        return verticalBlur;
     }
 }
