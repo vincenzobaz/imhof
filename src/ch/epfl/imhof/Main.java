@@ -3,8 +3,6 @@ package ch.epfl.imhof;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.PasswordAuthentication;
-import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
@@ -31,9 +29,9 @@ public final class Main {
         PointGeo bottomLeft = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[2])), Math.toRadians(Double
                 .parseDouble(args[3])));
-        int resolutionPixelPerMeter = (int) Math.round(Integer
+        int pixelPerMeterResolution = (int) Math.round(Integer
                 .parseInt(args[6]) * (5000d / 127d));
-        int height = (int) Math.round(resolutionPixelPerMeter
+        int height = (int) Math.round(pixelPerMeterResolution
                 * (1 / 25000d)
                 * Math.toRadians(Double.parseDouble(args[5])
                         - Double.parseDouble(args[3])) * Earth.RADIUS);
@@ -46,8 +44,6 @@ public final class Main {
                 .round((projectedTopRight.x() - projectedBottomLeft.x())
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
-        int shadingRadiusPixels = (int) Math
-                .round(0.0017 * resolutionPixelPerMeter);
 
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
@@ -58,9 +54,6 @@ public final class Main {
                 Color.WHITE);
 
         SwissPainter.painter().drawMap(map, canvas);
-        BufferedImage paintedMap = canvas.image();
-
-        // ImageIO.write(paintedMap, "png", new File("map.png"));
 
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
@@ -68,34 +61,25 @@ public final class Main {
         ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
                 -1, 1, 1));
 
-        int bufferZone = 2 * ((int) Math.ceil(shadingRadiusPixels)) + 1;
-        Function<Point, Point> f = Point.alignedCoordinateChange(
-                projectedBottomLeft,
-                new Point(projectedBottomLeft.x() - bufferZone,
-                        projectedBottomLeft.y() + bufferZone),
-                projectedTopRight,
-                new Point(projectedTopRight.x() + bufferZone, projectedTopRight
-                        .y() - bufferZone));
-        BufferedImage reliefs = reliefShader.shadedRelief(
-                f.apply(projectedBottomLeft), f.apply(projectedTopRight), width
-                        + 2 * bufferZone, height + 2 * bufferZone,
-                shadingRadiusPixels);
+        BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
+                projectedTopRight, width, height,
+                0.0017f * pixelPerMeterResolution);
 
-        ImageIO.write(reliefs, "png", new File("relief.png"));
+        BufferedImage finalImage = combine(relief, canvas.image());
 
-        // BufferedImage finalImage = combine(reliefs, paintedMap);
-
-        // ImageIO.write(finalImage, "png", new File(args[7]));
+        ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
-    private static BufferedImage combine(BufferedImage shaderRelief,
-            BufferedImage flatMap) {
-        BufferedImage result = new BufferedImage(flatMap.getWidth(),
-                flatMap.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < result.getWidth(); x++) {
-            for (int y = 0; y < result.getHeight(); y++) {
-                result.setRGB(x, y, (Color.rgb(shaderRelief.getRGB(x, y))
-                        .multiplyWith(Color.rgb(flatMap.getRGB(x, y))))
+    private static BufferedImage combine(BufferedImage shadedRelief,
+            BufferedImage plainMap) {
+        int width = plainMap.getWidth();
+        int height = plainMap.getHeight();
+        BufferedImage result = new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                result.setRGB(x, y, (Color.rgb(shadedRelief.getRGB(x, y))
+                        .multiplyWith(Color.rgb(plainMap.getRGB(x, y))))
                         .convert().getRGB());
             }
         }
