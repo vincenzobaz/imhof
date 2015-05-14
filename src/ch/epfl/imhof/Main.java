@@ -3,6 +3,8 @@ package ch.epfl.imhof;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.PasswordAuthentication;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +23,6 @@ import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
 public final class Main {
-
     public static void main(String[] args) throws IOException, SAXException {
 
         PointGeo topRight = new PointGeo(Math.toRadians(Double
@@ -46,18 +47,20 @@ public final class Main {
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
         int shadingRadiusPixels = (int) Math
-                .round((1.7 * resolutionPixelPerMeter) / 1000d);
+                .round(0.0017 * resolutionPixelPerMeter);
 
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
                 ch1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
-                projectedTopRight, width, height, resolutionPixelPerMeter,
+                projectedTopRight, width, height, Integer.parseInt(args[6]),
                 Color.WHITE);
 
         SwissPainter.painter().drawMap(map, canvas);
         BufferedImage paintedMap = canvas.image();
+
+        // ImageIO.write(paintedMap, "png", new File("map.png"));
 
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
@@ -65,13 +68,24 @@ public final class Main {
         ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
                 -1, 1, 1));
 
-        int bufferZone = (shadingRadiusPixels - 1) / 2;
-        BufferedImage reliefs = reliefShader.shadedRelief(projectedBottomLeft,
-                projectedTopRight, width + 2*bufferZone, height+2*bufferZone, shadingRadiusPixels);
+        int bufferZone = 2 * ((int) Math.ceil(shadingRadiusPixels)) + 1;
+        Function<Point, Point> f = Point.alignedCoordinateChange(
+                projectedBottomLeft,
+                new Point(projectedBottomLeft.x() - bufferZone,
+                        projectedBottomLeft.y() + bufferZone),
+                projectedTopRight,
+                new Point(projectedTopRight.x() + bufferZone, projectedTopRight
+                        .y() - bufferZone));
+        BufferedImage reliefs = reliefShader.shadedRelief(
+                f.apply(projectedBottomLeft), f.apply(projectedTopRight), width
+                        + 2 * bufferZone, height + 2 * bufferZone,
+                shadingRadiusPixels);
 
-        BufferedImage finalImage = combine(reliefs, paintedMap);
+        ImageIO.write(reliefs, "png", new File("relief.png"));
 
-        ImageIO.write(finalImage, "png", new File(args[7]));
+        // BufferedImage finalImage = combine(reliefs, paintedMap);
+
+        // ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     private static BufferedImage combine(BufferedImage shaderRelief,

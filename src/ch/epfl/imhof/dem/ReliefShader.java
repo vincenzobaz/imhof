@@ -34,7 +34,7 @@ public final class ReliefShader {
                             new Point(width, 0d), TR));
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
             return blurredImage.getSubimage(bufferZoneSize, bufferZoneSize,
-                    width - 2 * bufferZoneSize, height - 2 * bufferZoneSize);
+                    width - bufferZoneSize, height - bufferZoneSize);
         }
     }
 
