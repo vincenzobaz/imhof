@@ -93,6 +93,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         if (!filename.substring(7).equals(".hgt")) {
             throw new IllegalArgumentException("Extension du fichier invalide.");
         }
+
         double points = Math.sqrt(model.length() / 2L);
         // On vérifie si la dimension du fichier est valide
         if (points % 1d != 0) {

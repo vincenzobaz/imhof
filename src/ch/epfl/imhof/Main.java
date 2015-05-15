@@ -94,7 +94,7 @@ public final class Main {
                         * height);
 
         // Lecture du fichier OSM et conséquente création d'un objet OSMMap qui
-        // est ensuite converti map et dessiné sur une toile
+        // est ensuite converti en Map et dessiné sur une toile
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
                 ch1903);
@@ -116,12 +116,19 @@ public final class Main {
         BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
+        
+        ImageIO.write(relief, "png", new File("leMondeEstJoli.png"));
 
         // Finalement on compose l'image du relief et celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
+        
+        BufferedMapDecorator.howManySquares = 7;
+        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(finalImage);
+
+        imageToDecorate.addGrid(bottomLeft, topRight, Integer.parseInt(args[6]));
 
         // On sauvegarde l'image ainsi obtenue sur disque.
-        ImageIO.write(finalImage, "png", new File(args[7]));
+        ImageIO.write(imageToDecorate.image(), "png", new File(args[7]));
     }
 
     /**

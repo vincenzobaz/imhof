@@ -15,7 +15,6 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
     public void lausanneTest() throws IOException, SAXException {
         String[] arguments = { "data/lausanne.osm.gz", "data/N46E006.hgt",
                 "6.5594", "46.5032", "6.6508", "46.5459", "300",
