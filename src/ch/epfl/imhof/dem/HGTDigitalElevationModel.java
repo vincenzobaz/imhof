@@ -59,6 +59,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             latitude = filename.charAt(0) == 'N' ? 1 : -1;
         }
 
+        // On essaie de parser le deuxième et le troisième caractère du nom de
+        // fichier. Si parseInt echoue, le fichier n'est pas valide
         try {
             latitude = latitude * Integer.parseInt(filename.substring(1, 3));
         } catch (NumberFormatException e) {
@@ -66,6 +68,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "La deuxième ou la troisième lettre n'est pas un entier.");
         }
 
+        // On parse le quatrième caractère du nom du fichier: si ce n'est pas W
+        // o u E, le nom di fichier est invalide. Si c'est W, la longitude est
+        // negative
         int longitude = 0;
         if (filename.charAt(3) != 'E' && filename.charAt(3) != 'W') {
             throw new IllegalArgumentException(
@@ -74,6 +79,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             longitude = filename.charAt(3) == 'E' ? 1 : -1;
         }
 
+        // On essaie de parser les caractères 5,6,7. Si parseInt lance une
+        // exception, ceux-ci ne sont pas des entiers et le nom du fichier est
+        // invalide
         try {
             longitude = longitude * Integer.parseInt(filename.substring(4, 7));
         } catch (NumberFormatException e) {
@@ -81,15 +89,19 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "La cinquième, sixième ou septième lettre du nom du fichier n'est pas un entier.");
         }
 
+        // On vérifie si l'extension du fichier est bien hgt
         if (!filename.substring(7).equals(".hgt")) {
             throw new IllegalArgumentException("Extension du fichier invalide.");
         }
         double points = Math.sqrt(model.length() / 2L);
+        // On vérifie si la dimension du fichier est valide
         if (points % 1d != 0) {
             throw new IllegalArgumentException(
                     "Dimensions du fichier invalides.");
         }
         pointsPerLine = (int) points;
+        // On ouvre un flot enfin, après ayant vérifié que toutes les autres
+        // conditions soient satisfaites
         try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
             buffer = stream.getChannel()
