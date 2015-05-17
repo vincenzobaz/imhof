@@ -24,7 +24,7 @@ public class BufferedMapDecorator extends BufferedMap {
         Graphics2D canvas = this.image().createGraphics();
         canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        canvas.setColor(Color.BLACK);
+        canvas.setColor(Color.GRAY);
         // float lineWidth = (float) resolution / 254f;
         float lineWidth = (float) 0.05d * width / 100;
         BasicStroke line = new BasicStroke(lineWidth);
@@ -43,12 +43,16 @@ public class BufferedMapDecorator extends BufferedMap {
         canvas.setFont(new Font("inconsolata", Font.PLAIN, 30));
         for (int x = squareSizePixel; x < width; x += squareSizePixel) {
             canvas.draw(new Line2D.Double(x, 0, x, height - 1));
-            canvas.drawString("" + (Math.toDegrees(BL.longitude() + squareSizeRadian)), x, 100);
+            canvas.setBackground(Color.BLACK);
+            canvas.drawString("" + Math.toDegrees(BL.longitude() + x*squareSizeRadian), x, 50);
+            canvas.setBackground(Color.GRAY);
         }
 
         for (int y = squareSizePixel; y < height; y += squareSizePixel) {
             canvas.draw(new Line2D.Double(0, y, width - 1, y));
-            canvas.drawString("" + Math.toDegrees(BL.latitude() + squareSizeRadian), 0, y);
+            canvas.setBackground(Color.BLACK);
+            canvas.drawString("" + Math.toDegrees(BL.latitude() + y*squareSizeRadian), 0, y);
+            canvas.setBackground(Color.GRAY);
         }
     }
 }

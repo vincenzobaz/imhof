@@ -128,7 +128,7 @@ public final class Main {
         imageToDecorate.addGrid(bottomLeft, topRight, Integer.parseInt(args[6]));
 
         // On sauvegarde l'image ainsi obtenue sur disque.
-        ImageIO.write(imageToDecorate.image(), "png", new File(args[7]));
+        imageToDecorate.printOnFile("png", args[7]);
     }
 
     /**
