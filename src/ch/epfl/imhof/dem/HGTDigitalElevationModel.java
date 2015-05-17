@@ -20,7 +20,7 @@ import ch.epfl.imhof.Vector3D;
  */
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
-    // redéfinition de la méthode close
+    // redéfinition de la méthode close.
     private ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
@@ -38,7 +38,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      *             conventions de nommage, ou si sa taille en octets divisée par
      *             deux n'a pas une racine carrée entière
      * @throws IOException
-     *             lève une exception en cas d'erreur d'entrée/sortie
+     *             lève une exception en cas d'erreur d'entrée/sortie (fichier
+     *             introuvable, etc...)
      */
     public HGTDigitalElevationModel(File model)
             throws IllegalArgumentException, IOException {
@@ -51,7 +52,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         int latitude = 0;
-        // Teste si la première lettre du nom est bien N ou S
+        // Teste si la première lettre du nom est bien N ou S, et stockage du
+        // signe de la latitude
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
                     "La première lettre du nom du fichier n'est pas valide.");
@@ -60,7 +62,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         // On essaie de parser le deuxième et le troisième caractère du nom de
-        // fichier. Si parseInt echoue, le fichier n'est pas valide
+        // fichier. Si parseInt échoue, le fichier n'est pas valide; sinon on
+        // stocke la valeur de la latitude.
         try {
             latitude = latitude * Integer.parseInt(filename.substring(1, 3));
         } catch (NumberFormatException e) {
@@ -69,8 +72,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
 
         // On parse le quatrième caractère du nom du fichier: si ce n'est pas W
-        // o u E, le nom di fichier est invalide. Si c'est W, la longitude est
-        // negative
+        // ou E, le nom du fichier est invalide. Si c'est W, la longitude est
+        // négative.
         int longitude = 0;
         if (filename.charAt(3) != 'E' && filename.charAt(3) != 'W') {
             throw new IllegalArgumentException(
@@ -81,7 +84,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         // On essaie de parser les caractères 5,6,7. Si parseInt lance une
         // exception, ceux-ci ne sont pas des entiers et le nom du fichier est
-        // invalide
+        // invalide; sinon on stocke la valeur de la longitude.
         try {
             longitude = longitude * Integer.parseInt(filename.substring(4, 7));
         } catch (NumberFormatException e) {
@@ -89,19 +92,19 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "La cinquième, sixième ou septième lettre du nom du fichier n'est pas un entier.");
         }
 
-        // On vérifie si l'extension du fichier est bien hgt
+        // On vérifie si l'extension du fichier est bien .hgt
         if (!filename.substring(7).equals(".hgt")) {
             throw new IllegalArgumentException("Extension du fichier invalide.");
         }
+        // On vérifie si la taille en octets du fichier est valide
         double points = Math.sqrt(model.length() / 2L);
-        // On vérifie si la dimension du fichier est valide
         if (points % 1d != 0) {
             throw new IllegalArgumentException(
-                    "Dimensions du fichier invalides.");
+                    "Taille en octets du fichier invalide.");
         }
         pointsPerLine = (int) points;
-        // On ouvre un flot enfin, après ayant vérifié que toutes les autres
-        // conditions soient satisfaites
+        // On ouvre un flot enfin, après avoir vérifié que toutes les autres
+        // conditions sont satisfaites.
         try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
             buffer = stream.getChannel()
@@ -120,6 +123,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
         final double oneDegree = Math.toRadians(1);
+        // Vérification de l'appartenanc du point à la zone du fichier HGT
         if (point.latitude() > latitudeNW
                 || point.latitude() < latitudeNW - oneDegree
                 || point.longitude() < longitudeNW
@@ -128,6 +132,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
+        // Calcul des coordonnées du coin haut-gauche du carré dans lequel se
+        // situe le point
         double angularResolution = oneDegree / ((double) pointsPerLine);
         int i = (int) Math.floor((point.longitude() - longitudeNW)
                 / angularResolution);
