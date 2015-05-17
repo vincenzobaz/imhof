@@ -53,25 +53,47 @@ public class HGTDigitalElevationModelTest {
     }
 
     @Test
-    public void correctlyDrawsRelief() throws IllegalArgumentException,
+    public void correctlyDrawsSimmental() throws IllegalArgumentException,
             IOException {
         File file = new File("data/N46E007.hgt");
-        HGTDigitalElevationModel rhoneValley = new HGTDigitalElevationModel(
-                file);
+        HGTDigitalElevationModel simmental = new HGTDigitalElevationModel(file);
         BufferedImage image = new BufferedImage(800, 800,
                 BufferedImage.TYPE_INT_RGB);
         final double POINT_DISTANCE = Math.toRadians(0.6) / 800d;
-        for (int j = 0; j < 800; ++j) {
-            for (int i = 0; i < 800; ++i) {
-                Vector3D normal = rhoneValley.normalAt(new PointGeo(Math
-                        .toRadians(7.2) + i * POINT_DISTANCE, Math
-                        .toRadians(46.8) - j * POINT_DISTANCE));
+        for (int x = 0; x < 800; ++x) {
+            for (int y = 0; y < 800; ++y) {
+                Vector3D normal = simmental.normalAt(new PointGeo(Math
+                        .toRadians(7.2) + x * POINT_DISTANCE, Math
+                        .toRadians(46.8) - y * POINT_DISTANCE));
+                double greyLevel = (normal.normalized().y() + 1) / 2d;
+                int newInt = (int) (greyLevel * 255.9999);
+                int grey = newInt | (newInt << 8) | (newInt << 16);
+                image.setRGB(x, y, grey);
+            }
+        }
+        ImageIO.write(image, "png", new File("relief_simmental.png"));
+    }
+
+    // @Test
+    public void correctlyDrawsRelief() throws IllegalArgumentException,
+            IOException {
+        File file = new File("data/N46E007.hgt");
+        HGTDigitalElevationModel interlaken = new HGTDigitalElevationModel(file);
+        BufferedImage image = new BufferedImage(3316, 2188,
+                BufferedImage.TYPE_INT_RGB);
+        final double VERTICAL_POINT_DISTANCE = Math.toRadians(0.0416) / 2188d;
+        final double HORIZONTAL_POINT_DISTANCE = Math.toRadians(0.0927) / 3316d;
+        for (int j = 0; j < 2188; ++j) {
+            for (int i = 0; i < 3316; ++i) {
+                Vector3D normal = interlaken.normalAt(new PointGeo(Math
+                        .toRadians(7.8122) + i * HORIZONTAL_POINT_DISTANCE,
+                        Math.toRadians(46.7061) - j * VERTICAL_POINT_DISTANCE));
                 double greyLevel = (normal.normalized().y() + 1) / 2d;
                 int newInt = (int) (greyLevel * 255.9999);
                 int grey = newInt + (newInt << 8) + (newInt << 16);
                 image.setRGB(i, j, grey);
             }
         }
-        ImageIO.write(image, "png", new File("vallee_du_rhone.png"));
+        ImageIO.write(image, "png", new File("relief_interlaken.png"));
     }
 }
