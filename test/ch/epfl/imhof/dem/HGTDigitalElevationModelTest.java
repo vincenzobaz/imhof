@@ -103,8 +103,7 @@ public class HGTDigitalElevationModelTest {
         HGTDigitalElevationModel edge = new HGTDigitalElevationModel(file);
         int points = (int) Math.sqrt(file.length() / 2L);
         System.out.println(points);
-        for (int i = 1000; i < 1500; ++i) {
-            System.out.println(edge.buffer.get(i));
-        }
+        System.out.println(edge.buffer.get(0));
+        System.out.println(edge.buffer.get(points*points-1));
     }
 }

@@ -3,11 +3,7 @@ package ch.epfl.imhof.dem;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.io.File;
-import java.io.IOException;
 import java.util.function.Function;
-
-import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.Vector3D;
 import ch.epfl.imhof.geometry.Point;
@@ -155,8 +151,7 @@ public final class ReliefShader {
         float[] line = new float[n];
         // Le vecteur horizontal (égal au vecteur vertical transposé) est
         // symétrique. Il suffit donc de (tailleTableau - 1) / 2 accès et
-        // calculs
-        // pour le remplir
+        // calculs pour le remplir
         int indexBase = (n - 1) / 2;
         float totalWeight = line[indexBase] = 1f;
         for (int i = 1; i <= indexBase; i++) {

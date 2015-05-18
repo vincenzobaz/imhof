@@ -103,10 +103,6 @@ public final class Main {
                 Color.WHITE);
         SwissPainter.painter().drawMap(map, canvas);
 
-        // debug
-        // ImageIO.write(canvas.image(), "png", new
-        // File("interlaken_plain.png"));
-
         // Création d'un modèle de relief
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
@@ -120,14 +116,11 @@ public final class Main {
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
 
-        // debug
-        ImageIO.write(relief, "png", new File("interlaken_relief.png"));
-
         // Composition de l'image du relief et de celle de la carte
-        // BufferedImage finalImage = combine(relief, canvas.image());
+        BufferedImage finalImage = combine(relief, canvas.image());
 
         // Sauvegarde de l'image obtenue sur disque
-        // ImageIO.write(finalImage, "png", new File(args[7]));
+        ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     /**

@@ -21,9 +21,9 @@ import ch.epfl.imhof.Vector3D;
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
-    public ShortBuffer buffer;
-    private final double latitudeNW;
-    private final double longitudeNW;
+    private ShortBuffer buffer;
+    private final double latitudeSW;
+    private final double longitudeSW;
     private final InputStream stream;
     private final int pointsPerLine;
 
@@ -51,9 +51,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "La taille du nom de fichier n'est pas valide.");
         }
 
-        int latitude = 0;
         // Teste si la première lettre du nom est bien N ou S, et stockage du
         // signe de la latitude du coin sud-ouest
+        int latitude = 0;
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
                     "La première lettre du nom du fichier n'est pas valide.");
@@ -97,7 +97,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         // On vérifie si la taille en octets du fichier est valide
         double points = Math.sqrt(model.length() / 2L);
-        if (points % 1d != 0) {
+        if (points % 1d != 0d) {
             throw new IllegalArgumentException(
                     "Taille en octets du fichier invalide.");
         }
@@ -109,10 +109,9 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
-        // Assignation de la longitude et de la latitude du coin nord-ouest
-        // (même longitude que le coin sud-ouest, et latitude + 1°)
-        latitudeNW = Math.toRadians(latitude + 1);
-        longitudeNW = Math.toRadians(longitude);
+        // Assignation de la longitude et de la latitude du coin sud-ouest
+        latitudeSW = Math.toRadians(latitude);
+        longitudeSW = Math.toRadians(longitude);
     }
 
     @Override
@@ -125,28 +124,29 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
         final double oneDegree = Math.toRadians(1);
         // Vérification de l'appartenance du point à la zone du fichier HGT
-        if (point.latitude() > latitudeNW
-                || point.latitude() < latitudeNW - oneDegree
-                || point.longitude() < longitudeNW
-                || point.longitude() > longitudeNW + oneDegree) {
+        if (point.latitude() < latitudeSW
+                || point.latitude() > latitudeSW + oneDegree
+                || point.longitude() < longitudeSW
+                || point.longitude() > longitudeSW + oneDegree) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
-        // Calcul des coordonnées du coin haut-gauche du carré dans lequel se
-        // situe le point
-        double angularResolution = oneDegree / ((double) pointsPerLine);
-        int i = (int) Math.floor((point.longitude() - longitudeNW)
+        // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
+        // situe le point, dans le repère ayant pour origine le coin sud-ouest
+        // du fichier HGT
+        double angularResolution = oneDegree / ((double) pointsPerLine - 1);
+        int i = (int) Math.floor((point.longitude() - longitudeSW)
                 / angularResolution);
-        int j = (int) Math.ceil((latitudeNW - point.latitude())
+        int j = (int) Math.floor((point.latitude() - latitudeSW)
                 / angularResolution);
 
         double s = Earth.RADIUS * angularResolution;
 
-        double zA = altitudeAt(i + 1, j + 1) - altitudeAt(i, j + 1);
-        double zB = altitudeAt(i, j) - altitudeAt(i, j + 1);
-        double zC = altitudeAt(i, j) - altitudeAt(i + 1, j);
-        double zD = altitudeAt(i + 1, j + 1) - altitudeAt(i + 1, j);
+        double zA = altitudeAt(i + 1, j) - altitudeAt(i, j);
+        double zB = altitudeAt(i, j + 1) - altitudeAt(i, j);
+        double zC = altitudeAt(i, j + 1) - altitudeAt(i + 1, j + 1);
+        double zD = altitudeAt(i + 1, j) - altitudeAt(i + 1, j + 1);
 
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
@@ -162,6 +162,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      * @return l'altitude du point
      */
     private short altitudeAt(int i, int j) {
-        return buffer.get(j * pointsPerLine + i);
+        return buffer.get(pointsPerLine * (pointsPerLine - j - 1) + i);
     }
 }
