@@ -16,53 +16,59 @@ public class BufferedMapDecorator extends BufferedMap {
     }
 
     public void addGrid(PointGeo BL, PointGeo TR, int resolution) {
-        int width = this.image().getWidth();
-        int height = this.image().getHeight();
+        int imageWidth = this.image().getWidth();
+        int imageHeight = this.image().getHeight();
+        int frameSize = imageWidth/20;
+        int decoratedMapWidth = imageWidth + 2*frameSize;
+        int decoratedMapHeight = imageHeight + 2*frameSize;
+        BufferedImage decoratedMap = new BufferedImage(
+                decoratedMapWidth, decoratedMapHeight,
+                BufferedImage.TYPE_INT_RGB);
+        
 
-        Graphics2D canvas = this.image().createGraphics();
+        Graphics2D canvas = decoratedMap.createGraphics();
+        canvas.setColor(Color.WHITE);
+        canvas.fillRect(0, 0, decoratedMapWidth, decoratedMapHeight);
+        canvas.drawImage(this.image(), frameSize, frameSize, this.image().getWidth(), this
+                .image().getHeight(), null);
         canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        canvas.setColor(Color.GRAY);
-        // float lineWidth = (float) resolution / 254f;
-        float lineWidth = 0.05f * width / 100f;
-        BasicStroke line = new BasicStroke(lineWidth);
-        canvas.setStroke(line);
+        canvas.setStroke(new BasicStroke(0.05f * imageWidth / 100f));
 
         double radiansPerPixel = (TR.longitude() - BL.longitude())
-                / ((double) width);
-        System.out.println(radiansPerPixel);
+                / ((double) imageWidth);
 
-        int squareSizePixel = (int) Math.round(width
+        int squareSizePixel = (int) Math.round(imageWidth
                 / ((double) howManySquares));
-        System.out.println(squareSizePixel);
+
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
-        System.out.println(squareSizeRadian);
 
         canvas.setFont(new Font("inconsolata", Font.PLAIN, 30));
         int indexForStrings = 0;
-        for (int x = squareSizePixel; x < width; x += squareSizePixel) {
-            canvas.draw(new Line2D.Double(x, 0, x, height - 1));
+        for (int x = frameSize+squareSizePixel; x < decoratedMapWidth - frameSize; x += squareSizePixel) {
+            canvas.setColor(Color.GRAY);
+            canvas.draw(new Line2D.Double(x, frameSize, x, decoratedMapHeight-frameSize));
             canvas.setColor(Color.BLACK);
             double longitude = Math.toDegrees(BL.longitude() + indexForStrings
                     * squareSizeRadian);
             int degree = (int) longitude;
             int minute = (int) (longitude % 1 * 60);
-            canvas.drawString("" + degree + "°" + minute + "'", x, 50);
-            canvas.setColor(Color.GRAY);
+            canvas.drawString("" + degree + "°" + minute + "'", x, frameSize);
             indexForStrings++;
         }
 
         indexForStrings = 0;
-        for (int y = squareSizePixel; y < height; y += squareSizePixel) {
-            canvas.draw(new Line2D.Double(0, y, width - 1, y));
+        for (int y = frameSize+squareSizePixel; y < decoratedMapHeight - frameSize ; y += squareSizePixel) {
+            canvas.setColor(Color.GRAY);
+            canvas.draw(new Line2D.Double(frameSize, y,  decoratedMapHeight- frameSize, y));
             canvas.setColor(Color.BLACK);
             double latitude = Math.toDegrees(BL.latitude() + indexForStrings
                     * squareSizeRadian);
             int degree = (int) latitude;
             int minute = (int) (latitude % 1 * 60);
             canvas.drawString("" + degree + "°" + minute + "'", 0, y);
-            canvas.setColor(Color.GRAY);
             indexForStrings++;
         }
+        setImage(decoratedMap);
     }
 }
