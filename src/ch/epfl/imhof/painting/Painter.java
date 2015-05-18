@@ -205,8 +205,8 @@ public interface Painter<E> {
      * dessine la carte par couche, de la plus basse à la plus élévée.
      * 
      * @return un peintre dessinant la carte par couches, en commençant par le
-     *         niveau le plus bas (<code>layer=-5</code>) jusqu'au niveau le
-     *         plus haut (<code>layer=5</code>)
+     *         niveau le plus bas (<code>layer = -5</code>) jusqu'au niveau le
+     *         plus haut (<code>layer = 5</code>)
      */
     public default Painter<?> layered() {
         return (map, canvas) -> {

@@ -23,7 +23,7 @@ public final class RoadPainterGenerator {
 
     /**
      * Retourne un peintre du réseau routier à partir d'un nombre variable de
-     * <code>RoadSpec</code>.
+     * spécifications de routes.
      * 
      * @param specifications
      *            ellipse contenant toutes les spécifications de routes à
@@ -35,8 +35,8 @@ public final class RoadPainterGenerator {
         // l'aide des méthodes withX de LineStyle
         LineStyle defaultBridgeCasingAndTunnelStyle = new LineStyle(0f,
                 Color.WHITE, LineCap.BUTT, LineJoin.ROUND, null);
-        LineStyle defaultBridgeInteriorAndRoadStyle = new LineStyle(0f,
-                Color.WHITE, LineCap.ROUND, LineJoin.ROUND, null);
+        LineStyle defaultBridgeInteriorAndRoadStyle = defaultBridgeCasingAndTunnelStyle
+                .withCap(LineCap.ROUND);
 
         return (map, canvas) -> {
             // Dessin des tunnels
@@ -54,9 +54,8 @@ public final class RoadPainterGenerator {
             // Dessin des bordures de routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeCasingAndTunnelStyle
-                                .withWidth(spec.wI() + 2 * spec.wC())
-                                .withColor(spec.cC()).withCap(LineCap.ROUND))
+                        defaultBridgeInteriorAndRoadStyle.withWidth(
+                                spec.wI() + 2 * spec.wC()).withColor(spec.cC()))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.filter())).drawMap(map, canvas);
