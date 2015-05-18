@@ -71,7 +71,7 @@ public class BufferedMapDecorator extends BufferedMap {
             double minute = (latitude % 1) * 60;
             double second = (minute % 1) * 60;
             canvas.drawString("" + (int) latitude + "°" + (int) minute + "'"
-                    + (int) second + "\"", 0, frameSize);
+                    + (int) second + "\"", 0, y);
             canvas.setColor(Color.GRAY);
             indexForStrings++;
         }

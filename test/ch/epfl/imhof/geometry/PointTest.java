@@ -22,12 +22,18 @@ public class PointTest {
 
     @Test
     public void coordinateChangeIsCorrect() {
+        Point point1 = new Point(2.44444444444, 3.889898989);
+        Point point2 = new Point(17.1989814, 25.234234324);
+        Point point3 = new Point(-500, 230);
+        Point point4 = new Point(6.12345678, 4.9876543);
         Function<Point, Point> blueToRed = Point.alignedCoordinateChange(
-                new Point(2, 3), new Point(3, 1), new Point(-1, 0),
-                new Point(6, 4));
-        Point origin = blueToRed.apply(new Point(5, 4));
-        assertEquals(origin.x(), 0, DELTA);
-        assertEquals(origin.y(), 0, DELTA);
+                point1, point2, point3, point4);
+        Point origin = blueToRed.apply(point1); 
+        assertEquals(origin.x(), point2.x(), DELTA);
+        assertEquals(origin.y(), point2.y(), DELTA);
+        Point origin2 = blueToRed.apply(point3);
+        assertEquals(origin2.x(), point4.x(), DELTA);
+        assertEquals(origin2.y(), point4.y(), DELTA);
     }
 
     @Test(expected = IllegalArgumentException.class)
