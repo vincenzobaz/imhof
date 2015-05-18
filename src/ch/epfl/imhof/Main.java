@@ -117,8 +117,6 @@ public final class Main {
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
         
-        ImageIO.write(relief, "png", new File("leMondeEstJoli.png"));
-
         // Finalement on compose l'image du relief et celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
         

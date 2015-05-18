@@ -41,18 +41,22 @@ public class BufferedMapDecorator extends BufferedMap {
         System.out.println(squareSizeRadian);
         
         canvas.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        int indexForStrings = 0;
         for (int x = squareSizePixel; x < width; x += squareSizePixel) {
             canvas.draw(new Line2D.Double(x, 0, x, height - 1));
-            canvas.setBackground(Color.BLACK);
-            canvas.drawString("" + Math.toDegrees(BL.longitude() + x*squareSizeRadian), x, 50);
-            canvas.setBackground(Color.GRAY);
+            canvas.setColor(Color.BLACK);
+            canvas.drawString("" + Math.toDegrees(BL.longitude() + indexForStrings*squareSizeRadian), x, 50);
+            canvas.setColor(Color.GRAY);
+            indexForStrings++;
         }
 
+        indexForStrings = 0;
         for (int y = squareSizePixel; y < height; y += squareSizePixel) {
             canvas.draw(new Line2D.Double(0, y, width - 1, y));
-            canvas.setBackground(Color.BLACK);
-            canvas.drawString("" + Math.toDegrees(BL.latitude() + y*squareSizeRadian), 0, y);
-            canvas.setBackground(Color.GRAY);
+            canvas.setColor(Color.BLACK);
+            canvas.drawString("" + Math.toDegrees(BL.latitude() + indexForStrings*squareSizeRadian), 0, y);
+            canvas.setColor(Color.GRAY);
+            indexForStrings++;
         }
     }
 }
