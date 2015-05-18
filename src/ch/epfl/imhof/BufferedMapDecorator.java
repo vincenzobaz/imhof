@@ -46,9 +46,9 @@ public class BufferedMapDecorator extends BufferedMap {
             double longitude = Math.toDegrees(BL.longitude() + indexForStrings
                     * squareSizeRadian);
             double minute = (longitude % 1) * 60;
-            double second = (longitude - (int) minute) * 60;
+            double second = (minute % 1) * 60;
             canvas.drawString("" + (int) longitude + "°" + (int) minute + "'"
-                    + (int) second, x, 50);
+                    + (int) second + "\"", x, 50);
             canvas.setColor(Color.GRAY);
             indexForStrings++;
         }
@@ -60,9 +60,9 @@ public class BufferedMapDecorator extends BufferedMap {
             double latitude = Math.toDegrees(BL.latitude() + indexForStrings
                     * squareSizeRadian);
             double minute = (latitude % 1) * 60;
-            double second = (latitude - (int) minute) * 60;
+            double second = (minute % 1) * 60;
             canvas.drawString("" + (int) latitude + "°" + (int) minute + "'"
-                    + (int) second, 0, y);
+                    + (int) second + "\"", 0, y);
             canvas.setColor(Color.GRAY);
             indexForStrings++;
         }
