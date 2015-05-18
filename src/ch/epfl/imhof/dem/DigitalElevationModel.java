@@ -20,7 +20,7 @@ public interface DigitalElevationModel extends AutoCloseable {
      * @return le vecteur normal
      * @throws IllegalArgumentException
      *             lève une exception si le point pour lequel la normale est
-     *             demandée ne fait pas partie de la zone couverte paar le MNT
+     *             demandée ne fait pas partie de la zone couverte par le MNT
      */
     Vector3D normalAt(PointGeo point) throws IllegalArgumentException;
 }
