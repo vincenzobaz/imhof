@@ -66,9 +66,15 @@ public final class ReliefShader {
      *         <code>BL</code> et haut-droite <code>TR</code>, de largeur
      *         <code>width</code> et hauteur <code>height</code>, flouté avec un
      *         rayon de floutage <code>radius</code>
+     * @throws IllegalArgumentException
+     *             lève une exception si le rayon de floutage est négatif
      */
     public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, float radius) {
+            int height, float radius) throws IllegalArgumentException {
+        if (radius < 0) {
+            throw new IllegalArgumentException(
+                    "Le rayon de floutage doit être positif.");
+        }
         // Si le rayon de floutage est nul, on produit une image non-floutée
         if (radius == 0f) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(

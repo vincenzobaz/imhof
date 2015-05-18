@@ -43,11 +43,11 @@ public final class RoadPainterGenerator {
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle
-                                .withWidth(spec.getwI() / 2f)
-                                .withColor(spec.getcC())
-                                .withDashingPattern(2 * spec.getwI(),
-                                        2 * spec.getwI()))
-                        .when(Filters.tagged("tunnel").and(spec.getFilter()))
+                                .withWidth(spec.wI() / 2f)
+                                .withColor(spec.cC())
+                                .withDashingPattern(2 * spec.wI(),
+                                        2 * spec.wI()))
+                        .when(Filters.tagged("tunnel").and(spec.filter()))
                         .drawMap(map, canvas);
             }
 
@@ -55,39 +55,38 @@ public final class RoadPainterGenerator {
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle
-                                .withWidth(spec.getwI() + 2 * spec.getwC())
-                                .withColor(spec.getcC()).withCap(LineCap.ROUND))
+                                .withWidth(spec.wI() + 2 * spec.wC())
+                                .withColor(spec.cC()).withCap(LineCap.ROUND))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
-                                .and(spec.getFilter())).drawMap(map, canvas);
+                                .and(spec.filter())).drawMap(map, canvas);
             }
 
             // Dessin de l'intérieur des routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeInteriorAndRoadStyle.withWidth(
-                                spec.getwI()).withColor(spec.getcI()))
+                        defaultBridgeInteriorAndRoadStyle.withWidth(spec.wI())
+                                .withColor(spec.cI()))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
-                                .and(spec.getFilter())).drawMap(map, canvas);
+                                .and(spec.filter())).drawMap(map, canvas);
             }
 
             // Dessin des bordures de pont
             for (RoadSpec spec : specifications) {
                 Painter.line(
                         defaultBridgeCasingAndTunnelStyle.withWidth(
-                                spec.getwI() + 2 * spec.getwC()).withColor(
-                                spec.getcC()))
-                        .when(Filters.tagged("bridge").and(spec.getFilter()))
+                                spec.wI() + 2 * spec.wC()).withColor(spec.cC()))
+                        .when(Filters.tagged("bridge").and(spec.filter()))
                         .drawMap(map, canvas);
             }
 
             // Dessin de l'intérieur des ponts
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        defaultBridgeInteriorAndRoadStyle.withWidth(
-                                spec.getwI()).withColor(spec.getcI()))
-                        .when(Filters.tagged("bridge").and(spec.getFilter()))
+                        defaultBridgeInteriorAndRoadStyle.withWidth(spec.wI())
+                                .withColor(spec.cI()))
+                        .when(Filters.tagged("bridge").and(spec.filter()))
                         .drawMap(map, canvas);
             }
         };
@@ -138,7 +137,7 @@ public final class RoadPainterGenerator {
          * @return le prédicat qui doit être satisfait pour que la route soit
          *         dessinée
          */
-        public Predicate<Attributed<?>> getFilter() {
+        public Predicate<Attributed<?>> filter() {
             return filter;
         }
 
@@ -147,7 +146,7 @@ public final class RoadPainterGenerator {
          * 
          * @return la largeur intérieure
          */
-        public float getwI() {
+        public float wI() {
             return wI;
         }
 
@@ -156,7 +155,7 @@ public final class RoadPainterGenerator {
          * 
          * @return la couleur intérieure
          */
-        public Color getcI() {
+        public Color cI() {
             return cI;
         }
 
@@ -165,7 +164,7 @@ public final class RoadPainterGenerator {
          * 
          * @return la largeur extérieure
          */
-        public float getwC() {
+        public float wC() {
             return wC;
         }
 
@@ -174,7 +173,7 @@ public final class RoadPainterGenerator {
          * 
          * @return la couleur extérieure
          */
-        public Color getcC() {
+        public Color cC() {
             return cC;
         }
     }
