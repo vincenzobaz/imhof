@@ -38,11 +38,11 @@ public final class Java2DCanvas implements Canvas {
      * @param topRight
      *            le coin haut-droite de la toile
      * @param width
-     *            la largeur de la toile
+     *            la largeur de la toile, en pixels
      * @param height
-     *            la hauteur de la toile
+     *            la hauteur de la toile, en pixels
      * @param dpi
-     *            la résolution de la toile
+     *            la résolution de la toile, en pixels par pouce
      * @param backgroundColor
      *            la couleur de fond de la toile
      * @throws IllegalArgumentException
@@ -63,9 +63,9 @@ public final class Java2DCanvas implements Canvas {
         }
 
         float scale = dpi / 72f;
-        this.basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(
-                0d, (height - 1) / scale), topRight, new Point((width - 1)
-                / scale, 0d));
+        basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(0d,
+                (height - 1) / scale), topRight, new Point((width - 1) / scale,
+                0d));
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 

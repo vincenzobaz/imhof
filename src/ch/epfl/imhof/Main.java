@@ -120,13 +120,8 @@ public final class Main {
         // Finalement on compose l'image du relief et celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
         
-        BufferedMapDecorator.howManySquares = 7;
-        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(finalImage);
-
-        imageToDecorate.addGrid(bottomLeft, topRight, Integer.parseInt(args[6]));
-
         // On sauvegarde l'image ainsi obtenue sur disque.
-        imageToDecorate.printOnFile("png", args[7]);
+        ImageIO.write(finalImage, "png", new File("interlaken_Main.png"));
     }
 
     /**

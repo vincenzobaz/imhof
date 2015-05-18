@@ -7,7 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BufferedMap {
-    private final BufferedImage map;
+    private BufferedImage map;
     
     public BufferedMap(BufferedImage map){
         this.map = map;
@@ -19,6 +19,10 @@ public class BufferedMap {
     
     protected BufferedImage image(){
         return map;
+    }
+    
+    protected void setImage(BufferedImage picture){
+        map = picture;
     }
 
 }
