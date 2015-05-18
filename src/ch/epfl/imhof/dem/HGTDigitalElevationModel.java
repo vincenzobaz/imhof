@@ -53,7 +53,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         int latitude = 0;
         // Teste si la première lettre du nom est bien N ou S, et stockage du
-        // signe de la latitude
+        // signe de la latitude du coin sud-ouest
         if (filename.charAt(0) != 'N' && filename.charAt(0) != 'S') {
             throw new IllegalArgumentException(
                     "La première lettre du nom du fichier n'est pas valide.");
@@ -63,7 +63,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         // On essaie de parser le deuxième et le troisième caractère du nom de
         // fichier. Si parseInt échoue, le fichier n'est pas valide; sinon on
-        // stocke la valeur de la latitude.
+        // stocke la valeur de la latitude
         try {
             latitude = latitude * Integer.parseInt(filename.substring(1, 3));
         } catch (NumberFormatException e) {
@@ -71,9 +71,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "La deuxième ou la troisième lettre n'est pas un entier.");
         }
 
-        // On parse le quatrième caractère du nom du fichier: si ce n'est pas W
-        // ou E, le nom du fichier est invalide. Si c'est W, la longitude est
-        // négative.
+        // Teste si la quatrième lettre du nom du fichier est bien E ou W, et
+        // stockage du signe de la longitude
         int longitude = 0;
         if (filename.charAt(3) != 'E' && filename.charAt(3) != 'W') {
             throw new IllegalArgumentException(
@@ -103,13 +102,15 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Taille en octets du fichier invalide.");
         }
         pointsPerLine = (int) points;
-        // On ouvre un flot enfin, après avoir vérifié que toutes les autres
-        // conditions sont satisfaites.
+        // Ouverture et assignation du flot et mappage de la valeur des octets
+        // en mémoire
         try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
+        // Assignation de la longitude et de la latitude du coin nord-ouest
+        // (même longitude que le coin sud-ouest, et latitude + 1°
         latitudeNW = Math.toRadians(latitude + 1);
         longitudeNW = Math.toRadians(longitude);
     }
