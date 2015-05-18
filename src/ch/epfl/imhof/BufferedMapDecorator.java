@@ -24,7 +24,7 @@ public class BufferedMapDecorator extends BufferedMap {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         canvas.setColor(Color.GRAY);
         // float lineWidth = (float) resolution / 254f;
-        float lineWidth = (float) 0.05d * width / 100;
+        float lineWidth = 0.05f * width / 100f;
         BasicStroke line = new BasicStroke(lineWidth);
         canvas.setStroke(line);
 
@@ -37,13 +37,17 @@ public class BufferedMapDecorator extends BufferedMap {
         System.out.println(squareSizePixel);
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
         System.out.println(squareSizeRadian);
-        
+
         canvas.setFont(new Font("inconsolata", Font.PLAIN, 30));
         int indexForStrings = 0;
         for (int x = squareSizePixel; x < width; x += squareSizePixel) {
             canvas.draw(new Line2D.Double(x, 0, x, height - 1));
             canvas.setColor(Color.BLACK);
-            canvas.drawString("" + Math.toDegrees(BL.longitude() + indexForStrings*squareSizeRadian), x, 50);
+            double longitude = Math.toDegrees(BL.longitude() + indexForStrings
+                    * squareSizeRadian);
+            int degree = (int) longitude;
+            int minute = (int) longitude % 1 * 60;
+            canvas.drawString("" + degree + "°" + minute + "'", x, 50);
             canvas.setColor(Color.GRAY);
             indexForStrings++;
         }
@@ -52,7 +56,11 @@ public class BufferedMapDecorator extends BufferedMap {
         for (int y = squareSizePixel; y < height; y += squareSizePixel) {
             canvas.draw(new Line2D.Double(0, y, width - 1, y));
             canvas.setColor(Color.BLACK);
-            canvas.drawString("" + Math.toDegrees(BL.latitude() + indexForStrings*squareSizeRadian), 0, y);
+            double latitude = Math.toDegrees(BL.latitude() + indexForStrings
+                    * squareSizeRadian);
+            int degree = (int) latitude;
+            int minute = (int) latitude % 1 * 60;
+            canvas.drawString("" + degree + "°" + minute + "'", 0, y);
             canvas.setColor(Color.GRAY);
             indexForStrings++;
         }
