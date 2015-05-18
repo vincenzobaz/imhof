@@ -5,9 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.font.TextAttribute;
 import java.awt.geom.Line2D;
-import java.awt.geom.Line2D.Double;
 import java.awt.image.BufferedImage;
 
 public class BufferedMapDecorator extends BufferedMap {
