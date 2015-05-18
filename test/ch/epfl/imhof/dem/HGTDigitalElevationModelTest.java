@@ -12,7 +12,7 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
 public class HGTDigitalElevationModelTest {
-    @Test
+    // @Test
     public void correctlyConstructsNewInstance() {
         try {
             HGTDigitalElevationModel hgtDEM = new HGTDigitalElevationModel(
@@ -52,7 +52,7 @@ public class HGTDigitalElevationModelTest {
         }
     }
 
-    @Test
+    // @Test
     public void correctlyDrawsSimmental() throws IllegalArgumentException,
             IOException {
         File file = new File("data/N46E007.hgt");
@@ -78,22 +78,33 @@ public class HGTDigitalElevationModelTest {
     public void correctlyDrawsRelief() throws IllegalArgumentException,
             IOException {
         File file = new File("data/N46E007.hgt");
-        HGTDigitalElevationModel interlaken = new HGTDigitalElevationModel(file);
-        BufferedImage image = new BufferedImage(3316, 2188,
+        HGTDigitalElevationModel edge = new HGTDigitalElevationModel(file);
+        BufferedImage image = new BufferedImage(800, 800,
                 BufferedImage.TYPE_INT_RGB);
-        final double VERTICAL_POINT_DISTANCE = Math.toRadians(0.0416) / 2188d;
-        final double HORIZONTAL_POINT_DISTANCE = Math.toRadians(0.0927) / 3316d;
-        for (int j = 0; j < 2188; ++j) {
-            for (int i = 0; i < 3316; ++i) {
-                Vector3D normal = interlaken.normalAt(new PointGeo(Math
-                        .toRadians(7.8122) + i * HORIZONTAL_POINT_DISTANCE,
-                        Math.toRadians(46.7061) - j * VERTICAL_POINT_DISTANCE));
+        final double POINT_DISTANCE = Math.toRadians(0.1) / 800d;
+        for (int j = 0; j < 800; ++j) {
+            for (int i = 0; i < 800; ++i) {
+                Vector3D normal = edge.normalAt(new PointGeo(Math.toRadians(7)
+                        + i * POINT_DISTANCE, Math.toRadians(47) - j
+                        * POINT_DISTANCE));
                 double greyLevel = (normal.normalized().y() + 1) / 2d;
                 int newInt = (int) (greyLevel * 255.9999);
                 int grey = newInt + (newInt << 8) + (newInt << 16);
                 image.setRGB(i, j, grey);
             }
         }
-        ImageIO.write(image, "png", new File("relief_interlaken.png"));
+        ImageIO.write(image, "png", new File("relief_edge.png"));
+    }
+
+    @Test
+    public void debugAltitudeValues() throws IllegalArgumentException,
+            IOException {
+        File file = new File("data/N46E007.hgt");
+        HGTDigitalElevationModel edge = new HGTDigitalElevationModel(file);
+        int points = (int) Math.sqrt(file.length() / 2L);
+        System.out.println(points);
+        for (int i = 1000; i < 1500; ++i) {
+            System.out.println(edge.buffer.get(i));
+        }
     }
 }

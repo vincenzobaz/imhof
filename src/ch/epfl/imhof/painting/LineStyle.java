@@ -209,6 +209,6 @@ public final class LineStyle {
      *
      */
     public static enum LineJoin {
-        BEVEL, MITER, ROUND
+        MITER, ROUND, BEVEL
     }
 }

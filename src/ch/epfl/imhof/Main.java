@@ -104,7 +104,8 @@ public final class Main {
         SwissPainter.painter().drawMap(map, canvas);
 
         // debug
-        ImageIO.write(canvas.image(), "png", new File("interlaken_plain.png"));
+        // ImageIO.write(canvas.image(), "png", new
+        // File("interlaken_plain.png"));
 
         // Création d'un modèle de relief
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(

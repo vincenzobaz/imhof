@@ -21,7 +21,7 @@ import ch.epfl.imhof.Vector3D;
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
-    private ShortBuffer buffer;
+    public ShortBuffer buffer;
     private final double latitudeNW;
     private final double longitudeNW;
     private final InputStream stream;
@@ -110,7 +110,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
         // Assignation de la longitude et de la latitude du coin nord-ouest
-        // (même longitude que le coin sud-ouest, et latitude + 1°
+        // (même longitude que le coin sud-ouest, et latitude + 1°)
         latitudeNW = Math.toRadians(latitude + 1);
         longitudeNW = Math.toRadians(longitude);
     }
@@ -124,7 +124,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
         final double oneDegree = Math.toRadians(1);
-        // Vérification de l'appartenanc du point à la zone du fichier HGT
+        // Vérification de l'appartenance du point à la zone du fichier HGT
         if (point.latitude() > latitudeNW
                 || point.latitude() < latitudeNW - oneDegree
                 || point.longitude() < longitudeNW
