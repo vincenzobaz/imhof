@@ -14,18 +14,22 @@ import ch.epfl.imhof.PointGeo;
 public interface Projection {
 
     /**
-     * Projette sur le plan le point <code>PointGeo</code> reçu en argument.
+     * Convertit et retourne le <code>PointGeo</code> donné en
+     * <code>Point</code>, en le projetant sur le plan.
      * 
      * @param point
-     *            le point en coordonnées sphériques
+     *            le point en coordonnées sphériques à projeter
+     * @return le point projeté en coordonnées cartésiennes
      */
     Point project(PointGeo point);
 
     /**
-     *  Dé-projette le point (<code>Point</code>) du plan reçu en argument.
+     * Convertit et retourne le <code>Point</code> donné en
+     * <code>PointGeo</code>, en le dé-projetant du plan.
      * 
      * @param point
-     *            le point en coordonnées cartésiennes
+     *            le point en coordonnées cartésiennes à dé-projeter
+     * @return le point en coordonnées sphériques, déprojeté du plan
      */
     PointGeo inverse(Point point);
 }

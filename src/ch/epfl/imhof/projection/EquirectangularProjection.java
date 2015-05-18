@@ -15,25 +15,11 @@ import ch.epfl.imhof.PointGeo;
  */
 public final class EquirectangularProjection implements Projection {
 
-    /**
-     * Convertit un <code>PointGeo</code> en <code>Point</code>.
-     * 
-     * @param point
-     *            le point en coordonnées sphériques à projeter
-     * @return le point projeté en coordonnées cartésiennes
-     */
     @Override
     public Point project(PointGeo point) {
         return new Point(point.longitude(), point.latitude());
     }
 
-    /**
-     * Convertit un <code>Point</code> en <code>PointGeo</code>.
-     * 
-     * @param point
-     *            le point en coordonnées cartésiennes à dé-projeter
-     * @return le point en coordonnées sphériques, déprojeté du plan
-     */
     @Override
     public PointGeo inverse(Point point) {
         return new PointGeo(point.x(), point.y());

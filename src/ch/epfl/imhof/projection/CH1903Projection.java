@@ -15,13 +15,6 @@ import ch.epfl.imhof.PointGeo;
  */
 public final class CH1903Projection implements Projection {
 
-    /**
-     * Convertit un <code>PointGeo</code> en <code>Point</code>.
-     * 
-     * @param point
-     *            le point en coordonnées sphériques à projeter
-     * @return le point projeté en coordonnées cartésiennes
-     */
     @Override
     public Point project(PointGeo point) {
         double longitude = (Math.toDegrees(point.longitude()) * 3600 - 26782.5) / 10000d;
@@ -38,13 +31,6 @@ public final class CH1903Projection implements Projection {
         return new Point(x, y);
     }
 
-    /**
-     * Convertit un <code>Point</code> en <code>PointGeo</code>.
-     * 
-     * @param point
-     *            le point en coordonnées cartésiennes à dé-projeter
-     * @return le point en coordonnées sphériques, déprojeté du plan
-     */
     @Override
     public PointGeo inverse(Point point) {
         double x1 = (point.x() - 600000) / 1000000d;
