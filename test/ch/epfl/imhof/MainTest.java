@@ -7,7 +7,7 @@ import org.xml.sax.SAXException;
 
 public final class MainTest {
 
-    @Test
+//    @Test
     public void interlakenTest() throws IOException, SAXException {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
