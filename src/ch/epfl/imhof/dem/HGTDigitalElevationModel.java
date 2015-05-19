@@ -139,7 +139,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
         // du fichier HGT
-        double angularResolution = ONE_DEGREE / ((double) pointsPerLine - 1);
+        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
         int i = (int) Math.floor((point.longitude() - longitudeSW)
                 / angularResolution);
         int j = (int) Math.floor((point.latitude() - latitudeSW)
@@ -147,15 +147,15 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         double s = Earth.RADIUS * angularResolution;
 
-        double altitudeSW = altitudeAt(i, j);
-        double altitudeNW = altitudeAt(i, j + 1);
-        double altitudeSE = altitudeAt(i + 1, j);
-        double altitudeNE = altitudeAt(i + 1, j + 1);
+        short altitudeSW = altitudeAt(i, j);
+        short altitudeNW = altitudeAt(i, j + 1);
+        short altitudeSE = altitudeAt(i + 1, j);
+        short altitudeNE = altitudeAt(i + 1, j + 1);
 
-        double zA = altitudeSE - altitudeSW;
-        double zB = altitudeNW - altitudeSW;
-        double zC = altitudeNW - altitudeNE;
-        double zD = altitudeSE - altitudeNE;
+        int zA = altitudeSE - altitudeSW;
+        int zB = altitudeNW - altitudeSW;
+        int zC = altitudeNW - altitudeNE;
+        int zD = altitudeSE - altitudeNE;
 
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }

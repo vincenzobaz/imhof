@@ -72,6 +72,7 @@ public final class ReliefShader {
             throw new IllegalArgumentException(
                     "Le rayon de floutage doit être positif.");
         }
+
         // Si le rayon de floutage est nul, on produit une image non-floutée
         if (radius == 0f) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(
@@ -83,6 +84,7 @@ public final class ReliefShader {
             // calculées par échantillonage d'une fonction gaussienne à deux
             // dimensions
             float[] gaussValues = shadingKernel(radius);
+
             // On calcule la dimension de la zone tampon et on produit une image
             // plus grande afin de compenser la réduction de taille causée par
             // getSubImage (extraction de l'image floutée avec exclusion de la
@@ -93,9 +95,11 @@ public final class ReliefShader {
                     bufferZoneSize, height + bufferZoneSize - 1), bottomLeft,
                     new Point(width + bufferZoneSize - 1, bufferZoneSize),
                     topRight));
+
             // On peut maintenant flouter notre image en utilisant l'image non
             // floutée et le tableau de valeurs construits avant
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);
+
             // On utilise getSubimage pour retourner une image floutée en
             // excluant la zone non floutée, correspondante aux bords de l'image
             // d'épaisseur bufferZoneSize
@@ -120,6 +124,7 @@ public final class ReliefShader {
             Function<Point, Point> imageToPlan) {
         BufferedImage rawRelief = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
+
         // On calcule la couleur de chaque pixel à partir de l'altitude du
         // point correspondant à ce pixel
         for (int x = 0; x < width; ++x) {

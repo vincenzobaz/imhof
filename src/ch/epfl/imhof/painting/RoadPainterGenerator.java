@@ -15,12 +15,10 @@ import ch.epfl.imhof.Attributed;
  *
  */
 public final class RoadPainterGenerator {
-    // Styles de lignes par défaut à modifier pour chaque type de route à
+    // Style de ligne par défaut à modifier pour chaque type de route à
     // l'aide des méthodes withX de LineStyle
-    private static final LineStyle DEFAULT_BRIDGE_CASING_AND_TUNNEL_STYLE = new LineStyle(
-            0f, Color.WHITE, LineCap.BUTT, LineJoin.ROUND, null);
-    private static final LineStyle DEFAULT_BRIDGE_INTERIOR_AND_ROAD_STYLE = DEFAULT_BRIDGE_CASING_AND_TUNNEL_STYLE
-            .withCap(LineCap.ROUND);
+    private static final LineStyle DEFAULT_STYLE = new LineStyle(0f,
+            Color.WHITE, LineCap.ROUND, LineJoin.ROUND, null);
 
     /**
      * La classe étant non instanciable, le constructeur est privé et vide.
@@ -42,9 +40,10 @@ public final class RoadPainterGenerator {
             // Dessin des tunnels
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        DEFAULT_BRIDGE_CASING_AND_TUNNEL_STYLE
+                        DEFAULT_STYLE
                                 .withWidth(spec.wI() / 2f)
                                 .withColor(spec.cC())
+                                .withCap(LineCap.BUTT)
                                 .withDashingPattern(2 * spec.wI(),
                                         2 * spec.wI()))
                         .when(Filters.tagged("tunnel").and(spec.filter()))
@@ -54,8 +53,8 @@ public final class RoadPainterGenerator {
             // Dessin des bordures de routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        DEFAULT_BRIDGE_INTERIOR_AND_ROAD_STYLE.withWidth(
-                                spec.wI() + 2 * spec.wC()).withColor(spec.cC()))
+                        DEFAULT_STYLE.withWidth(spec.wI() + 2 * spec.wC())
+                                .withColor(spec.cC()))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.filter())).drawMap(map, canvas);
@@ -64,8 +63,7 @@ public final class RoadPainterGenerator {
             // Dessin de l'intérieur des routes normales
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        DEFAULT_BRIDGE_INTERIOR_AND_ROAD_STYLE.withWidth(
-                                spec.wI()).withColor(spec.cI()))
+                        DEFAULT_STYLE.withWidth(spec.wI()).withColor(spec.cI()))
                         .when(Filters.tagged("bridge").negate()
                                 .and(Filters.tagged("tunnel").negate())
                                 .and(spec.filter())).drawMap(map, canvas);
@@ -74,8 +72,8 @@ public final class RoadPainterGenerator {
             // Dessin des bordures de pont
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        DEFAULT_BRIDGE_CASING_AND_TUNNEL_STYLE.withWidth(
-                                spec.wI() + 2 * spec.wC()).withColor(spec.cC()))
+                        DEFAULT_STYLE.withWidth(spec.wI() + 2 * spec.wC())
+                                .withColor(spec.cC()).withCap(LineCap.BUTT))
                         .when(Filters.tagged("bridge").and(spec.filter()))
                         .drawMap(map, canvas);
             }
@@ -83,8 +81,7 @@ public final class RoadPainterGenerator {
             // Dessin de l'intérieur des ponts
             for (RoadSpec spec : specifications) {
                 Painter.line(
-                        DEFAULT_BRIDGE_INTERIOR_AND_ROAD_STYLE.withWidth(
-                                spec.wI()).withColor(spec.cI()))
+                        DEFAULT_STYLE.withWidth(spec.wI()).withColor(spec.cI()))
                         .when(Filters.tagged("bridge").and(spec.filter()))
                         .drawMap(map, canvas);
             }

@@ -61,10 +61,11 @@ public final class Filters {
         }
 
         return x -> {
-            for (String s : attributeValues) {
-                if (s.equals(x.attributeValue(attributeName,
-                        "404 Value not found"))) {
-                    return true;
+            if (x.hasAttribute(attributeName)) {
+                for (String s : attributeValues) {
+                    if (s.equals(x.attributeValue(attributeName))) {
+                        return true;
+                    }
                 }
             }
             return false;

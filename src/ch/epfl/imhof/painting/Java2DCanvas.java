@@ -64,8 +64,7 @@ public final class Java2DCanvas implements Canvas {
 
         float scale = dpi / 72f;
         basisChange = Point.alignedCoordinateChange(bottomLeft, new Point(0d,
-                (height - 1) / scale), topRight, new Point((width - 1) / scale,
-                0d));
+                height / scale), topRight, new Point(width / scale, 0d));
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 

@@ -32,7 +32,7 @@ public final class Main {
     private static final Projection CH1903 = new CH1903Projection();
 
     // Vecteur représentant la source lumineuse du relief ombré
-    private static final Vector3D LIGHT_SOURCE = new Vector3D(-1, 1, 1);
+    private static final Vector3D LIGHT_SOURCE = new Vector3D(-1d, 1d, 1d);
 
     /**
      * Méthode principale, elle utilise toutes les autres classes pour produire
