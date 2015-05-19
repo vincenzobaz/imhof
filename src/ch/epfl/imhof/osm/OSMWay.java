@@ -99,7 +99,7 @@ public final class OSMWay extends OSMEntity {
      *         sinon
      */
     public boolean isClosed() {
-        return (firstNode().equals(lastNode()));
+        return firstNode().equals(lastNode());
     }
 
     /**

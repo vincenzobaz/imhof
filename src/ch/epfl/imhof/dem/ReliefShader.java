@@ -48,9 +48,9 @@ public final class ReliefShader {
      * Dessine et retourne une <code>BufferedImage</code> du relief selon les
      * paramètres donnés.
      * 
-     * @param BL
+     * @param bottomLeft
      *            le coin bas-gauche du relief à dessiner
-     * @param TR
+     * @param topRight
      *            le coin haut-droite du relief à dessiner
      * @param width
      *            la largeur de l'image, en pixels
@@ -65,8 +65,9 @@ public final class ReliefShader {
      * @throws IllegalArgumentException
      *             lève une exception si le rayon de floutage est négatif
      */
-    public BufferedImage shadedRelief(Point BL, Point TR, int width,
-            int height, float radius) throws IllegalArgumentException {
+    public BufferedImage shadedRelief(Point bottomLeft, Point topRight,
+            int width, int height, float radius)
+            throws IllegalArgumentException {
         if (radius < 0) {
             throw new IllegalArgumentException(
                     "Le rayon de floutage doit être positif.");
@@ -74,7 +75,8 @@ public final class ReliefShader {
         // Si le rayon de floutage est nul, on produit une image non-floutée
         if (radius == 0f) {
             return raw(width, height, Point.alignedCoordinateChange(new Point(
-                    0d, height - 1), BL, new Point(width - 1, 0d), TR));
+                    0d, height - 1), bottomLeft, new Point(width - 1, 0d),
+                    topRight));
         } else {
             // Si le rayon de floutage n'est pas nul, on produit un tableau
             // contenant les valeurs correspondantes au rayon de floutage,
@@ -88,8 +90,9 @@ public final class ReliefShader {
             int bufferZoneSize = (gaussValues.length - 1) / 2;
             BufferedImage rawImage = raw(width + 2 * bufferZoneSize, height + 2
                     * bufferZoneSize, Point.alignedCoordinateChange(new Point(
-                    bufferZoneSize, height + bufferZoneSize - 1), BL,
-                    new Point(width + bufferZoneSize - 1, bufferZoneSize), TR));
+                    bufferZoneSize, height + bufferZoneSize - 1), bottomLeft,
+                    new Point(width + bufferZoneSize - 1, bufferZoneSize),
+                    topRight));
             // On peut maintenant flouter notre image en utilisant l'image non
             // floutée et le tableau de valeurs construits avant
             BufferedImage blurredImage = blurredImage(rawImage, gaussValues);

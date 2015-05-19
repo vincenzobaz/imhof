@@ -28,6 +28,12 @@ import ch.epfl.imhof.projection.Projection;
  *
  */
 public final class Main {
+    // Projection utilisée pour projeter les points dans le repère cartésien
+    private static final Projection CH1903 = new CH1903Projection();
+
+    // Vecteur représentant la source lumineuse du relief ombré
+    private static final Vector3D LIGHT_SOURCE = new Vector3D(-1, 1, 1);
+
     /**
      * Méthode principale, elle utilise toutes les autres classes pour produire
      * une carte à partir des paramètres fournis.
@@ -78,13 +84,9 @@ public final class Main {
                 * (topRight.latitude() - bottomLeft.latitude()) * Earth.RADIUS
                 / 25000d);
 
-        // En ayant besoin de cette projection à plusieurs moments, on la stocke
-        // dans une variable en évitant d'en instanciant une autre à chaque fois
-        Projection ch1903 = new CH1903Projection();
-
         // Projection des points du système WGS84 dans un repère cartésien
-        Point projectedTopRight = ch1903.project(topRight);
-        Point projectedBottomLeft = ch1903.project(bottomLeft);
+        Point projectedTopRight = CH1903.project(topRight);
+        Point projectedBottomLeft = CH1903.project(bottomLeft);
 
         // Calcul de la largeur de l'image
         int width = (int) Math
@@ -96,7 +98,7 @@ public final class Main {
         // est ensuite converti en map et dessiné sur une toile
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
-                ch1903);
+                CH1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
                 projectedTopRight, width, height, Integer.parseInt(args[6]),
@@ -107,9 +109,9 @@ public final class Main {
         HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
 
-        // Création d'un "dessinateur de reliefs"
-        ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
-                -1, 1, 1));
+        // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
+        // nord-ouest
+        ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
 
         // Dessin du relief flouté
         BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,

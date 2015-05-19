@@ -80,10 +80,8 @@ public abstract class OSMEntity {
      *
      */
     public abstract static class Builder {
-        /*
-         * Utilisation du protected pour que les sous-classes puissent accéder
-         * aux deux attributs id et attributesBuilder.
-         */
+        // Utilisation du protected pour que les sous-classes puissent accéder
+        // aux deux attributs id et attributesBuilder.
         protected final long id;
         private boolean isIncomplete;
         protected final Attributes.Builder attributesBuilder;

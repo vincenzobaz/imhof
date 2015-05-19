@@ -19,13 +19,16 @@ import ch.epfl.imhof.Vector3D;
  *
  */
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
-    // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
-    // redéfinition de la méthode close.
-    private ShortBuffer buffer;
+    // Constante représentant un degré en radians
+    private static final double ONE_DEGREE = Math.toRadians(1);
+
+    private final int pointsPerLine;
     private final double latitudeSW;
     private final double longitudeSW;
     private final InputStream stream;
-    private final int pointsPerLine;
+    // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
+    // redéfinition de la méthode close.
+    private ShortBuffer buffer;
 
     /**
      * Construit un modèle numérique de terrain à partir du fichier HGT passé en
@@ -102,6 +105,11 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Taille en octets du fichier invalide.");
         }
         pointsPerLine = (int) points;
+
+        // Assignation de la longitude et de la latitude du coin sud-ouest
+        latitudeSW = Math.toRadians(latitude);
+        longitudeSW = Math.toRadians(longitude);
+
         // Ouverture et assignation du flot et mappage de la valeur des octets
         // en mémoire
         try (FileInputStream stream = new FileInputStream(model)) {
@@ -109,9 +117,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             buffer = stream.getChannel()
                     .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
-        // Assignation de la longitude et de la latitude du coin sud-ouest
-        latitudeSW = Math.toRadians(latitude);
-        longitudeSW = Math.toRadians(longitude);
     }
 
     @Override
@@ -122,12 +127,11 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
-        final double oneDegree = Math.toRadians(1);
         // Vérification de l'appartenance du point à la zone du fichier HGT
         if (point.latitude() < latitudeSW
-                || point.latitude() > latitudeSW + oneDegree
+                || point.latitude() > latitudeSW + ONE_DEGREE
                 || point.longitude() < longitudeSW
-                || point.longitude() > longitudeSW + oneDegree) {
+                || point.longitude() > longitudeSW + ONE_DEGREE) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
@@ -135,7 +139,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
         // du fichier HGT
-        double angularResolution = oneDegree / ((double) pointsPerLine - 1);
+        double angularResolution = ONE_DEGREE / ((double) pointsPerLine - 1);
         int i = (int) Math.floor((point.longitude() - longitudeSW)
                 / angularResolution);
         int j = (int) Math.floor((point.latitude() - latitudeSW)
@@ -143,10 +147,15 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
         double s = Earth.RADIUS * angularResolution;
 
-        double zA = altitudeAt(i + 1, j) - altitudeAt(i, j);
-        double zB = altitudeAt(i, j + 1) - altitudeAt(i, j);
-        double zC = altitudeAt(i, j + 1) - altitudeAt(i + 1, j + 1);
-        double zD = altitudeAt(i + 1, j) - altitudeAt(i + 1, j + 1);
+        double altitudeSW = altitudeAt(i, j);
+        double altitudeNW = altitudeAt(i, j + 1);
+        double altitudeSE = altitudeAt(i + 1, j);
+        double altitudeNE = altitudeAt(i + 1, j + 1);
+
+        double zA = altitudeSE - altitudeSW;
+        double zB = altitudeNW - altitudeSW;
+        double zC = altitudeNW - altitudeNE;
+        double zD = altitudeSE - altitudeNE;
 
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
