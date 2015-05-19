@@ -8,8 +8,10 @@ import javax.imageio.ImageIO;
 
 import org.xml.sax.SAXException;
 
+import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
+import ch.epfl.imhof.dem.MultiDigitalElevationModel;
 import ch.epfl.imhof.dem.ReliefShader;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.osm.OSMMap;
@@ -21,19 +23,25 @@ import ch.epfl.imhof.projection.CH1903Projection;
 import ch.epfl.imhof.projection.Projection;
 
 /**
- * Classe contenant la méthode principale du projet
+ * Classe contenant la méthode principale du projet.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  */
 public final class Main {
+    // Projection utilisée pour projeter les points dans le repère cartésien
+    private static final Projection CH1903 = new CH1903Projection();
+
+    // Vecteur représentant la source lumineuse du relief ombré
+    private static final Vector3D LIGHT_SOURCE = new Vector3D(-1d, 1d, 1d);
+
     /**
      * Méthode principale, elle utilise toutes les autres classes pour produire
-     * une carte à partir des paramètres fournis
+     * une carte à partir des paramètres fournis.
      * 
      * @param args
-     *            tableau de chaînes de charactères. On ne vérifie pas de
+     *            tableau de chaînes de charactères; on n'effectue pas de
      *            validation des arguments, mais il devrait contenir:
      *            <ul>
      *            <li>args[0]: le nom (chemin) d'un fichier OSM compressé avec
@@ -55,7 +63,7 @@ public final class Main {
      *            </ul>
      * 
      * @throws IOException
-     *             si l'un des fichiers n'est pas accessible par les programme
+     *             si l'un des fichiers n'est pas accessible par le programme
      * @throws SAXException
      *             s'il y des erreurs de parsing du fichiers osm
      */
@@ -69,35 +77,30 @@ public final class Main {
                 .parseDouble(args[2])), Math.toRadians(Double
                 .parseDouble(args[3])));
 
-        // On calcule la resolution de l'image en pixel par mètres
+        // Calcul de la résolution de l'image en pixel par mètres
         int pixelPerMeterResolution = (int) Math.round(Integer
                 .parseInt(args[6]) * (5000d / 127d));
 
-        // On calcule hauteur selon laformule fournie
+        // Calcul de la hauteur de l'image
         int height = (int) Math.round(pixelPerMeterResolution
-                * (1 / 25000d)
-                * Math.toRadians(Double.parseDouble(args[5])
-                        - Double.parseDouble(args[3])) * Earth.RADIUS);
+                * (topRight.latitude() - bottomLeft.latitude()) * Earth.RADIUS
+                / 25000d);
 
-        // En ayant besoin de cette projection à plusieurs moments, on la stocke
-        // dans une variable en évitant d'en instanciant une autre à chaque fois
-        Projection ch1903 = new CH1903Projection();
+        // Projection des points du système WGS84 dans un repère cartésien
+        Point projectedTopRight = CH1903.project(topRight);
+        Point projectedBottomLeft = CH1903.project(bottomLeft);
 
-        // On projète nos points du système WGS84 dans un repère cartésien
-        Point projectedTopRight = ch1903.project(topRight);
-        Point projectedBottomLeft = ch1903.project(bottomLeft);
-
-        // On calcule la largeur selon la formule fournie
+        // Calcul de la largeur de l'image
         int width = (int) Math
                 .round((projectedTopRight.x() - projectedBottomLeft.x())
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
 
-        // Lecture du fichier OSM et conséquente création d'un objet OSMMap qui
-        // est ensuite converti en Map et dessiné sur une toile
+        // Lecture du fichier OSM et création d'un objet OSMMap qui
+        // est ensuite converti en map et dessiné sur une toile
         OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
-                ch1903);
+                CH1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
                 projectedTopRight, width, height, Integer.parseInt(args[6]),
@@ -105,28 +108,40 @@ public final class Main {
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
-        HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
-                args[1]));
+        DigitalElevationModel dem = null;
+        switch (args.length) {
+        case 8:
+            dem = new HGTDigitalElevationModel(new File(args[1]));
+        case 9:
+            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+                    new File(args[1])), new HGTDigitalElevationModel(new File(
+                    args[8])));
+        case 11:
+            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+                    new File(args[1])), new HGTDigitalElevationModel(new File(
+                    args[8])), new HGTDigitalElevationModel(new File(args[9])),
+                    new HGTDigitalElevationModel(new File(args[10])));
+        }
 
-        // Création d'un "dessinnateur de reliefs"
-        ReliefShader reliefShader = new ReliefShader(ch1903, dem, new Vector3D(
-                -1, 1, 1));
+        // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
+        // nord-ouest
+        ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
 
-        // Le relief flouté est dessiné
+        // Dessin du relief flouté
         BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
-        
-        // Finalement on compose l'image du relief et celle de la carte
+
+        // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
-        
-        // On sauvegarde l'image ainsi obtenue sur disque.
-        ImageIO.write(finalImage, "png", new File("interlaken_Main.png"));
+
+        // Sauvegarde de l'image obtenue sur disque
+        ImageIO.write(finalImage, "png", new File(args[7]));
     }
 
     /**
-     * Retourne une image obtenue en composant deux images par multiplication
-     * des couleurs de chaque pixel
+     * Retourne une image obtenue par composition des deux images fournies en
+     * multipliant la couleur de chacun de leurs pixels entre elles.
      * 
      * @param shadedRelief
      *            l'image du relief
