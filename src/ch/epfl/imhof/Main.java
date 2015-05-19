@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import org.xml.sax.SAXException;
 
+import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
 import ch.epfl.imhof.dem.ReliefShader;
@@ -106,7 +107,7 @@ public final class Main {
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
-        HGTDigitalElevationModel dem = new HGTDigitalElevationModel(new File(
+        DigitalElevationModel dem = new HGTDigitalElevationModel(new File(
                 args[1]));
 
         // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
