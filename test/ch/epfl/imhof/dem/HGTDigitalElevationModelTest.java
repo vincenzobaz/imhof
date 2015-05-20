@@ -97,11 +97,17 @@ public class HGTDigitalElevationModelTest {
     }
 
     @Test
-    public void debugAltitudeValues() throws IllegalArgumentException,
+    public void limitCoordinateTest() throws IllegalArgumentException,
             IOException {
         File file = new File("data/N46E007.hgt");
         HGTDigitalElevationModel edge = new HGTDigitalElevationModel(file);
-        int points = (int) Math.sqrt(file.length() / 2L);
-        System.out.println(points);
+        edge.normalAt(new PointGeo(Math.toRadians(7), Math.toRadians(46)));
+        edge.normalAt(new PointGeo(Math.toRadians(7.5), Math.toRadians(46)));
+        edge.normalAt(new PointGeo(Math.toRadians(8), Math.toRadians(46)));
+        edge.normalAt(new PointGeo(Math.toRadians(7), Math.toRadians(46.5)));
+        edge.normalAt(new PointGeo(Math.toRadians(8), Math.toRadians(46.5)));
+        // pourquoi ces deux appels failent?
+        edge.normalAt(new PointGeo(Math.toRadians(7), Math.toRadians(47)));
+        edge.normalAt(new PointGeo(Math.toRadians(8), Math.toRadians(47)));
     }
 }

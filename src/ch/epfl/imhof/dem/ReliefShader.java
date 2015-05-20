@@ -153,7 +153,7 @@ public final class ReliefShader {
      * @return le tableau des poids des pixels autour du pixel considéré
      */
     private float[] shadingKernel(float radius) {
-        float sigmaSquared = (float) Math.pow(radius / 3f, 2);
+        double sigmaSquared = Math.pow(radius / 3f, 2);
         int n = 2 * ((int) Math.ceil(radius)) + 1;
 
         float[] line = new float[n];
