@@ -12,20 +12,30 @@ import ch.epfl.imhof.Vector3D;
 
 /**
  * Classe représentant un modèle numérique de terrain stocké dans un fichier au
- * format HGT. Elle implémente l'interface <code>DigitalElevationModel</code>.
+ * format HGT.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  */
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
+
     // Constante représentant un degré en radians
     private static final double ONE_DEGREE = Math.toRadians(1);
 
     private final int pointsPerLine;
+
+    // Latitude et longitude du point bas-gauche dans le fichier, correspondant
+    // au poit sud-ouest (south-west). On préfère stocker ces deux valeurs
+    // plutôt qu'un objet {@link ch.epfl.imhof.PointGeo PointGeo} parce que dans
+    // la méthode {@link ch.epfl.imhof.dem.HGTDigitalElevationModel#normalAlt
+    // normalAlt} on aurait eu besoin de les re-extraire pour éviter des trop
+    // nombreux appels aux accesseurs
     private final double latitudeSW;
     private final double longitudeSW;
+
     private final InputStream stream;
+
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
     private ShortBuffer buffer;
@@ -98,6 +108,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         if (!filename.substring(7).equals(".hgt")) {
             throw new IllegalArgumentException("Extension du fichier invalide.");
         }
+
         // On vérifie si la taille en octets du fichier est valide
         double points = Math.sqrt(model.length() / 2L);
         if (points % 1d != 0d) {
@@ -136,15 +147,19 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
+        // Calcul de la résolution angulaire
+        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
+
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
         // du fichier HGT
-        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
         int i = (int) Math.floor((point.longitude() - longitudeSW)
                 / angularResolution);
         int j = (int) Math.floor((point.latitude() - latitudeSW)
                 / angularResolution);
 
+        // On utilise les formules données pour calculer les coordonnées du
+        // vecteur normal au point considéré
         double s = Earth.RADIUS * angularResolution;
 
         short altitudeSW = altitudeAt(i, j);

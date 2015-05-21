@@ -13,6 +13,7 @@ public final class Color {
     public static final Color RED = Color.rgb(1d, 0d, 0d);
     public static final Color GREEN = Color.rgb(0d, 1d, 0d);
     public static final Color BLUE = Color.rgb(0d, 0d, 1d);
+
     // Les couleurs blanc et noir
     public static final Color WHITE = Color.rgb(1d, 1d, 1d);
     public static final Color BLACK = Color.rgb(0d, 0d, 0d);
@@ -35,6 +36,8 @@ public final class Color {
      */
     private Color(double redRatio, double greenRatio, double blueRatio)
             throws IllegalArgumentException {
+        // Les trois composantes étant des rapports, leurs valeurs doivent être
+        // comprise entre 0 et 1 pour être acceptées
         if (redRatio < 0d || redRatio > 1d) {
             throw new IllegalArgumentException(
                     "La composante rouge est invalide.");
@@ -150,7 +153,7 @@ public final class Color {
     /**
      * Convertit et retourne la couleur en couleur de l'API Java.
      * 
-     * @return l'équivalent de la couleur en <code>java.awt.Color</code>
+     * @return l'équivalent de cette classe dans l'API Java.
      */
     public java.awt.Color convert() {
         return new java.awt.Color((float) redRatio, (float) greenRatio,

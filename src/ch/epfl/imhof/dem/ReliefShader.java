@@ -11,7 +11,7 @@ import ch.epfl.imhof.projection.Projection;
 
 /**
  * Classe permettant de dessiner un relief ombré coloré, à partir d'un
- * {@link ch.epfl.imhof.dem.DigitalElevationModel}. Selon le rayon de floutage
+ * {@link ch.epfl.imhof.dem.DigitalElevationModel DigitalElevationModel}. Selon le rayon de floutage
  * fourni, cette image peut être floutée pour compenser la basse résolution des
  * fichiers hgt utilisés.
  * 
@@ -175,10 +175,10 @@ public final class ReliefShader {
 
     /**
      * Retourne l'image de relief floutée. Le floutage se fait au moyen de la
-     * classe {@link java.awt.image.ConvolveOp}. Pour éviter des ennuyants
-     * calculs d'un {@link java.awt.image.Kernel} matriciel, on utilise une fois
+     * classe {@link java.awt.image.ConvolveOp ConvolveOp}. Pour éviter des ennuyants
+     * calculs d'un {@link java.awt.image.Kernel Kernel} matriciel, on utilise une fois
      * un vecteur et une deuxième fois le même vecteur transposée, construits à
-     * l'aide du constructeur de {@link java.awt.image.Kernel#Kernel}
+     * l'aide du constructeur de la classe:{@link java.awt.image.Kernel#Kernel Kernel}
      * 
      * @param image
      *            l'image à flouter
