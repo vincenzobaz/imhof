@@ -7,8 +7,9 @@ import ch.epfl.imhof.Attributed;
 /**
  * Classe non instanciable offrant trois méthodes statiques fournissant des
  * prédicats pour tester les attributs de valeurs attribuées. Toutes les
- * méthodes redéfinissent de façon anonyme la méthode <code>test(T t)</code> de
- * l'interface fonctionnelle <code>java.util.function.Predicate</code>.
+ * méthodes redéfinissent de façon anonyme la méthode
+ * {@link java.util.function.Predicate#test test(T t)} de l'interface
+ * fonctionnelle {@link java.util.function.Predicate Predicate}.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -28,7 +29,7 @@ public final class Filters {
      * @param attributeName
      *            le nom de l'attribut dont on veut vérifier l'appartenance à la
      *            valeur attribuée
-     * @return un filtre (<code>Predicate</code>)
+     * @return un filtre
      */
     public static Predicate<Attributed<?>> tagged(String attributeName) {
         return x -> x.hasAttribute(attributeName);
@@ -46,9 +47,9 @@ public final class Filters {
      *            tableau de valeurs dont on veut vérifier l'association avec le
      *            paramètre attributeName. L'ellipse permet à l'utilisateur de
      *            fournir à la méthode un nombre variable de valeurs sans devoir
-     *            définir une <code>Collection</code>
+     *            définir une {@link java.util.Collection}
      * 
-     * @return un filtre (<code>Predicate</code>)
+     * @return un filtre
      * @throws IllegalArgumentException
      *             lève une exception si on ne reçoit pas de valeurs d'attribut
      *             à tester
@@ -80,13 +81,16 @@ public final class Filters {
      * @param layer
      *            entier identifiant la couche que nous voulons tester pour
      *            savoir si elle contient la valeur attribuée
-     * @return un filtre (<code>Predicate</code>)
+     * @return un filtre
      * @throws IllegalArgumentException
      *             lève une exception si le paramètre identifiant la couche est
      *             un entier inférieur à -5 ou supérieur à 5
      */
     public static Predicate<Attributed<?>> onLayer(int layer)
             throws IllegalArgumentException {
+        // Dans les fichiers OSM la valeur de layer est toujours comprise entre
+        // -5 et 5. Si la valeur reçue ne se trouve pas dans cet intervalle, on
+        // ne peut pas continuer
         if (layer < -5 || layer > 5) {
             throw new IllegalArgumentException(
                     "Le numéro de couche doit être compris entre -5 et 5.");
