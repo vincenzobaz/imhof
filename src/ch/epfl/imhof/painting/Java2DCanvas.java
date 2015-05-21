@@ -15,18 +15,23 @@ import ch.epfl.imhof.geometry.ClosedPolyLine;
 import ch.epfl.imhof.geometry.Polygon;
 
 /**
- * Classe représentant une toile, implémentant l'interface <code>Canvas</code>.
- * Elle permet de dessiner des polylignes et des polygones dans une image
- * discrète.
+ * Classe représentant une toile, implémentant l'interface
+ * {@link ch.epfl.imhof.painting.Canvas Canvas} Elle permet de dessiner des
+ * {@link ch.epfl.imhof.geometry.PolyLine} et des
+ * {@link ch.epfl.imhof.geometry.Polygon} dans une image discrète.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  */
 public final class Java2DCanvas implements Canvas {
+    // La fonction permettant d'effectuer un changement de repère: du repère
+    // cartésien au repère de l'image
     private final Function<Point, Point> basisChange;
+    // L'image sur laquelle on dessiner
     private final BufferedImage image;
-    private final Graphics2D context;
+    // La toile correspondante à l'image
+    private final Graphics2D graphicContext;
 
     /**
      * Construit une toile ayant pour coins les deux points fournis, la largeur,
@@ -68,12 +73,12 @@ public final class Java2DCanvas implements Canvas {
 
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        context = image.createGraphics();
-        context.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        graphicContext = image.createGraphics();
+        graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        context.scale(scale, scale);
-        context.setColor(backgroundColor.convert());
-        context.fillRect(0, 0, width, height);
+        graphicContext.scale(scale, scale);
+        graphicContext.setColor(backgroundColor.convert());
+        graphicContext.fillRect(0, 0, width, height);
     }
 
     @Override
@@ -85,12 +90,12 @@ public final class Java2DCanvas implements Canvas {
         // Définition du style de trait: on utilise deux constructeurs de
         // BasicStroke différents selon que le trait est continu (dashingPattern
         // null) ou bien pointillé
-        context.setStroke(dashingPattern == null ? new BasicStroke(style
+        graphicContext.setStroke(dashingPattern == null ? new BasicStroke(style
                 .width(), cap, join, 10f) : new BasicStroke(style.width(), cap,
                 join, 10f, dashingPattern, 0f));
-        context.setColor(style.color().convert());
+        graphicContext.setColor(style.color().convert());
 
-        context.draw(newPath(polyline));
+        graphicContext.draw(newPath(polyline));
     }
 
     @Override
@@ -105,8 +110,8 @@ public final class Java2DCanvas implements Canvas {
             area.subtract(new Area(newPath(hole)));
         }
 
-        context.setColor(color.convert());
-        context.fill(area);
+        graphicContext.setColor(color.convert());
+        graphicContext.fill(area);
     }
 
     /**
@@ -122,7 +127,7 @@ public final class Java2DCanvas implements Canvas {
      * Construit et retourne le chemin correspondant à la polyligne donnée.
      * 
      * @param polyline
-     *            la poyligne à convertir en <code>Path2D</code>
+     *            la poyligne à convertir en {@link java.awt.geom.Path2D}
      * @return le chemin correspondant à la polyligne
      */
     private Path2D newPath(PolyLine polyline) {

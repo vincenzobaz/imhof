@@ -62,7 +62,8 @@ public interface Painter<E> {
     }
 
     /**
-     * Retourne un peintre dessinant toutes les lignes de la carte fournie avec
+     * Retourne un peintre dessinant toutes les
+     * {@link ch.epfl.imhof.geometry.PolyLine} lignes de la carte fournie avec
      * les paramètres de style donnés.
      * 
      * @param width
@@ -84,7 +85,8 @@ public interface Painter<E> {
 
     /**
      * 
-     * Retourne un peintre dessinant toutes les lignes de la carte avec les deux
+     * Retourne un peintre dessinant toutes les
+     * {@link ch.epfl.imhof.geometry.PolyLine lignes} de la carte avec les deux
      * paramètres de style donnés et des valeurs par défaut pour les autres.
      * 
      * @param width
@@ -100,7 +102,8 @@ public interface Painter<E> {
     /**
      * 
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * de tous les polygones de la carte avec le style donné.
+     * de tous les {@link ch.epfl.imhof.geometry.Polygon polygones} de la carte
+     * avec le style donné.
      * 
      * @param style
      *            le style de dessin du trait
@@ -119,8 +122,8 @@ public interface Painter<E> {
 
     /**
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * de tous les polygones de la carte qu'on lui fournit en utilisant les cinq
-     * paramètres de style donnés.
+     * de tous les {@link ch.epfl.imhof.geometry.Polygon polygones} de la carte
+     * qu'on lui fournit en utilisant les cinq paramètres de style donnés.
      * 
      * @param width
      *            la largeur du trait
@@ -141,8 +144,9 @@ public interface Painter<E> {
 
     /**
      * Retourne un peintre dessinant les pourtours de l'enveloppe et des trous
-     * de tous les polygones de la carte qu'on lui fournit en utilisant les deux
-     * paramètres de style donnés et des valeurs par défaut pour les autres.
+     * de tous les {@link ch.epfl.imhof.geometry.Polygon polygones} de la carte
+     * qu'on lui fournit en utilisant les deux paramètres de style donnés et des
+     * valeurs par défaut pour les autres.
      * 
      * @param width
      *            la largeur du trait
@@ -202,7 +206,7 @@ public interface Painter<E> {
     /**
      * 
      * Retourne un peintre se comportant comme <code>this</code> mais qui
-     * dessine la carte par couche, de la plus basse à la plus élévée.
+     * dessine la carte couche par couche, de la plus basse à la plus élévée.
      * 
      * @return un peintre dessinant la carte par couches, en commençant par le
      *         niveau le plus bas (<code>layer = -5</code>) jusqu'au niveau le

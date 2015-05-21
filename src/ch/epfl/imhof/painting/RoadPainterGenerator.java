@@ -8,7 +8,8 @@ import ch.epfl.imhof.Attributed;
 
 /**
  * Classe non instanciable fournissant uniquement une méthode statique
- * permettant de générer un peintre de routes.
+ * permettant de générer un {@link ch.epfl.imhof.painting.Painter peintre} de
+ * routes.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
