@@ -1,7 +1,7 @@
 package ch.epfl.imhof;
 
 /**
- * Cette classe représente un objet de type T doté d'attributs.
+ * Cette classe représente un objet de type <code>T</code> doté d'attributs.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

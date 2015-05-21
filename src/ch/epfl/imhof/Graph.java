@@ -38,7 +38,7 @@ public final class Graph<N> {
     /**
      * Retourne l'ensemble des noeuds du graphe.
      * 
-     * @return les noeuds du graphe, sous forme de <code>Set</code>
+     * @return les noeuds du graphe, sous forme de {@link java.util.Set Set}
      */
     public Set<N> nodes() {
         return neighbors.keySet();
@@ -49,7 +49,7 @@ public final class Graph<N> {
      * 
      * @param node
      *            le noeud dont on cherche les voisins
-     * @return les voisins du noeud, sous forme de <code>Set</code>
+     * @return les voisins du noeud, sous forme de {@link java.util.Set Set}
      * @throws IllegalArgumentException
      *             lève une exception si le noeud passé en paramètre ne fait pas
      *             partie du graphe

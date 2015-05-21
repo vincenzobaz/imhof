@@ -43,8 +43,7 @@ public final class Attributes {
      * Retourne vrai si l'ensemble d'attributs contient la clef donnée.
      * 
      * @param key
-     *            la clé dont on cherche l'appartenance à l'ensemble
-     *            d'attributs, sous forme de <code>String</code>
+     *            la clé dont on cherche l'appartenance à l'ensemble d'attributs
      * @return <code>true</code> si la clé appartient à la liste d'attributs,
      *         <code>false</code> dans le cas contraire
      * 
@@ -59,8 +58,7 @@ public final class Attributes {
      * associative.
      * 
      * @param key
-     *            la clé dont on cherche la valeur associée, sous forme de
-     *            <code>String</code>
+     *            la clé dont on cherche la valeur associée
      * @return la valeur associée à la clé passée en paramètre si elle existe,
      *         <code>null</code> sinon
      */
@@ -73,10 +71,9 @@ public final class Attributes {
      * donnée si aucune valeur ne lui est associée.
      * 
      * @param key
-     *            la clé dont on cherche la valeur associée, sous forme de
-     *            <code>String</code>
+     *            la clé dont on cherche la valeur associée
      * @param defaultValue
-     *            la valeur par défaut, une <code>String</code>
+     *            la valeur par défaut
      * @return la valeur associée à la clé passée en paramètre, la valeur par
      *         défaut si aucune valeur ne lui est associée
      */
@@ -90,10 +87,9 @@ public final class Attributes {
      * un entier valide.
      * 
      * @param key
-     *            la clé dont on cherche l'entier associé, sous forme de
-     *            <code>String</code>
+     *            la clé dont on cherche l'entier associé
      * @param defaultValue
-     *            la valeur par défaut, un <code>int</code>
+     *            la valeur par défaut
      * @return l'entier associé à la clé passée en paramètre s'il existe, la
      *         valeur par défaut sinon
      */
@@ -110,8 +106,10 @@ public final class Attributes {
      * nom figure dans l'ensemble passé.
      * 
      * @param keysToKeep
-     *            les valeurs qu'on veut garder, sous forme de <code>Set</code>
-     * @return un objet de type <code>Attributes</code> filtré
+     *            les valeurs qu'on veut garder, sous forme de
+     *            {@link java.util.Set Set}
+     * @return un objet de type {@link ch.epfl.imhof.Attributes Attributes}
+     *         filtré
      */
     public Attributes keepOnlyKeys(Set<String> keysToKeep) {
         Builder filteredAttributes = new Builder();
@@ -124,7 +122,7 @@ public final class Attributes {
     }
 
     /**
-     * Bâtisseur de la classe <code>Attributes</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.Attributes Attributes}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -146,9 +144,9 @@ public final class Attributes {
          * si la clé est déjà présente dans l'ensemble d'attributs.
          * 
          * @param key
-         *            la clé, une <code>String</code>
+         *            la clé
          * @param value
-         *            la valeur, un <code>String</code>
+         *            la valeur associée à la clé
          */
         public void put(String key, String value) {
             attributes.put(key, value);
@@ -158,7 +156,8 @@ public final class Attributes {
          * Construit et retourne un ensemble d'attributs contenant les
          * associations clef/valeur ajoutées jusqu'à présent.
          * 
-         * @return l'objet <code>Attributes</code> en construction
+         * @return l'objet {@link ch.epfl.imhof.Attributes Attributes} en
+         *         construction
          */
         public Attributes build() {
             return new Attributes(attributes);

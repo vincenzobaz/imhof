@@ -9,7 +9,8 @@ import ch.epfl.imhof.geometry.Polygon;
 
 /**
  * Classe représentant une carte projetée contenant des entité géométriques
- * attribuées <code>Attributed</code>. La classe est immuable.
+ * attribuées {@link ch.epfl.imhof.Attributed Attributed}. La classe est
+ * immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -39,7 +40,7 @@ public final class Map {
      * Retourne la liste des polylignes attribuées de la carte.
      * 
      * @return les polylignes attribuées de la carte, sous forme de
-     *         <code>List</code>
+     *         {@link java.util.List List}
      */
     public List<Attributed<PolyLine>> polyLines() {
         return polyLines;
@@ -49,14 +50,14 @@ public final class Map {
      * Retourne la liste des polygones attribués de la carte.
      * 
      * @return les polygones attribués de la carte, sous forme de
-     *         <code>List</code>
+     *         {@link java.util.List List}
      */
     public List<Attributed<Polygon>> polygons() {
         return polygons;
     }
 
     /**
-     * Bâtisseur de la classe <code>Map</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.Map Map}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -99,8 +100,8 @@ public final class Map {
          * Construit et retourne une carte avec les polylignes et polygones
          * ajoutés jusqu'à présent au bâtisseur.
          * 
-         * @return un objet de type <code>Map</code> construit à partir des
-         *         données fournies au bâtisseur
+         * @return un objet de type {@link ch.epfl.imhof.Map Map} construit à
+         *         partir des données fournies au bâtisseur
          */
         public Map build() {
             return new Map(polyLines, polygons);
