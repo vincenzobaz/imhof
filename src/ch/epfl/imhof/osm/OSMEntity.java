@@ -73,7 +73,7 @@ public abstract class OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe <code>OSMEntity</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMEntity OSMEntity}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)

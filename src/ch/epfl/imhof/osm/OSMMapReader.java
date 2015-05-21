@@ -20,9 +20,9 @@ import static ch.epfl.imhof.osm.OSMRelation.Member.Type.*;
 import ch.epfl.imhof.PointGeo;
 
 /**
- * Classe non-instanciable permettant de construire un objet <code>OSMMap</code>
- * (une carte OpenStreetMap) à partir de données stockées dans un fichier au
- * format OSM.
+ * Classe non-instanciable permettant de construire un objet
+ * {@link ch.epfl.imhof.osm.OSMMap OSMMap} (une carte OpenStreetMap) à partir de
+ * données stockées dans un fichier au format OSM.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -38,16 +38,16 @@ public final class OSMMapReader {
 
     /**
      * Méthode statique qui lit un fichier OSM et construit une
-     * <code>OSMMap</code> à partir de celui-ci. Décompresse le fichier avec
-     * gzip si le second paramètre est vrai.
+     * {@link ch.epfl.imhof.osm.OSMMap OSMMap} à partir de celui-ci. Décompresse
+     * le fichier avec gzip si le second paramètre est vrai.
      * 
      * @param fileName
      *            le nom du fichier OSM à lire
      * @param unGZip
      *            <code>true</code> si le fichier OSM à lire est fourni sous
      *            forme d'archive à décompresser
-     * @return un nouvel objet de type <code>Map</code>, construit à partir du
-     *         fichier OSM donné
+     * @return un nouvel objet de type {@link ch.epfl.imhof.Map Map}, construit
+     *         à partir du fichier OSM donné
      * @throws IOException
      *             lève une exception en cas d'erreur d'entrée/sortie
      * @throws SAXException

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import ch.epfl.imhof.Attributes;
 
 /**
- * Classe représentant une relation OSM, héritant de <code>OSMEntity</code>.
- * Elle est immuable.
+ * Classe représentant une relation OSM, héritant de
+ * {@link ch.epfl.imhof.osm.OSMEntity OSMEntity}. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -36,7 +36,8 @@ public final class OSMRelation extends OSMEntity {
     /**
      * Retourne la liste des membres de la relation.
      * 
-     * @return les membres de la relation, sous forme de <code>List</code>
+     * @return les membres de la relation, sous forme de {@link java.util.List
+     *         List}
      */
     public List<Member> members() {
         return members;
@@ -92,7 +93,7 @@ public final class OSMRelation extends OSMEntity {
         /**
          * Retourne le membre lui-même.
          * 
-         * @return le membre, une <code>OSMEntity</code>
+         * @return le membre
          */
         public OSMEntity member() {
             return member;
@@ -113,8 +114,9 @@ public final class OSMRelation extends OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe <code>OSMRelation</code>. Il hérite du bâtisseur
-     * de la classe <code>OSMEntity</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMRelation OSMRelation}.
+     * Il hérite du bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMEntity
+     * OSMEntity}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)

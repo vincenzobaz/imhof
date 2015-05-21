@@ -62,8 +62,8 @@ public final class OSMToGeoTransformer {
      * Convertit une carte OSM en une carte géométrique projetée.
      * 
      * @param map
-     *            la carte qu'on veut convertir, une <code>OSMMap</code>
-     * @return la carte projetée, une <code>Map</code>
+     *            la carte qu'on veut convertir
+     * @return la carte projetée
      */
     public Map transform(OSMMap map) {
         Map.Builder mapBuilder = new Map.Builder();
@@ -204,7 +204,7 @@ public final class OSMToGeoTransformer {
      * @param role
      *            le rôle des anneaux, outer ou inner
      * @return les anneaux de la relation correspondant au rôle donné, sous
-     *         forme de <code>List</code>
+     *         forme de {@link java.util.List List}
      */
     private List<ClosedPolyLine> ringsForRole(OSMRelation relation, String role) {
         List<OSMWay> filteredWays = filterMembers(relation.members(), role);

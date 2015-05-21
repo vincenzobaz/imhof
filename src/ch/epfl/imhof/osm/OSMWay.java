@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import ch.epfl.imhof.Attributes;
 
 /**
- * Classe représentant un chemin OSM, héritant de <code>OSMEntity</code>. Elle
- * est immuable.
+ * Classe représentant un chemin OSM, héritant de
+ * {@link ch.epfl.imhof.osm.OSMEntity OSMEntity}. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -22,11 +22,11 @@ public final class OSMWay extends OSMEntity {
      * donnés
      * 
      * @param id
-     *            l'identifiant du chemin, un <code>long</code>
+     *            l'identifiant du chemin
      * @param nodes
-     *            les noeuds du chemin, une liste de <code>OSMNode</code>
+     *            la liste des noeuds du chemin
      * @param attributes
-     *            les attributs du chemin, un <code>Attributes</code>
+     *            les attributs du chemin
      * @throws IllegalArgumentException
      *             lève une exception si la liste de noeuds possède moins de
      *             deux éléments.
@@ -44,7 +44,7 @@ public final class OSMWay extends OSMEntity {
     /**
      * Retourne le nombre de noeuds du chemin.
      * 
-     * @return le nombre de noeuds, un <code>int</code>
+     * @return le nombre de noeuds
      */
     public int nodesCount() {
         return nodes.size();
@@ -53,7 +53,7 @@ public final class OSMWay extends OSMEntity {
     /**
      * Retourne la liste des noeuds du chemin
      * 
-     * @return les noeuds du chemin, sous forme de <code>List</code>
+     * @return les noeuds du chemin, sous forme de {@link java.util.List List}
      */
     public List<OSMNode> nodes() {
         return nodes;
@@ -63,7 +63,8 @@ public final class OSMWay extends OSMEntity {
      * Retourne la liste des noeuds du chemin sans le dernier si celui-ci est
      * identique au premier.
      * 
-     * @return les noeuds, sans répétition, sous forme de <code>List</code>
+     * @return les noeuds, sans répétition, sous forme de {@link java.util.List
+     *         List}
      */
     public List<OSMNode> nonRepeatingNodes() {
         if (isClosed()) {
@@ -76,7 +77,7 @@ public final class OSMWay extends OSMEntity {
     /**
      * Retourne le premier noeud du chemin.
      * 
-     * @return le premier noeud, un <code>OSMNode</code>
+     * @return le premier noeud
      */
     public OSMNode firstNode() {
         return nodes.get(0);
@@ -85,7 +86,7 @@ public final class OSMWay extends OSMEntity {
     /**
      * Retourne le dernier noeud du chemin.
      * 
-     * @return le dernier noeud, un <code>OSMNode</code>
+     * @return le dernier noeud
      */
     public OSMNode lastNode() {
         return nodes.get(nodesCount() - 1);
@@ -103,8 +104,8 @@ public final class OSMWay extends OSMEntity {
     }
 
     /**
-     * Bâtisseur de la classe <code>OSMWay</code>. Il hérite du bâtisseur de la
-     * classe <code>OSMEntity</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMWay OSMWay}. Il hérite
+     * du bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMEntity OSMEntity}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -117,7 +118,7 @@ public final class OSMWay extends OSMEntity {
          * Construit un bâtisseur pour un chemin ayant l'identifiant donné.
          * 
          * @param id
-         *            l'identifiant du chemin, un <code>long</code>
+         *            l'identifiant du chemin
          */
         public Builder(long id) {
             super(id);
@@ -128,17 +129,17 @@ public final class OSMWay extends OSMEntity {
          * Ajoute un noeud au chemin en cours de construction.
          * 
          * @param newNode
-         *            le noeud qu'on souhaite ajouter au chemin, un
-         *            <code>OSMNode</code>
+         *            le noeud qu'on souhaite ajouter au chemin
          */
         public void addNode(OSMNode newNode) {
             nodes.add(newNode);
         }
 
         /**
-         * Rédéfinition de la méthode <code>isIncomplete</code> de la
-         * superclasse, un chemin possédant moins de deux noeuds est également
-         * incomplet.
+         * Rédéfinition de la méthode
+         * {@link ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete()
+         * isIncomplete} de la superclasse, un chemin possédant moins de deux
+         * noeuds est également incomplet.
          */
         @Override
         public boolean isIncomplete() {
@@ -149,7 +150,7 @@ public final class OSMWay extends OSMEntity {
          * Construit et retourne le chemin ayant les noeuds et les attributs
          * ajoutés au bâtisseur.
          * 
-         * @return le chemin, un <code>OSMWay</code>
+         * @return le chemin
          * @throws IllegalStateException
          *             lève une exception si le chemin est incomplet
          */

@@ -23,10 +23,11 @@ public final class OSMMap {
      * fournis.
      * 
      * @param ways
-     *            les chemins de la carte, une liste de <code>OSMWay</code>
+     *            les chemins de la carte, une liste de
+     *            {@link ch.epfl.imhof.osm.OSMWay OSMWay}
      * @param relations
      *            les relations de la carte, une liste de
-     *            <code>OSMRelation</code>
+     *            {@link ch.epfl.imhof.osm.OSMRelation OSMRelation}
      */
     public OSMMap(Collection<OSMWay> ways, Collection<OSMRelation> relations) {
         this.ways = Collections.unmodifiableList(new ArrayList<>(ways));
@@ -37,7 +38,8 @@ public final class OSMMap {
     /**
      * Retourne la liste des chemins de la carte.
      * 
-     * @return les chemins de la carte, sous forme de <code>List</code>
+     * @return les chemins de la carte, sous forme de {@link java.util.List
+     *         List}
      */
     public List<OSMWay> ways() {
         return ways;
@@ -46,14 +48,15 @@ public final class OSMMap {
     /**
      * Retourne la liste des relations de la carte.
      * 
-     * @return les relations de la carte, sous forme de <code>List</code>
+     * @return les relations de la carte, sous forme de {@link java.util.List
+     *         List}
      */
     public List<OSMRelation> relations() {
         return relations;
     }
 
     /**
-     * Bâtisseur de la classe <code>OSMMap</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.osm.OSMMap OSMMap}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
@@ -148,7 +151,8 @@ public final class OSMMap {
          * Construit et retourne une carte OSM avec les chemins et les relations
          * ajoutés jusqu'à présent au bâtisseur.
          * 
-         * @return un nouvel objet de type <code>OSMMap</code>
+         * @return un nouvel objet de type {@link ch.epfl.imhof.osm.OSMMap
+         *         OSMMap}
          */
         public OSMMap build() {
             return new OSMMap(ways.values(), relations.values());
