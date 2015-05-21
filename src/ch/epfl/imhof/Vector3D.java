@@ -68,8 +68,8 @@ public final class Vector3D {
     /**
      * Retourne la version normalisée du vecteur.
      * 
-     * @return un vecteur parallèle à <code>this</code> et de même direction,
-     *         mais de longueur unitaire
+     * @return un vecteur de même direction et de même sens que
+     *         <code>this</code>, mais de longueur unitaire
      */
     public Vector3D normalized() {
         double norm = norm();

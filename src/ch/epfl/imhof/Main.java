@@ -68,7 +68,8 @@ public final class Main {
      */
     public static void main(String[] args) throws IOException, SAXException {
 
-        // On construit les deux points de type WGS 84
+        // On construit les deux points de type WGS 84 correspondant aux coins
+        // bas-gauche et haut-droite de la zone à dessiner
         PointGeo topRight = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[4])), Math.toRadians(Double
                 .parseDouble(args[5])));
@@ -114,7 +115,7 @@ public final class Main {
         // nord-ouest
         ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
 
-        // Dessin du relief flouté
+        // Dessin du relief flouté, avec un rayon de floutage de 17mm
         BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
@@ -128,7 +129,7 @@ public final class Main {
 
     /**
      * Retourne une image obtenue par composition des deux images fournies en
-     * multipliant la couleur de chacun de leurs pixels entre elles.
+     * multipliant les couleurs de chacun de leurs pixels entre elles.
      * 
      * @param shadedRelief
      *            l'image du relief
