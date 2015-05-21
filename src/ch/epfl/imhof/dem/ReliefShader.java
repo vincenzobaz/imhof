@@ -11,9 +11,9 @@ import ch.epfl.imhof.projection.Projection;
 
 /**
  * Classe permettant de dessiner un relief ombré coloré, à partir d'un
- * <code>DigitalElevationModel</code>. Selon le rayon de floutage fourni, cette
- * image peut être floutée pour compenser la basse résolution des fichiers hgt
- * utilisés.
+ * {@link ch.epfl.imhof.dem.DigitalElevationModel}. Selon le rayon de floutage
+ * fourni, cette image peut être floutée pour compenser la basse résolution des
+ * fichiers hgt utilisés.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -34,7 +34,7 @@ public final class ReliefShader {
      *            le modèle numérique de terrain permettant d'obtenir l'altitude
      *            des points
      * @param lightSource
-     *            le <code>Vector3D</code> représentant la direction de la
+     *            le vecteur à trois dimensions représentant la direction de la
      *            source lumineuse
      */
     public ReliefShader(Projection projection, DigitalElevationModel model,
@@ -45,8 +45,7 @@ public final class ReliefShader {
     }
 
     /**
-     * Dessine et retourne une <code>BufferedImage</code> du relief selon les
-     * paramètres donnés.
+     * Dessine et retourne une image du relief selon les paramètres donnés.
      * 
      * @param bottomLeft
      *            le coin bas-gauche du relief à dessiner
@@ -59,9 +58,9 @@ public final class ReliefShader {
      * @param radius
      *            le rayon de floutage
      * @return l'image du relief compris entre les coins bas-gauche
-     *         <code>BL</code> et haut-droite <code>TR</code>, de largeur
-     *         <code>width</code> et hauteur <code>height</code>, flouté avec un
-     *         rayon de floutage <code>radius</code>
+     *         <code>bottomLeft</code> et haut-droite <code>topRight</code>, de
+     *         largeur <code>width</code> et hauteur <code>height</code>, flouté
+     *         avec un rayon de floutage <code>radius</code>
      * @throws IllegalArgumentException
      *             lève une exception si le rayon de floutage est négatif
      */
@@ -176,10 +175,10 @@ public final class ReliefShader {
 
     /**
      * Retourne l'image de relief floutée. Le floutage se fait au moyen de la
-     * classe <code>ConvolveOp</code>. Pour éviter des ennuyants calculs d'un
-     * <code>Kernel</code> matriciel, on utilise une fois un vecteur et une
-     * deuxième fois le même vecteur transposée, construits à l'aide du
-     * constructeur de <code>Kernel</code>
+     * classe {@link java.awt.image.ConvolveOp}. Pour éviter des ennuyants
+     * calculs d'un {@link java.awt.image.Kernel} matriciel, on utilise une fois
+     * un vecteur et une deuxième fois le même vecteur transposée, construits à
+     * l'aide du constructeur de {@link java.awt.image.Kernel#Kernel}
      * 
      * @param image
      *            l'image à flouter
