@@ -46,9 +46,10 @@ public final class Point {
 
     /**
      * Retourne une fonction correspondant au changement de repères alignés.
-     * Prend en paramètre deux <code>Point</code>, exprimés dans le repère
-     * d'origine et celui après changement, et calcule la fonction permettant de
-     * convertir les coordonnées d'un point d'un repère à l'autre.
+     * Prend en paramètre deux {@link ch.epfl.imhof.geometry.Point Point},
+     * exprimés dans le repère d'origine et celui après changement, et calcule
+     * la fonction permettant de convertir les coordonnées d'un point d'un
+     * repère à l'autre.
      * 
      * @param a1
      *            le premier point exprimé dans le repère d'origine

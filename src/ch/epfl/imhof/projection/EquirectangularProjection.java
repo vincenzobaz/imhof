@@ -7,7 +7,8 @@ import ch.epfl.imhof.PointGeo;
  * Conversion des coordonnées sphériques d'un point à la surface de la Terre en
  * coordonnées cartésiennes et viceversa dans le cadre de la projection
  * équirectangulaire. Cette classe ne contient que des méthodes. La classe est
- * immuable. Elle implémente {@link ch.epfl.imhof.projection.Projection}.
+ * immuable. Elle implémente {@link ch.epfl.imhof.projection.Projection
+ * Projection}.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

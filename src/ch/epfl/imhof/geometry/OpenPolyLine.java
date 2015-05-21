@@ -3,8 +3,8 @@ package ch.epfl.imhof.geometry;
 import java.util.List;
 
 /**
- * Classe représentant une polyligne ouverte, héritant de <code>PolyLine</code>.
- * Elle est immuable.
+ * Classe représentant une polyligne ouverte, héritant de
+ * {@link ch.epfl.imhof.geometry.PolyLine PolyLine}. Elle est immuable.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

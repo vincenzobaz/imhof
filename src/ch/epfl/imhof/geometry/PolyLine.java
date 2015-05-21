@@ -42,7 +42,7 @@ public abstract class PolyLine {
      * Retourne la liste des sommets de la polyligne.
      * 
      * @return les sommets de la polyligne, sous forme de liste de
-     *         <code>Point</code>
+     *         {@link ch.epfl.imhof.geometry.Point Point}
      */
     public List<Point> points() {
         return points;
@@ -51,14 +51,15 @@ public abstract class PolyLine {
     /**
      * Retourne le premier sommet de la polyligne.
      * 
-     * @return le premier point de la liste de <code>Point</code>
+     * @return le premier point de la liste de
+     *         {@link ch.epfl.imhof.geometry.Point Point}
      */
     public Point firstPoint() {
         return points.get(0);
     }
 
     /**
-     * Bâtisseur de la classe <code>PolyLine</code>.
+     * Bâtisseur de la classe {@link ch.epfl.imhof.geometry.PolyLine PolyLine}.
      * 
      * @author Vincenzo Bazzucchi (249733)
      * @author Nicolas Phan Van (239293)
