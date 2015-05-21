@@ -5,7 +5,7 @@ import ch.epfl.imhof.Vector3D;
 
 /**
  * Interface représentant un modèle numérique de terrain (MNT, ou DEM en
- * anglais). Elle étend <code>AutoCloseable</code>.
+ * anglais). Elle étend {@link java.lang.AutoCloseable AutoCloseable}.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)

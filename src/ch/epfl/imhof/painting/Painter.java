@@ -33,8 +33,9 @@ public interface Painter<E> {
     void drawMap(Map map, Canvas canvas);
 
     /**
-     * Retourne un peintre dessinant l'intérieur de tous les polygones de la
-     * carte fournie avec la couleur donnée.
+     * Retourne un peintre dessinant l'intérieur de tous les
+     * {@link ch.epfl.imhof.geometry.Polygon polygones} de la carte fournie avec
+     * la couleur donnée.
      * 
      * @param fillColor
      *            la couleur des polygones
@@ -48,7 +49,8 @@ public interface Painter<E> {
     }
 
     /**
-     * Retourne un peintre dessinant toutes les lignes de la carte fournie avec
+     * Retourne un peintre dessinant toutes les
+     * {@link ch.epfl.imhof.geometry.PolyLine lignes} de la carte fournie avec
      * le style donné.
      * 
      * @param style
@@ -63,7 +65,7 @@ public interface Painter<E> {
 
     /**
      * Retourne un peintre dessinant toutes les
-     * {@link ch.epfl.imhof.geometry.PolyLine} lignes de la carte fournie avec
+     * {@link ch.epfl.imhof.geometry.PolyLine lignes} de la carte fournie avec
      * les paramètres de style donnés.
      * 
      * @param width

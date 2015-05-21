@@ -68,10 +68,10 @@ public final class LineStyle {
      * Constructeur secondaire prenant seulement en arguments la largeur et la
      * couleur du trait, et utilisant des valeurs par défaut pour les autres
      * paramètres. Les valeurs par défaut sont:
-     * {@link ch.epfl.imhof.painting.LineStyle.LineCapi.BUTT butt} pour la
-     * terminaison des lignes, {@link ch.epfl.imhof.painting.LineJoin.Miter
-     * miter} pour la jointure des segments, et un trait continu (
-     * <code> null </code>).
+     * {@link ch.epfl.imhof.painting.LineStyle.LineCap#BUTT butt} pour la
+     * terminaison des lignes,
+     * {@link ch.epfl.imhof.painting.LineStyle.LineJoin#MITER miter} pour la
+     * jointure des segments, et un trait continu (<code>null</code>).
      * 
      * @param width
      *            la largeur du trait
@@ -150,7 +150,7 @@ public final class LineStyle {
      * @param color
      *            la nouvelle couleur du trait
      * @return un nouveau style de ligne
-     * */
+     */
     public LineStyle withColor(Color color) {
         return new LineStyle(width, color, cap, join, dashingPattern);
     }
@@ -162,7 +162,7 @@ public final class LineStyle {
      * @param cap
      *            le nouveau type de terminaison de ligne
      * @return un nouveau style de ligne
-     * */
+     */
     public LineStyle withCap(LineCap cap) {
         return new LineStyle(width, color, cap, join, dashingPattern);
     }

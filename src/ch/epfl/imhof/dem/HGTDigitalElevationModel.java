@@ -29,7 +29,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // au poit sud-ouest (south-west). On préfère stocker ces deux valeurs
     // plutôt qu'un objet {@link ch.epfl.imhof.PointGeo PointGeo} parce que dans
     // la méthode {@link ch.epfl.imhof.dem.HGTDigitalElevationModel#normalAlt
-    // normalAlt} on aurait eu besoin de les re-extraire pour éviter des trop
+    // normalAlt} on aurait eu besoin de les re-extraire pour éviter de trop
     // nombreux appels aux accesseurs
     private final double latitudeSW;
     private final double longitudeSW;

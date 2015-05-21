@@ -101,8 +101,11 @@ public final class OSMRelation extends OSMEntity {
 
         /**
          * Énumération des trois types de membres qu'une relation peut
-         * comporter: <code>NODE</code> pour les noeuds, <code>WAY</code> pour
-         * les chemins, <code>RELATION</code> pour les relations.
+         * comporter: {@link ch.epfl.imhof.osm.OSMRelation.Member.Type#NODE
+         * NODE} pour les noeuds,
+         * {@link ch.epfl.imhof.osm.OSMRelation.Member.Type#WAY WAY} pour les
+         * chemins, {@link ch.epfl.imhof.osm.OSMRelation.Member.Type#RELATION
+         * RELATION} pour les relations.
          * 
          * @author Vincenzo Bazzucchi (249733)
          * @author Nicolas Phan Van (239293)

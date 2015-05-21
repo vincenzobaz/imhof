@@ -47,7 +47,7 @@ public final class Filters {
      *            tableau de valeurs dont on veut vérifier l'association avec le
      *            paramètre attributeName. L'ellipse permet à l'utilisateur de
      *            fournir à la méthode un nombre variable de valeurs sans devoir
-     *            définir une {@link java.util.Collection}
+     *            définir une {@link java.util.Collection Collection}
      * 
      * @return un filtre
      * @throws IllegalArgumentException

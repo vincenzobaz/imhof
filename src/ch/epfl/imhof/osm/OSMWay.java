@@ -138,7 +138,7 @@ public final class OSMWay extends OSMEntity {
         /**
          * Rédéfinition de la méthode
          * {@link ch.epfl.imhof.osm.OSMEntity.Builder#isIncomplete()
-         * isIncomplete} de la superclasse, un chemin possédant moins de deux
+         * isIncomplete()} de la superclasse, un chemin possédant moins de deux
          * noeuds est également incomplet.
          */
         @Override

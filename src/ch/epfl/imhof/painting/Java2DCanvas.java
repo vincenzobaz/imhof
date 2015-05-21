@@ -16,9 +16,9 @@ import ch.epfl.imhof.geometry.Polygon;
 
 /**
  * Classe représentant une toile, implémentant l'interface
- * {@link ch.epfl.imhof.painting.Canvas Canvas} Elle permet de dessiner des
- * {@link ch.epfl.imhof.geometry.PolyLine} et des
- * {@link ch.epfl.imhof.geometry.Polygon} dans une image discrète.
+ * {@link ch.epfl.imhof.painting.Canvas Canvas}. Elle permet de dessiner des
+ * {@link ch.epfl.imhof.geometry.PolyLine PolyLine} et des
+ * {@link ch.epfl.imhof.geometry.Polygon Polygon} dans une image discrète.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
@@ -28,7 +28,7 @@ public final class Java2DCanvas implements Canvas {
     // La fonction permettant d'effectuer un changement de repère: du repère
     // cartésien au repère de l'image
     private final Function<Point, Point> basisChange;
-    // L'image sur laquelle on dessiner
+    // L'image sur laquelle on dessine
     private final BufferedImage image;
     // La toile correspondante à l'image
     private final Graphics2D graphicContext;
@@ -127,7 +127,7 @@ public final class Java2DCanvas implements Canvas {
      * Construit et retourne le chemin correspondant à la polyligne donnée.
      * 
      * @param polyline
-     *            la poyligne à convertir en {@link java.awt.geom.Path2D}
+     *            la poyligne à convertir en {@link java.awt.geom.Path2D Path2D}
      * @return le chemin correspondant à la polyligne
      */
     private Path2D newPath(PolyLine polyline) {
