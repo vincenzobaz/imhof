@@ -67,8 +67,11 @@ public final class LineStyle {
     /**
      * Constructeur secondaire prenant seulement en arguments la largeur et la
      * couleur du trait, et utilisant des valeurs par défaut pour les autres
-     * paramètres. Les valeurs par défaut sont: butt pour la terminaison des
-     * lignes, miter pour la jointure des segments, et un trait continu.
+     * paramètres. Les valeurs par défaut sont:
+     * {@link ch.epfl.imhof.painting.LineStyle.LineCapi.BUTT butt} pour la
+     * terminaison des lignes, {@link ch.epfl.imhof.painting.LineJoin.Miter
+     * miter} pour la jointure des segments, et un trait continu (
+     * <code> null </code>).
      * 
      * @param width
      *            la largeur du trait
@@ -91,8 +94,7 @@ public final class LineStyle {
     /**
      * Retourne la couleur du trait.
      * 
-     * @return la couleur, sous forme de
-     *         <code>ch.epfl.imhof.painting.Color</code>
+     * @return la couleur
      */
     public Color color() {
         return color;
@@ -135,7 +137,7 @@ public final class LineStyle {
      * 
      * @param width
      *            la nouvelle largeur du trait
-     * @return un nouveau <code>LineStyle</code>
+     * @return un nouveau style de ligne
      */
     public LineStyle withWidth(float width) {
         return new LineStyle(width, color, cap, join, dashingPattern);
@@ -147,8 +149,8 @@ public final class LineStyle {
      * 
      * @param color
      *            la nouvelle couleur du trait
-     * @return un nouveau <code>LineStyle</code>
-     */
+     * @return un nouveau style de ligne
+     * */
     public LineStyle withColor(Color color) {
         return new LineStyle(width, color, cap, join, dashingPattern);
     }
@@ -159,8 +161,8 @@ public final class LineStyle {
      * 
      * @param cap
      *            le nouveau type de terminaison de ligne
-     * @return un nouveau <code>LineStyle</code>
-     */
+     * @return un nouveau style de ligne
+     * */
     public LineStyle withCap(LineCap cap) {
         return new LineStyle(width, color, cap, join, dashingPattern);
     }
@@ -171,7 +173,7 @@ public final class LineStyle {
      * 
      * @param join
      *            le nouveau type de jointure de segments
-     * @return un nouveau <code>LineStyle</code>
+     * @return un nouveau style de ligne
      */
     public LineStyle withJoin(LineJoin join) {
         return new LineStyle(width, color, cap, join, dashingPattern);
@@ -184,7 +186,7 @@ public final class LineStyle {
      * @param dashingPattern
      *            le nouveau schéma d'alternance de segments opaques et
      *            transparents
-     * @return un nouveau <code>LineStyle</code>
+     * @return un nouveau style de ligne
      */
     public LineStyle withDashingPattern(float... dashingPattern) {
         return new LineStyle(width, color, cap, join, dashingPattern);
