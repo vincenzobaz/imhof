@@ -46,7 +46,6 @@ public class BufferedMapDecorator {
         int decoratedMapWidth = map.getWidth();
         int decoratedMapHeight = map.getHeight();
         int imageWidth = decoratedMapWidth - 2 * frameSize;
-        int imageHeight = decoratedMapHeight - 2 * frameSize;
 
         graphicContext.setColor(Color.WHITE);
         graphicContext.setStroke(new BasicStroke(0.05f * imageWidth / 100f));
