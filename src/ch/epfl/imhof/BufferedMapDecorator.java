@@ -17,28 +17,30 @@ public class BufferedMapDecorator {
     BufferedImage map;
     Graphics2D graphicContext;
 
-    public BufferedMapDecorator(BufferedImage map) {
-        frameSize = map.getWidth() / 20;
-        this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
-                map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
-        graphicContext = this.map.createGraphics();
-        graphicContext.setBackground(Color.WHITE);
-        graphicContext.fillRect(0, 0, this.map.getWidth(), this.map.getWidth());
-        graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
-                map.getHeight(), null);
-    }
-
     public BufferedMapDecorator(BufferedImage map, int frameSize,
-            Color frameColor) {
+            Color frameColor) throws IOException {
         this.map = map;
         this.frameSize = frameSize;
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
                 map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
         graphicContext = this.map.createGraphics();
+        graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
         graphicContext.setBackground(frameColor);
         graphicContext.fillRect(0, 0, this.map.getWidth(), this.map.getWidth());
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
+        BufferedImage epflLogo = ImageIO.read(new File("epflLogo.jpg"));
+        graphicContext.drawImage(epflLogo, 
+                0, map.getHeight()+frameSize,
+                epflLogo.getWidth(), this.map.getHeight(),
+                0,0,
+                epflLogo.getWidth()-1, epflLogo.getHeight()-1,
+                null);
+    }
+
+    public BufferedMapDecorator(BufferedImage map) throws IOException {
+        this(map, map.getWidth() / 20, Color.WHITE);
     }
 
     public void addGrid(PointGeo BL, PointGeo TR, int resolution,
@@ -81,7 +83,7 @@ public class BufferedMapDecorator {
                 - frameSize; y += squareSizePixel) {
             graphicContext.setColor(Color.GRAY);
             graphicContext.draw(new Line2D.Double(frameSize, y,
-                    decoratedMapHeight - frameSize, y));
+                    decoratedMapWidth - frameSize, y));
             graphicContext.setColor(Color.BLACK);
             double latitude = Math.toDegrees(BL.latitude() + indexForStrings
                     * squareSizeRadian);
