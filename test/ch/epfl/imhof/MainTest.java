@@ -1,13 +1,10 @@
 package ch.epfl.imhof;
 
-import java.io.IOException;
-
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 public final class MainTest {
 
-     @Test
+    @Test
     public void interlakenTest() throws Exception {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
@@ -15,7 +12,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+    @Test
     public void lausanneTest() throws Exception {
         String[] arguments = { "data/lausanne.osm.gz", "data/N46E006.hgt",
                 "6.5594", "46.5032", "6.6508", "46.5459", "300",
@@ -23,7 +20,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+    @Test
     public void berneTest() throws Exception {
         String[] arguments = { "data/berne.osm.gz", "data/N46E007.hgt",
                 "7.3912", "46.9322", "7.4841", "46.9742", "300",
@@ -47,7 +44,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-//    @Test
+    // @Test
     public void fourZonesDEMTest() throws Exception {
         String[] arguments = { "data/chauxdefond.osm.gz", "data/N46E006.hgt",
                 "6.7223", "46.9463", "7.1514", "47.1180", "300",
