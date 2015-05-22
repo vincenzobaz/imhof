@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public final class MainTest {
 
-    @Test
+    // @Test
     public void interlakenTest() throws Exception {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
@@ -12,7 +12,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
+    // @Test
     public void lausanneTest() throws Exception {
         String[] arguments = { "data/lausanne.osm.gz", "data/N46E006.hgt",
                 "6.5594", "46.5032", "6.6508", "46.5459", "300",
@@ -20,7 +20,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
+    // @Test
     public void berneTest() throws Exception {
         String[] arguments = { "data/berne.osm.gz", "data/N46E007.hgt",
                 "7.3912", "46.9322", "7.4841", "46.9742", "300",
@@ -28,7 +28,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+    @Test
     public void saintclaudeTest() throws Exception {
         String[] arguments = { "data/saintclaude.osm.gz", "data/N46E005.hgt",
                 "5.8136", "46.3662", "5.9209", "46.4097", "300",

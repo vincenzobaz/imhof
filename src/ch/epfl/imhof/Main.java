@@ -136,14 +136,14 @@ public final class Main {
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
 
-        BufferedMapDecorator.howManySquares = 7;
         BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
                 finalImage);
-        imageToDecorate
-                .addGrid(bottomLeft, topRight, Integer.parseInt(args[6]));
+        imageToDecorate.addGrid(bottomLeft, topRight,
+                Integer.parseInt(args[6]), 7);
+        imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque
-        ImageIO.write(imageToDecorate.image(), "png", new File(args[7]));
+        imageToDecorate.printOnFile("png", args[7]);
     }
 
     /**

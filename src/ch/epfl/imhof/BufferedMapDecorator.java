@@ -97,8 +97,30 @@ public class BufferedMapDecorator {
     public void printOnFile(String extension, String path) throws IOException {
         ImageIO.write(map, extension, new File(path));
     }
-    
+
     public void addLegend() {
-        
+        int w = map.getWidth();
+        int h = map.getHeight();
+        graphicContext.setColor(Color.WHITE);
+        graphicContext.fillRect(w * 13 / 16, 2 * frameSize, w / 8, h * 2 / 5);
+        graphicContext.setColor(Color.BLACK);
+        graphicContext.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        graphicContext.drawString("Légende", w * 13 / 16 + w / 80, 2
+                * frameSize + h / 50);
+        drawLegendItem(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1);
+        drawLegendItem(new Color(0.75f, 0.85f, 0.7f), "forêts", w, h, 2);
+        drawLegendItem(new Color(0.85f, 0.9f, 0.85f), "parcs", w, h, 3);
+        drawLegendItem(new Color(0.45f, 0.7f, 0.8f), "cours d'eau", w, h, 4);
+        drawLegendItem(new Color(0.8f, 0.9f, 0.95f),
+                "plan d'eau, rivière, canal", w, h, 5);
+    }
+
+    private void drawLegendItem(Color color, String s, int w, int h, int n) {
+        graphicContext.setColor(color);
+        graphicContext.fillRect(w * 13 / 16 + w / 80, 2 * frameSize + h * n
+                / 30, w * 13 / 640, h / 50);
+        graphicContext.setColor(Color.BLACK);
+        graphicContext.drawString(s, w * 13 / 16 + w / 80 + w * 20 / 640, 2
+                * frameSize + h * (10 * n + 5) / 300);
     }
 }
