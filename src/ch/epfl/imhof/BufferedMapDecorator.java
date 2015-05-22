@@ -8,18 +8,40 @@ import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
-public class BufferedMapDecorator extends BufferedMap {
-    static int howManySquares = 5;
+public class BufferedMapDecorator {
+    private final int frameSize;
+    BufferedImage map;
+    Graphics2D graphicContext;
 
     public BufferedMapDecorator(BufferedImage map) {
-        super(map);
+        frameSize = map.getWidth() / 20;
+        this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
+                map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
+        graphicContext = this.map.createGraphics();
+        graphicContext.setBackground(Color.WHITE);
+        graphicContext.fillRect(0, 0, this.map.getWidth(), this.map.getWidth());
+        graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
+                map.getHeight(), null);
     }
 
-    public void addGrid(PointGeo BL, PointGeo TR, int resolution) {
-        int imageWidth = this.image().getWidth();
-        int imageHeight = this.image().getHeight();
-        int frameSize = imageWidth / 20;
-        int decoratedMapWidth = imageWidth + 2 * frameSize;
+    public BufferedMapDecorator(BufferedImage map, int frameSize,
+            Color frameColor) {
+        this.map = map;
+        this.frameSize = frameSize;
+        this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
+                map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
+        graphicContext = this.map.createGraphics();
+        graphicContext.setBackground(frameColor);
+        graphicContext.fillRect(0, 0, this.map.getWidth(), this.map.getWidth());
+        graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
+                map.getHeight(), null);
+    }
+
+    public void addGrid(PointGeo BL, PointGeo TR, int resolution, int howManyCells) {
+
+        int imageWidth = map.getWidth()-2*frameSize;
+        int imageHeight = map.getHeight()-2*frameSize; 
+        int decoratedMapWidth = map.getWidth();
         int decoratedMapHeight = imageHeight + 2 * frameSize;
         BufferedImage decoratedMap = new BufferedImage(decoratedMapWidth,
                 decoratedMapHeight, BufferedImage.TYPE_INT_RGB);
