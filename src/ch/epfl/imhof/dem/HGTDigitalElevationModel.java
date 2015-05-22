@@ -175,10 +175,20 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
+    /**
+     * Retourne la latitude du coin sud-ouest du fichier HGT.
+     * 
+     * @return la latitude SO, en radians
+     */
     public double latitudeSW() {
         return latitudeSW;
     }
 
+    /**
+     * Retourne la longitude du coin sud-ouest du fichier HGT.
+     * 
+     * @return la longitude SO, en radians
+     */
     public double longitudeSW() {
         return longitudeSW;
     }
