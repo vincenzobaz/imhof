@@ -28,7 +28,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
+    // @Test
     public void saintclaudeTest() throws Exception {
         String[] arguments = { "data/saintclaude.osm.gz", "data/N46E005.hgt",
                 "5.8136", "46.3662", "5.9209", "46.4097", "300",
@@ -44,7 +44,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+    @Test
     public void fourZonesDEMTest() throws Exception {
         String[] arguments = { "data/chauxdefond.osm.gz", "data/N46E006.hgt",
                 "6.7223", "46.9463", "7.1514", "47.1180", "300",

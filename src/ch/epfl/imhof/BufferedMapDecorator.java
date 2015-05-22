@@ -31,12 +31,10 @@ public class BufferedMapDecorator {
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
         BufferedImage epflLogo = ImageIO.read(new File("epflLogo.jpg"));
-        graphicContext.drawImage(epflLogo, 
-                0, map.getHeight()+frameSize,
-                epflLogo.getWidth(), this.map.getHeight(),
-                0,0,
-                epflLogo.getWidth()-1, epflLogo.getHeight()-1,
-                null);
+        graphicContext.drawImage(epflLogo, 0, map.getHeight() + frameSize,
+                map.getWidth() / 11,
+                map.getHeight() + frameSize + map.getWidth() / 11 * 417 / 811,
+                0, 0, epflLogo.getWidth() - 1, epflLogo.getHeight() - 1, null);
     }
 
     public BufferedMapDecorator(BufferedImage map) throws IOException {
