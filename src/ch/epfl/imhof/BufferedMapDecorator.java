@@ -77,4 +77,8 @@ public class BufferedMapDecorator extends BufferedMap {
         }
         setImage(decoratedMap);
     }
+    
+    public void addLegend() {
+        
+    }
 }

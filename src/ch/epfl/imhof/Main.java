@@ -2,11 +2,8 @@
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import org.xml.sax.SAXException;
 
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
@@ -61,15 +58,12 @@ public final class Main {
      *            par pouce (dpi),
      *            <li>args[7]: le nom (chemin) du fichier PNG à générer.
      *            </ul>
-     * 
-     * @throws IOException
-     *             si l'un des fichiers n'est pas accessible par le programme
-     * @throws SAXException
-     *             s'il y des erreurs de parsing du fichiers osm
+     * @throws Exception
      */
-    public static void main(String[] args) throws IOException, SAXException {
+    public static void main(String[] args) throws Exception {
 
-        // On construit les deux points de type WGS 84
+        // On construit les deux points de type WGS 84 correspondant aux coins
+        // bas-gauche et haut-droite de la zone à dessiner
         PointGeo topRight = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[4])), Math.toRadians(Double
                 .parseDouble(args[5])));
@@ -135,16 +129,26 @@ public final class Main {
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
 
+        // HGTDigitalElevation model implemente AutoCloseable, mais comme on ne
+        // l'utilise pas dans un bloc try-catch, on doit le fermer manuellement
+        dem.close();
+
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
 
+        BufferedMapDecorator.howManySquares = 7;
+        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
+                finalImage);
+        imageToDecorate
+                .addGrid(bottomLeft, topRight, Integer.parseInt(args[6]));
+
         // Sauvegarde de l'image obtenue sur disque
-        ImageIO.write(finalImage, "png", new File(args[7]));
+        ImageIO.write(imageToDecorate.image(), "png", new File(args[7]));
     }
 
     /**
      * Retourne une image obtenue par composition des deux images fournies en
-     * multipliant la couleur de chacun de leurs pixels entre elles.
+     * multipliant les couleurs de chacun de leurs pixels entre elles.
      * 
      * @param shadedRelief
      *            l'image du relief
