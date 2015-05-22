@@ -175,6 +175,14 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
+    public double latitudeSW() {
+        return latitudeSW;
+    }
+
+    public double longitudeSW() {
+        return longitudeSW;
+    }
+
     /**
      * Retourne l'altitude du point situé aux coordonnées passées en argument
      * dans le fichier HGT.

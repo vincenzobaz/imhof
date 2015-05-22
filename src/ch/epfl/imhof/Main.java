@@ -1,13 +1,17 @@
-package ch.epfl.imhof;
+﻿package ch.epfl.imhof;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import org.xml.sax.SAXException;
 
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
+import ch.epfl.imhof.dem.MultiDigitalElevationModel;
 import ch.epfl.imhof.dem.ReliefShader;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.osm.OSMMap;
@@ -57,12 +61,15 @@ public final class Main {
      *            par pouce (dpi),
      *            <li>args[7]: le nom (chemin) du fichier PNG à générer.
      *            </ul>
-     * @throws Exception
+     * 
+     * @throws IOException
+     *             si l'un des fichiers n'est pas accessible par le programme
+     * @throws SAXException
+     *             s'il y des erreurs de parsing du fichiers osm
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, SAXException {
 
-        // On construit les deux points de type WGS 84 correspondant aux coins
-        // bas-gauche et haut-droite de la zone à dessiner
+        // On construit les deux points de type WGS 84
         PointGeo topRight = new PointGeo(Math.toRadians(Double
                 .parseDouble(args[4])), Math.toRadians(Double
                 .parseDouble(args[5])));
@@ -101,20 +108,32 @@ public final class Main {
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
-        DigitalElevationModel dem = new HGTDigitalElevationModel(new File(
-                args[1]));
+        DigitalElevationModel dem = null;
+        switch (args.length) {
+        case 8:
+            dem = new HGTDigitalElevationModel(new File(args[1]));
+            break;
+        case 9:
+            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+                    new File(args[1])), new HGTDigitalElevationModel(new File(
+                    args[8])));
+            break;
+        case 11:
+            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+                    new File(args[1])), new HGTDigitalElevationModel(new File(
+                    args[8])), new HGTDigitalElevationModel(new File(args[9])),
+                    new HGTDigitalElevationModel(new File(args[10])));
+            break;
+        }
 
         // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
         // nord-ouest
         ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
 
-        // Dessin du relief flouté, avec un rayon de floutage de 17mm
+        // Dessin du relief flouté
         BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
                 projectedTopRight, width, height,
                 0.0017f * pixelPerMeterResolution);
-        // HGTDigitalElevation model implemente AutoCloseable, mais comme on ne
-        // l'utilise pas dans un bloc try-catch, on doit le fermer manuellement
-        dem.close();
 
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
@@ -125,7 +144,7 @@ public final class Main {
 
     /**
      * Retourne une image obtenue par composition des deux images fournies en
-     * multipliant les couleurs de chacun de leurs pixels entre elles.
+     * multipliant la couleur de chacun de leurs pixels entre elles.
      * 
      * @param shadedRelief
      *            l'image du relief
