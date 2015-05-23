@@ -3,8 +3,6 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import javax.imageio.ImageIO;
-
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
@@ -72,8 +70,8 @@ public final class Main {
                 .parseDouble(args[3])));
 
         // Calcul de la résolution de l'image en pixel par mètres
-        int pixelPerMeterResolution = (int) Math.round(Integer
-                .parseInt(args[6]) * (5000d / 127d));
+        int dpi = Integer.parseInt(args[6]);
+        int pixelPerMeterResolution = (int) Math.round(dpi * (5000d / 127d));
 
         // Calcul de la hauteur de l'image
         int height = (int) Math.round(pixelPerMeterResolution
@@ -97,8 +95,7 @@ public final class Main {
                 CH1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
-                projectedTopRight, width, height, Integer.parseInt(args[6]),
-                Color.WHITE);
+                projectedTopRight, width, height, dpi, Color.WHITE);
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
@@ -137,9 +134,8 @@ public final class Main {
         BufferedImage finalImage = combine(relief, canvas.image());
 
         BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-                finalImage);
-        imageToDecorate.addGrid(bottomLeft, topRight,
-                Integer.parseInt(args[6]), 7);
+                finalImage, dpi);
+        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
         imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque

@@ -14,15 +14,17 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BufferedMapDecorator {
-    private final int frameSize;
     private final BufferedImage map;
     private final Graphics2D graphicContext;
+    private final float scale;
+    private final int frameSize;
 
-    public BufferedMapDecorator(BufferedImage map, int frameSize,
+    public BufferedMapDecorator(BufferedImage map, int dpi, int frameSize,
             Color frameColor) throws IOException {
-        this.frameSize = frameSize;
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
                 map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
+        scale = dpi / 72f;
+        this.frameSize = frameSize;
         graphicContext = this.map.createGraphics();
         graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
@@ -38,8 +40,8 @@ public class BufferedMapDecorator {
                 0, epflLogo.getWidth() - 1, epflLogo.getHeight() - 1, null);
     }
 
-    public BufferedMapDecorator(BufferedImage map) throws IOException {
-        this(map, map.getWidth() / 20, Color.WHITE);
+    public BufferedMapDecorator(BufferedImage map, int dpi) throws IOException {
+        this(map, dpi, map.getWidth() / 20, Color.WHITE);
     }
 
     public void addGrid(PointGeo bottomLeft, PointGeo topRight, int resolution,
@@ -59,7 +61,8 @@ public class BufferedMapDecorator {
 
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
 
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
+                (int) (7.5 * scale)));
         int indexForStrings = 0;
         for (int x = frameSize + squareSizePixel; x < decoratedMapWidth
                 - frameSize; x += squareSizePixel) {
@@ -106,10 +109,12 @@ public class BufferedMapDecorator {
         graphicContext.fillRect(w * 13 / 16, frameSize * 3 / 2, w / 8,
                 h * 2 / 5);
         graphicContext.setColor(Color.BLACK);
-        graphicContext.setFont(new Font("inconsolata", Font.BOLD, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.BOLD,
+                (int) (7.5 * scale)));
         graphicContext.drawString("Légende", w * 13 / 16 + w / 80, frameSize
                 * 3 / 2 + h / 50);
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
+                (int) (7.5 * scale)));
 
         // Dessin des éléments de la légende
         drawLegend(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1, 1);
