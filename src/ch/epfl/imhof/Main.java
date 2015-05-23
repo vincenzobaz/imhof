@@ -154,7 +154,7 @@ public final class Main {
         BufferedImage finalImage = combine(relief, canvas.image());
 
         BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-                finalImage, dpi);
+                finalImage, dpi, args[7]);
         imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
         imageToDecorate.addLegend();
 

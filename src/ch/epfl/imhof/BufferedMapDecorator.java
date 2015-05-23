@@ -19,8 +19,8 @@ public class BufferedMapDecorator {
     private final float scale;
     private final int frameSize;
 
-    public BufferedMapDecorator(BufferedImage map, int dpi, int frameSize,
-            Color frameColor) throws IOException {
+    public BufferedMapDecorator(BufferedImage map, int dpi, String name,
+            int frameSize, Color frameColor) throws IOException {
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
                 map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
         scale = dpi / 72f;
@@ -28,20 +28,33 @@ public class BufferedMapDecorator {
         graphicContext = this.map.createGraphics();
         graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Dessin du cadre
         graphicContext.setBackground(frameColor);
         graphicContext
                 .fillRect(0, 0, this.map.getWidth(), this.map.getHeight());
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
+
+        // Dessin du logo EPFL
         BufferedImage epflLogo = ImageIO.read(new File("epflLogo.jpg"));
         graphicContext.drawImage(epflLogo, 0, map.getHeight() + frameSize,
                 map.getWidth() / 11,
                 map.getHeight() + frameSize + map.getWidth() * 417 / 8921, 0,
                 0, epflLogo.getWidth() - 1, epflLogo.getHeight() - 1, null);
+
+        // Dessin du titre
+        String s = name.substring(0, 1).toUpperCase()
+                + name.substring(1, name.indexOf('.'));
+        graphicContext.setColor(Color.BLACK);
+        graphicContext.setFont(new Font("inconsolata", Font.BOLD,
+                (int) (scale * 12)));
+        graphicContext.drawString(s, frameSize, frameSize / 2);
     }
 
-    public BufferedMapDecorator(BufferedImage map, int dpi) throws IOException {
-        this(map, dpi, map.getWidth() / 20, Color.WHITE);
+    public BufferedMapDecorator(BufferedImage map, int dpi, String name)
+            throws IOException {
+        this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
     }
 
     public void addGrid(PointGeo bottomLeft, PointGeo topRight, int resolution,

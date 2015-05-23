@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public final class MainTest {
 
-//     @Test
+    // @Test
     public void interlakenTest() throws Exception {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
@@ -28,7 +28,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-//     @Test
+    // @Test
     public void saintclaudeTest() throws Exception {
         String[] arguments = { "data/saintclaude.osm.gz", "data/N46E005.hgt",
                 "5.8136", "46.3662", "5.9209", "46.4097", "300",
@@ -36,7 +36,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-     @Test
+    @Test
     public void besanconAndMultiDEMTest() throws Exception {
         String[] arguments = { "data/besancon.osm.gz", "data/N47E005.hgt",
                 "5.9647", "47.2152", "6.0720", "47.2580", "300",
@@ -44,7 +44,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-//    @Test
+    // @Test
     public void fourZonesDEMTest() throws Exception {
         String[] arguments = { "data/croiseedeschemins.osm.gz",
                 "data/N46E006.hgt", "6.95", "46.95", "7.05", "47.05", "200",
