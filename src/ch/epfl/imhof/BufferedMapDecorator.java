@@ -71,7 +71,7 @@ public class BufferedMapDecorator {
                     decoratedMapHeight - frameSize));
             graphicContext.setColor(Color.BLACK);
             double longitude = Math.toDegrees(bottomLeft.longitude()
-                    + indexForStrings * squareSizeRadian);
+                    + (indexForStrings + 1) * squareSizeRadian);
             double minute = (longitude % 1) * 60;
             double second = (minute % 1) * 60;
             graphicContext.drawString("" + (int) longitude + "°" + (int) minute
@@ -86,8 +86,8 @@ public class BufferedMapDecorator {
             graphicContext.draw(new Line2D.Double(frameSize, y,
                     decoratedMapWidth - frameSize, y));
             graphicContext.setColor(Color.BLACK);
-            double latitude = Math.toDegrees(bottomLeft.latitude()
-                    + indexForStrings * squareSizeRadian);
+            double latitude = Math.toDegrees(topRight.latitude()
+                    - (indexForStrings + 1) * squareSizeRadian);
             double minute = (latitude % 1) * 60;
             double second = (minute % 1) * 60;
             graphicContext.drawString("" + (int) latitude + "°" + (int) minute
@@ -120,8 +120,8 @@ public class BufferedMapDecorator {
         drawLegend(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1, 1);
         drawLegend(new Color(0.75f, 0.85f, 0.7f), "forêts", w, h, 2, 1);
         drawLegend(new Color(0.85f, 0.9f, 0.85f), "parcs", w, h, 3, 1);
-        drawLegend(new Color(0.8f, 0.9f, 0.95f), "plan d'eau, rivière, canal",
-                w, h, 4, 1);
+        drawLegend(new Color(0.8f, 0.9f, 0.95f), "plan d'eau, rivière", w, h,
+                4, 1);
         drawLegend(new Color(0.45f, 0.7f, 0.8f), "cours d'eau", w, h, 5, 4);
         drawLegend(new Color(0.7f, 0.15f, 0.15f), "chemin de fer", w, h, 6, 4);
         drawLegend(new Color(1f, 0.75f, 0.2f), "autoroute", w, h, 7, 4);
