@@ -14,32 +14,47 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class BufferedMapDecorator {
-    private final int frameSize;
     private final BufferedImage map;
     private final Graphics2D graphicContext;
+    private final float scale;
+    private final int frameSize;
 
-    public BufferedMapDecorator(BufferedImage map, int frameSize,
-            Color frameColor) throws IOException {
-        this.frameSize = frameSize;
+    public BufferedMapDecorator(BufferedImage map, int dpi, String name,
+            int frameSize, Color frameColor) throws IOException {
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
                 map.getHeight() + 2 * frameSize, BufferedImage.TYPE_INT_RGB);
+        scale = dpi / 72f;
+        this.frameSize = frameSize;
         graphicContext = this.map.createGraphics();
         graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Dessin du cadre
         graphicContext.setBackground(frameColor);
         graphicContext
                 .fillRect(0, 0, this.map.getWidth(), this.map.getHeight());
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
+
+        // Dessin du logo EPFL
         BufferedImage epflLogo = ImageIO.read(new File("epflLogo.jpg"));
         graphicContext.drawImage(epflLogo, 0, map.getHeight() + frameSize,
                 map.getWidth() / 11,
                 map.getHeight() + frameSize + map.getWidth() * 417 / 8921, 0,
                 0, epflLogo.getWidth() - 1, epflLogo.getHeight() - 1, null);
+
+        // Dessin du titre
+        String s = name.substring(0, 1).toUpperCase()
+                + name.substring(1, name.indexOf('.'));
+        graphicContext.setColor(Color.BLACK);
+        graphicContext.setFont(new Font("inconsolata", Font.BOLD,
+                (int) (scale * 12)));
+        graphicContext.drawString(s, frameSize, frameSize / 2);
     }
 
-    public BufferedMapDecorator(BufferedImage map) throws IOException {
-        this(map, map.getWidth() / 20, Color.WHITE);
+    public BufferedMapDecorator(BufferedImage map, int dpi, String name)
+            throws IOException {
+        this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
     }
 
     public void addGrid(PointGeo bottomLeft, PointGeo topRight, int resolution,
@@ -59,7 +74,8 @@ public class BufferedMapDecorator {
 
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
 
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
+                (int) (7.5 * scale)));
         int indexForStrings = 0;
         for (int x = frameSize + squareSizePixel; x < decoratedMapWidth
                 - frameSize; x += squareSizePixel) {
@@ -68,7 +84,7 @@ public class BufferedMapDecorator {
                     decoratedMapHeight - frameSize));
             graphicContext.setColor(Color.BLACK);
             double longitude = Math.toDegrees(bottomLeft.longitude()
-                    + indexForStrings * squareSizeRadian);
+                    + (indexForStrings + 1) * squareSizeRadian);
             double minute = (longitude % 1) * 60;
             double second = (minute % 1) * 60;
             graphicContext.drawString("" + (int) longitude + "°" + (int) minute
@@ -83,8 +99,8 @@ public class BufferedMapDecorator {
             graphicContext.draw(new Line2D.Double(frameSize, y,
                     decoratedMapWidth - frameSize, y));
             graphicContext.setColor(Color.BLACK);
-            double latitude = Math.toDegrees(bottomLeft.latitude()
-                    + indexForStrings * squareSizeRadian);
+            double latitude = Math.toDegrees(topRight.latitude()
+                    - (indexForStrings + 1) * squareSizeRadian);
             double minute = (latitude % 1) * 60;
             double second = (minute % 1) * 60;
             graphicContext.drawString("" + (int) latitude + "°" + (int) minute
@@ -106,17 +122,19 @@ public class BufferedMapDecorator {
         graphicContext.fillRect(w * 13 / 16, frameSize * 3 / 2, w / 8,
                 h * 2 / 5);
         graphicContext.setColor(Color.BLACK);
-        graphicContext.setFont(new Font("inconsolata", Font.BOLD, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.BOLD,
+                (int) (7.5 * scale)));
         graphicContext.drawString("Légende", w * 13 / 16 + w / 80, frameSize
                 * 3 / 2 + h / 50);
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN, 30));
+        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
+                (int) (7.5 * scale)));
 
         // Dessin des éléments de la légende
         drawLegend(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1, 1);
         drawLegend(new Color(0.75f, 0.85f, 0.7f), "forêts", w, h, 2, 1);
         drawLegend(new Color(0.85f, 0.9f, 0.85f), "parcs", w, h, 3, 1);
-        drawLegend(new Color(0.8f, 0.9f, 0.95f), "plan d'eau, rivière, canal",
-                w, h, 4, 1);
+        drawLegend(new Color(0.8f, 0.9f, 0.95f), "plan d'eau, rivière", w, h,
+                4, 1);
         drawLegend(new Color(0.45f, 0.7f, 0.8f), "cours d'eau", w, h, 5, 4);
         drawLegend(new Color(0.7f, 0.15f, 0.15f), "chemin de fer", w, h, 6, 4);
         drawLegend(new Color(1f, 0.75f, 0.2f), "autoroute", w, h, 7, 4);

@@ -1,9 +1,10 @@
 ﻿package ch.epfl.imhof;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
-import javax.imageio.ImageIO;
 
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
@@ -72,8 +73,8 @@ public final class Main {
                 .parseDouble(args[3])));
 
         // Calcul de la résolution de l'image en pixel par mètres
-        int pixelPerMeterResolution = (int) Math.round(Integer
-                .parseInt(args[6]) * (5000d / 127d));
+        int dpi = Integer.parseInt(args[6]);
+        int pixelPerMeterResolution = (int) Math.round(dpi * (5000d / 127d));
 
         // Calcul de la hauteur de l'image
         int height = (int) Math.round(pixelPerMeterResolution
@@ -97,49 +98,64 @@ public final class Main {
                 CH1903);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
-                projectedTopRight, width, height, Integer.parseInt(args[6]),
-                Color.WHITE);
+                projectedTopRight, width, height, dpi, Color.WHITE);
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
-        DigitalElevationModel dem = null;
+        DigitalElevationModel dem;
+        BufferedImage relief = null;
+
         switch (args.length) {
         case 8:
             dem = new HGTDigitalElevationModel(new File(args[1]));
+            relief = relief(dem, projectedBottomLeft, projectedTopRight, width,
+                    height, pixelPerMeterResolution);
+            dem.close();
             break;
         case 9:
             dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
                     new File(args[1])), new HGTDigitalElevationModel(new File(
                     args[8])));
+            relief = relief(dem, projectedBottomLeft, projectedTopRight, width,
+                    height, pixelPerMeterResolution);
+            dem.close();
             break;
         case 11:
             dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
                     new File(args[1])), new HGTDigitalElevationModel(new File(
-                    args[8])), new HGTDigitalElevationModel(new File(args[9])),
-                    new HGTDigitalElevationModel(new File(args[10])));
+                    args[8])));
+            BufferedImage firstPart = relief(dem, projectedBottomLeft,
+                    CH1903.project(new PointGeo(topRight.longitude(), Math
+                            .toRadians(dem.latitudeSW() + 0.97))), width / 2,
+                    height / 2, pixelPerMeterResolution);
+            dem.close();
+
+            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+                    new File(args[9])), new HGTDigitalElevationModel(new File(
+                    args[10])));
+            BufferedImage secondPart = relief(dem, CH1903.project(new PointGeo(
+                    bottomLeft.longitude(), Math.toRadians(dem.latitudeSW()))),
+                    projectedTopRight, (width % 2 == 0) ? width / 2
+                            : width / 2 + 1, (height % 2) == 0 ? height / 2
+                            : height / 2 + 1, pixelPerMeterResolution);
+            dem.close();
+
+            relief = new BufferedImage(width, height,
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics2D context = relief.createGraphics();
+            context.drawImage(firstPart, new AffineTransformOp(
+                    new AffineTransform(), 2), 0, height / 2);
+            context.drawImage(secondPart, new AffineTransformOp(
+                    new AffineTransform(), 2), 0, height);
             break;
         }
-
-        // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
-        // nord-ouest
-        ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
-
-        // Dessin du relief flouté
-        BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
-                projectedTopRight, width, height,
-                0.0017f * pixelPerMeterResolution);
-
-        // HGTDigitalElevation model implemente AutoCloseable, mais comme on ne
-        // l'utilise pas dans un bloc try-catch, on doit le fermer manuellement
-        dem.close();
 
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
 
         BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-                finalImage);
-        imageToDecorate.addGrid(bottomLeft, topRight,
-                Integer.parseInt(args[6]), 7);
+                finalImage, dpi, args[7]);
+        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
         imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque
@@ -170,5 +186,13 @@ public final class Main {
             }
         }
         return result;
+    }
+
+    private static BufferedImage relief(DigitalElevationModel dem,
+            Point bottomLeft, Point topRight, int width, int height,
+            int resolution) {
+        ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
+        return reliefShader.shadedRelief(bottomLeft, topRight, width, height,
+                0.0017f * resolution);
     }
 }
