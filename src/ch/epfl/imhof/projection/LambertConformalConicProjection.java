@@ -30,6 +30,9 @@ public class LambertConformalConicProjection implements Projection {
                         (1 / Math.tan(Math.PI / 4d + referenceLatitude / 2d)),
                         n);
     }
+    public LambertConformalConicProjection(double standardPar1, double standardPar2){
+        this(0,0,standardPar1, standardPar2);
+    }
 
     @Override
     public Point project(PointGeo point) {
