@@ -1,5 +1,17 @@
 # imhof
+
 ![Comment rédiger de la javadoc?](./Javadoc_Guidelines/javadocGuidelines.md)
+
+## [Bonus](http://cs108.epfl.ch/final_submission.html)
+
+### Généralisation du projet pour pouvoir dessiner la carte de n'importe quelle région géographique.
+
+ - Lire 4 fichiers hgt pour dessiner les zones à la frontière de plusieurs fichiers
+ - Proposer 3 nouvelles projections, une pour les zones polaires, une pour les zones équatoriales et une pour les latitudes intermédiaires.
+
+### Améliorations générales:
+ - Interface graphique
+ - Décor de la carte
 
 ## [Etape 11](http://cs108.epfl.ch/p11_relief-shading_main.html)
 
