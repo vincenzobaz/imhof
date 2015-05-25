@@ -18,6 +18,7 @@ public class BufferedMapDecorator {
     private final Graphics2D graphicContext;
     private final float scale;
     private final int frameSize;
+    private Font font;
 
     public BufferedMapDecorator(BufferedImage map, int dpi, String name,
             int frameSize, Color frameColor) throws IOException {
@@ -28,11 +29,14 @@ public class BufferedMapDecorator {
         graphicContext = this.map.createGraphics();
         graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+        font = new Font("inconsolata", Font.PLAIN, (int) (7.5 * scale));
+
+        int w = this.map.getWidth();
+        int h = this.map.getHeight();
 
         // Dessin du cadre
         graphicContext.setBackground(frameColor);
-        graphicContext
-                .fillRect(0, 0, this.map.getWidth(), this.map.getHeight());
+        graphicContext.fillRect(0, 0, w, h);
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
 
@@ -50,6 +54,31 @@ public class BufferedMapDecorator {
         graphicContext.setFont(new Font("inconsolata", Font.BOLD,
                 (int) (scale * 12)));
         graphicContext.drawString(s, frameSize, frameSize / 2);
+
+        // Dessin de l'échelle
+        float dpm = Math.round(dpi * (5000d / 127d)) / 25000f;
+        graphicContext.setStroke(new BasicStroke(h / 300f, 0, 0, 10f,
+                new float[] { dpm * 250f, dpm * 250f }, 0f));
+        Path2D scale = new Path2D.Float();
+        scale.moveTo(w * 4 / 5, h - 1.5 * frameSize);
+        scale.lineTo(w * 4 / 5 + 1000 * dpm, h - 1.5 * frameSize);
+        graphicContext.draw(scale);
+        scale.reset();
+        scale.moveTo(w * 4 / 5 + 250f * dpm, h - 1.5 * frameSize);
+        scale.lineTo(w * 4 / 5 + 1000f * dpm, h - 1.5 * frameSize);
+        graphicContext.setColor(Color.WHITE);
+        graphicContext.draw(scale);
+        graphicContext.setFont(font);
+        graphicContext.setColor(Color.BLACK);
+        graphicContext.drawString("0", w * 4 / 5, h - 13 * frameSize / 10);
+        graphicContext.drawString("250m", w * 4 / 5 + 250 * dpm, h - 13
+                * frameSize / 10);
+        graphicContext.drawString("500m", w * 4 / 5 + 500 * dpm, h - 13
+                * frameSize / 10);
+        graphicContext.drawString("750m", w * 4 / 5 + 750 * dpm, h - 13
+                * frameSize / 10);
+        graphicContext.drawString("1km", w * 4 / 5 + 1000 * dpm, h - 13
+                * frameSize / 10);
     }
 
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
@@ -74,8 +103,7 @@ public class BufferedMapDecorator {
 
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
 
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
-                (int) (7.5 * scale)));
+        graphicContext.setFont(font);
         int indexForStrings = 0;
         for (int x = frameSize + squareSizePixel; x < decoratedMapWidth
                 - frameSize; x += squareSizePixel) {
@@ -126,8 +154,7 @@ public class BufferedMapDecorator {
                 (int) (7.5 * scale)));
         graphicContext.drawString("Légende", w * 13 / 16 + w / 80, frameSize
                 * 3 / 2 + h / 50);
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
-                (int) (7.5 * scale)));
+        graphicContext.setFont(font);
 
         // Dessin des éléments de la légende
         drawLegend(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1, 1);
