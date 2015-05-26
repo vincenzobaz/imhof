@@ -13,12 +13,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class BufferedMapDecorator {
+public final class BufferedMapDecorator {
     private final BufferedImage map;
     private final Graphics2D graphicContext;
     private final float scale;
     private final int frameSize;
-    private Font font;
+    private final Font font;
 
     public BufferedMapDecorator(BufferedImage map, int dpi, String name,
             int frameSize, Color frameColor) throws IOException {
@@ -60,25 +60,30 @@ public class BufferedMapDecorator {
         graphicContext.setStroke(new BasicStroke(h / 300f, 0, 0, 10f,
                 new float[] { dpm * 250f, dpm * 250f }, 0f));
         Path2D scale = new Path2D.Float();
-        scale.moveTo(w * 4 / 5, h - 1.5 * frameSize);
-        scale.lineTo(w * 4 / 5 + 1000 * dpm, h - 1.5 * frameSize);
+        double scaleHeight = h - 1.5 * frameSize;
+        double baseScaleX = w * 4 / 5;
+        scale.moveTo(baseScaleX, scaleHeight);
+        scale.lineTo(baseScaleX + 750 * dpm, scaleHeight);
         graphicContext.draw(scale);
         scale.reset();
-        scale.moveTo(w * 4 / 5 + 250f * dpm, h - 1.5 * frameSize);
-        scale.lineTo(w * 4 / 5 + 1000f * dpm, h - 1.5 * frameSize);
+        scale.moveTo(baseScaleX + 250f * dpm, scaleHeight);
+        scale.lineTo(baseScaleX + 1000f * dpm, scaleHeight);
         graphicContext.setColor(Color.WHITE);
         graphicContext.draw(scale);
+
+        // Dessin des étiquettes de l'échelle
         graphicContext.setFont(font);
         graphicContext.setColor(Color.BLACK);
-        graphicContext.drawString("0", w * 4 / 5, h - 13 * frameSize / 10);
-        graphicContext.drawString("250m", w * 4 / 5 + 250 * dpm, h - 13
-                * frameSize / 10);
-        graphicContext.drawString("500m", w * 4 / 5 + 500 * dpm, h - 13
-                * frameSize / 10);
-        graphicContext.drawString("750m", w * 4 / 5 + 750 * dpm, h - 13
-                * frameSize / 10);
-        graphicContext.drawString("1km", w * 4 / 5 + 1000 * dpm, h - 13
-                * frameSize / 10);
+        int scaleTextHeight = h - 13 * frameSize / 10;
+        graphicContext.drawString("0", (int) baseScaleX, scaleTextHeight);
+        graphicContext.drawString("250m", (int) (baseScaleX + 250 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("500m", (int) (baseScaleX + 500 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("750m", (int) (baseScaleX + 750 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("1 km", (int) (baseScaleX + 1000 * dpm),
+                scaleTextHeight);
     }
 
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
@@ -93,7 +98,7 @@ public class BufferedMapDecorator {
         int imageWidth = decoratedMapWidth - 2 * frameSize;
 
         graphicContext.setColor(Color.WHITE);
-        graphicContext.setStroke(new BasicStroke(0.05f * imageWidth / 100f));
+        graphicContext.setStroke(new BasicStroke(0.0005f * imageWidth));
 
         double radiansPerPixel = (topRight.longitude() - bottomLeft.longitude())
                 / imageWidth;
@@ -180,8 +185,8 @@ public class BufferedMapDecorator {
         graphicContext.setStroke(new BasicStroke(h / 400f, 0, 0, 10f,
                 new float[] { h / 200f, h / 200f }, 0f));
         Path2D path = new Path2D.Float();
-        path.moveTo(w * 33 / 40, frameSize * 3 / 2 + h * 11 / 30);
-        path.lineTo(w * 541 / 640, frameSize * 3 / 2 + h * 11 / 30);
+        path.moveTo((int) w * 33 / 40, frameSize * 3 / 2 + h * 11 / 30);
+        path.lineTo((int) w * 541 / 640, frameSize * 3 / 2 + h * 11 / 30);
         graphicContext.setColor(Color.BLACK);
         graphicContext.draw(path);
         graphicContext.drawString("chemin", w * 137 / 160, frameSize * 3 / 2
