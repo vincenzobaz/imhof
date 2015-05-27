@@ -6,6 +6,8 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import javax.imageio.ImageIO;
+
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
@@ -108,58 +110,40 @@ public final class Main {
         switch (args.length) {
         case 8:
             dem = new HGTDigitalElevationModel(new File(args[1]));
-            relief = relief(dem, projectedBottomLeft, projectedTopRight, width,
-                    height, pixelPerMeterResolution);
+            relief = relief(projectedBottomLeft, projectedTopRight, width,
+                    height, pixelPerMeterResolution, dem);
             dem.close();
             break;
         case 9:
             dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
                     new File(args[1])), new HGTDigitalElevationModel(new File(
                     args[8])));
-            relief = relief(dem, projectedBottomLeft, projectedTopRight, width,
-                    height, pixelPerMeterResolution);
+            relief = relief(projectedBottomLeft, projectedTopRight, width,
+                    height, pixelPerMeterResolution, dem);
             dem.close();
             break;
         case 11:
-            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
-                    new File(args[1])), new HGTDigitalElevationModel(new File(
-                    args[8])));
-            BufferedImage firstPart = relief(dem, projectedBottomLeft,
-                    CH1903.project(new PointGeo(topRight.longitude(), Math
-                            .toRadians(dem.latitudeSW() + 0.97))), width / 2,
-                    height / 2, pixelPerMeterResolution);
-            dem.close();
-
-            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
-                    new File(args[9])), new HGTDigitalElevationModel(new File(
-                    args[10])));
-            BufferedImage secondPart = relief(dem, CH1903.project(new PointGeo(
-                    bottomLeft.longitude(), Math.toRadians(dem.latitudeSW()))),
-                    projectedTopRight, (width % 2 == 0) ? width / 2
-                            : width / 2 + 1, (height % 2) == 0 ? height / 2
-                            : height / 2 + 1, pixelPerMeterResolution);
-            dem.close();
-
-            relief = new BufferedImage(width, height,
-                    BufferedImage.TYPE_INT_RGB);
-            Graphics2D context = relief.createGraphics();
-            context.drawImage(firstPart, new AffineTransformOp(
-                    new AffineTransform(), 2), 0, height / 2);
-            context.drawImage(secondPart, new AffineTransformOp(
-                    new AffineTransform(), 2), 0, height);
+            relief = relief(projectedBottomLeft, projectedTopRight, width,
+                    height, pixelPerMeterResolution,
+                    new HGTDigitalElevationModel(new File(args[1])),
+                    new HGTDigitalElevationModel(new File(args[8])),
+                    new HGTDigitalElevationModel(new File(args[9])),
+                    new HGTDigitalElevationModel(new File(args[10])));
             break;
         }
 
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
+        
+        ImageIO.write(finalImage, "png", new File("test4zones.png"));
 
-        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-                finalImage, dpi, args[7]);
-        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
-        imageToDecorate.addLegend();
+//        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
+//                finalImage, dpi, args[7]);
+//        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
+//        imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque
-        imageToDecorate.printOnFile("png", args[7]);
+//        imageToDecorate.printOnFile("png", args[7]);
     }
 
     /**
@@ -188,10 +172,10 @@ public final class Main {
         return result;
     }
 
-    private static BufferedImage relief(DigitalElevationModel dem,
-            Point bottomLeft, Point topRight, int width, int height,
-            int resolution) {
-        ReliefShader reliefShader = new ReliefShader(CH1903, dem, LIGHT_SOURCE);
+    private static BufferedImage relief(Point bottomLeft, Point topRight,
+            int width, int height, int resolution, DigitalElevationModel... dem)
+            throws Exception {
+        ReliefShader reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE, dem);
         return reliefShader.shadedRelief(bottomLeft, topRight, width, height,
                 0.0017f * resolution);
     }

@@ -36,7 +36,7 @@ public final class BufferedMapDecorator {
      * @param dpi
      *            la résolution de la carte à décorer
      * @param name
-     *            le titre de la carte
+     *            le nom du fichier contenant la carte
      * @param frameSize
      *            la taille du cadre
      * @param frameColor
@@ -59,7 +59,7 @@ public final class BufferedMapDecorator {
         int h = this.map.getHeight();
 
         // Dessin du cadre
-        graphicContext.setBackground(frameColor);
+        graphicContext.setColor(frameColor);
         graphicContext.fillRect(0, 0, w, h);
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
@@ -126,7 +126,7 @@ public final class BufferedMapDecorator {
      */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
             throws IOException {
-        this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
+        this(map, dpi, name, map.getWidth() / 20, new Color(0.9922f, 0.9961f, 0.8118f));
     }
 
     /**
