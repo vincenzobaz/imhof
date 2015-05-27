@@ -3,7 +3,7 @@
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
-public class MultiDigitalElevationModel implements DigitalElevationModel {
+public class MultiDigitalElevationModel  {
     private final HGTDigitalElevationModel firstDEM;
     private final HGTDigitalElevationModel secondDEM;
 
