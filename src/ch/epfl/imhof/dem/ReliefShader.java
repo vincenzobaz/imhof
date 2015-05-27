@@ -47,20 +47,28 @@ public final class ReliefShader {
             byte disposition, DigitalElevationModel... models) {
         this.disposition = disposition;
         this.projection = projection;
-        this.models = models;
+        this.models = new DigitalElevationModel[models.length];
+        for (int i = 0; i < models.length; i++) {
+            this.models[i] = models[i];
+        }
         this.lightSource = lightSource;
     }
 
     // 1 = haut guache , 2 = haut droite , 3 = bas gauche , 4 = bas droite
     public ReliefShader(Projection projection, Vector3D lightSource,
             DigitalElevationModel... models) {
-        if (models.length != 4 || models.length != 2 || models.length != 1)
+        if (models.length != 4 && models.length != 2 && models.length != 1)
             throw new IllegalArgumentException();
         this.projection = projection;
         this.lightSource = lightSource;
-        models = new DigitalElevationModel[models.length];
-        this.models = models.clone();
+        this.models = new DigitalElevationModel[models.length];
+        for (int i = 0; i < models.length; i++) {
+            this.models[i] = models[i];
+        }
         disposition = 4;
+        if (models.length == 2 && disposition == 4)
+            throw new IllegalArgumentException(
+                    "Utiliser le deuxième constructeur dans le cas de deux fichiers hgt");
     }
 
     /**
@@ -186,11 +194,11 @@ public final class ReliefShader {
         } else if (models.length == 4) {
             // calcul de la latiude et de la longitude limite en pixel
             int yCrit = (int) Math.ceil(planToImage.apply(
-                    projection.project(new PointGeo(BL.longitude(), Math.toRadians(models[2]
-                            .latitudeSW() + 1)))).x());
+                    projection.project(new PointGeo(BL.longitude(), Math
+                            .toRadians(models[2].latitudeSW() + 1)))).x());
             int xCrit = (int) Math.ceil(planToImage.apply(
-                    projection.project(new PointGeo(Math.toRadians(models[3].longitudeSW()), BL
-                            .latitude()))).y());
+                    projection.project(new PointGeo(Math.toRadians(models[3]
+                            .longitudeSW()), BL.latitude()))).y());
             // haut et droite exclues
             raw(0, 0, xCrit - 1, yCrit, imageToPlan, models[0], rawRelief);
             raw(xCrit, 0, width - xCrit, yCrit, imageToPlan, models[1],
@@ -206,17 +214,18 @@ public final class ReliefShader {
                         projection.project(new PointGeo(Math
                                 .toRadians(models[0].longitudeSW()), BL
                                 .latitude()))).x());
-                raw(0, 0, xCrit-1, height, imageToPlan, models[0], rawRelief);
-                raw(xCrit, 0, width - xCrit, height, imageToPlan, models[1], rawRelief);
+                raw(0, 0, xCrit - 1, height, imageToPlan, models[0], rawRelief);
+                raw(xCrit, 0, width - xCrit, height, imageToPlan, models[1],
+                        rawRelief);
                 return rawRelief;
             } else {
-                 int yCrit = (int) Math.ceil(planToImage.apply(
-                        projection.project(new PointGeo(
-                                BL.longitude(), Math.toRadians(models[0].latitudeSW())
-                                ))).y());
-                 raw(0, 0, width, yCrit, imageToPlan, models[0], rawRelief);
-                 raw(0, yCrit+1, width, height - yCrit, imageToPlan, models[1], rawRelief);
-                 return rawRelief;
+                int yCrit = (int) Math.ceil(planToImage.apply(
+                        projection.project(new PointGeo(BL.longitude(), Math
+                                .toRadians(models[0].latitudeSW())))).y());
+                raw(0, 0, width, yCrit, imageToPlan, models[0], rawRelief);
+                raw(0, yCrit + 1, width, height - yCrit, imageToPlan,
+                        models[1], rawRelief);
+                return rawRelief;
             }
         }
     }
