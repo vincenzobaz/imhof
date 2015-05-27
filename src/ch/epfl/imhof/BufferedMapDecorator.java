@@ -13,12 +13,37 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class BufferedMapDecorator {
+/**
+ * Classe fournissant des méthodes permettant d'ajouter des éléments à une
+ * carte, notamment une légende et un quadrillage.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
+public final class BufferedMapDecorator {
     private final BufferedImage map;
     private final Graphics2D graphicContext;
     private final float scale;
     private final int frameSize;
+    private final Font font;
 
+    /**
+     * Construit un décorateur de carte, avec les paramètres fournis.
+     * 
+     * @param map
+     *            la carte à décorer
+     * @param dpi
+     *            la résolution de la carte à décorer
+     * @param name
+     *            le nom du fichier contenant la carte
+     * @param frameSize
+     *            la taille du cadre
+     * @param frameColor
+     *            la couleur du cadre
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name,
             int frameSize, Color frameColor) throws IOException {
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
@@ -28,11 +53,14 @@ public class BufferedMapDecorator {
         graphicContext = this.map.createGraphics();
         graphicContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+        font = new Font("inconsolata", Font.PLAIN, (int) (7.5 * scale));
+
+        int w = this.map.getWidth();
+        int h = this.map.getHeight();
 
         // Dessin du cadre
-        graphicContext.setBackground(frameColor);
-        graphicContext
-                .fillRect(0, 0, this.map.getWidth(), this.map.getHeight());
+        graphicContext.setColor(frameColor);
+        graphicContext.fillRect(0, 0, w, h);
         graphicContext.drawImage(map, frameSize, frameSize, map.getWidth(),
                 map.getHeight(), null);
 
@@ -50,21 +78,74 @@ public class BufferedMapDecorator {
         graphicContext.setFont(new Font("inconsolata", Font.BOLD,
                 (int) (scale * 12)));
         graphicContext.drawString(s, frameSize, frameSize / 2);
+
+        // Dessin de l'échelle
+        float dpm = Math.round(dpi * (5000d / 127d)) / 25000f;
+        graphicContext.setStroke(new BasicStroke(h / 300f, 0, 0, 10f,
+                new float[] { dpm * 250f, dpm * 250f }, 0f));
+        Path2D scale = new Path2D.Float();
+        double scaleHeight = h - 1.5 * frameSize;
+        double baseScaleX = w * 4 / 5;
+        scale.moveTo(baseScaleX, scaleHeight);
+        scale.lineTo(baseScaleX + 750 * dpm, scaleHeight);
+        graphicContext.draw(scale);
+        scale.reset();
+        scale.moveTo(baseScaleX + 250f * dpm, scaleHeight);
+        scale.lineTo(baseScaleX + 1000f * dpm, scaleHeight);
+        graphicContext.setColor(Color.WHITE);
+        graphicContext.draw(scale);
+
+        // Dessin des étiquettes de l'échelle
+        graphicContext.setFont(font);
+        graphicContext.setColor(Color.BLACK);
+        int scaleTextHeight = h - 13 * frameSize / 10;
+        graphicContext.drawString("0", (int) baseScaleX, scaleTextHeight);
+        graphicContext.drawString("250m", (int) (baseScaleX + 250 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("500m", (int) (baseScaleX + 500 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("750m", (int) (baseScaleX + 750 * dpm),
+                scaleTextHeight);
+        graphicContext.drawString("1 km", (int) (baseScaleX + 1000 * dpm),
+                scaleTextHeight);
     }
 
+    /**
+     * Construit un décorateur de carte, avec les paramètres fournis, et un
+     * cadre ayant une taille par défaut de 1/20 de la largeur de la carte, et
+     * une couleur blanche.
+     * 
+     * @param map
+     *            la carte à décorer
+     * @param dpi
+     *            la résolution de la carte à décorer
+     * @param name
+     *            le titre de la carte
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
             throws IOException {
-        this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
+        this(map, dpi, name, map.getWidth() / 20, new Color(0.9922f, 0.9961f, 0.8118f));
     }
 
+    /**
+     * Ajoute un quadrillage à la carte.
+     * 
+     * @param bottomLeft
+     *            le coin bas-gauche de la carte
+     * @param topRight
+     *            le coin haut-droite de la carte
+     * @param resolution
+     *            la résolution de la carte
+     * @param howManyCells
+     *            le nombre de divisions horizontales du quadrillage
+     */
     public void addGrid(PointGeo bottomLeft, PointGeo topRight, int resolution,
             int howManyCells) {
         int decoratedMapWidth = map.getWidth();
         int decoratedMapHeight = map.getHeight();
         int imageWidth = decoratedMapWidth - 2 * frameSize;
-
-        graphicContext.setColor(Color.WHITE);
-        graphicContext.setStroke(new BasicStroke(0.05f * imageWidth / 100f));
 
         double radiansPerPixel = (topRight.longitude() - bottomLeft.longitude())
                 / imageWidth;
@@ -74,8 +155,9 @@ public class BufferedMapDecorator {
 
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
 
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
-                (int) (7.5 * scale)));
+        graphicContext.setStroke(new BasicStroke(0.0005f * imageWidth));
+        graphicContext.setFont(font);
+
         int indexForStrings = 0;
         for (int x = frameSize + squareSizePixel; x < decoratedMapWidth
                 - frameSize; x += squareSizePixel) {
@@ -109,10 +191,9 @@ public class BufferedMapDecorator {
         }
     }
 
-    public void printOnFile(String extension, String path) throws IOException {
-        ImageIO.write(map, extension, new File(path));
-    }
-
+    /**
+     * Ajoute une légende à la carte.
+     */
     public void addLegend() {
         int w = map.getWidth();
         int h = map.getHeight();
@@ -126,8 +207,7 @@ public class BufferedMapDecorator {
                 (int) (7.5 * scale)));
         graphicContext.drawString("Légende", w * 13 / 16 + w / 80, frameSize
                 * 3 / 2 + h / 50);
-        graphicContext.setFont(new Font("inconsolata", Font.PLAIN,
-                (int) (7.5 * scale)));
+        graphicContext.setFont(font);
 
         // Dessin des éléments de la légende
         drawLegend(new Color(0.2f, 0.2f, 0.2f), "bâtiments", w, h, 1, 1);
@@ -153,16 +233,34 @@ public class BufferedMapDecorator {
         graphicContext.setStroke(new BasicStroke(h / 400f, 0, 0, 10f,
                 new float[] { h / 200f, h / 200f }, 0f));
         Path2D path = new Path2D.Float();
-        path.moveTo(w * 33 / 40, frameSize * 3 / 2 + h * 11 / 30);
-        path.lineTo(w * 541 / 640, frameSize * 3 / 2 + h * 11 / 30);
+        path.moveTo((int) w * 33 / 40, frameSize * 3 / 2 + h * 11 / 30);
+        path.lineTo((int) w * 541 / 640, frameSize * 3 / 2 + h * 11 / 30);
         graphicContext.setColor(Color.BLACK);
         graphicContext.draw(path);
         graphicContext.drawString("chemin", w * 137 / 160, frameSize * 3 / 2
                 + h * 111 / 300);
     }
 
-    // Méthode dessinant l'élément de légende et sa description suivant les
-    // paramètres donnés
+    /**
+     * Sauvegarde la carte sous forme de fichier ayant l'extension et le nom
+     * fournis.
+     * 
+     * @param extension
+     *            l'extension du fichier
+     * @param fileName
+     *            le nom complet du fichier (avec extension)
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
+    public void printOnFile(String extension, String fileName)
+            throws IOException {
+        ImageIO.write(map, extension, new File(fileName));
+    }
+
+    /**
+     * Dessine l'élément de légende et sa description suivant les paramètres
+     * donnés.
+     */
     private void drawLegend(Color color, String s, int w, int h, int n,
             int roadRatio) {
         graphicContext.setColor(color);
