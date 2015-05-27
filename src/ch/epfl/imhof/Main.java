@@ -114,14 +114,15 @@ public final class Main {
                     height, pixelPerMeterResolution, dem);
             dem.close();
             break;
-        case 9:
-            dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
+            /*
+        case 9: dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
                     new File(args[1])), new HGTDigitalElevationModel(new File(
                     args[8])));
             relief = relief(projectedBottomLeft, projectedTopRight, width,
                     height, pixelPerMeterResolution, dem);
             dem.close();
             break;
+            */
         case 11:
             relief = relief(projectedBottomLeft, projectedTopRight, width,
                     height, pixelPerMeterResolution,

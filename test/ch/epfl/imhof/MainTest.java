@@ -36,7 +36,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
+//    @Test
     public void besanconAndMultiDEMTest() throws Exception {
         String[] arguments = { "data/besancon.osm.gz", "data/N47E005.hgt",
                 "5.9647", "47.2152", "6.0720", "47.2580", "300",
@@ -44,7 +44,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+//     @Test
     public void fourZonesDEMTest() throws Exception {
         String[] arguments = { "data/croiseedeschemins.osm.gz",
                 "data/N46E006.hgt", "6.95", "46.95", "7.05", "47.05", "200",
