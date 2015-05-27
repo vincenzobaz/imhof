@@ -33,7 +33,7 @@ Enfin nous proposons une méthode permettant d'écrire l'image en mémoire sur f
 \section{Ajout de fonctionnalités}
 En écrivant des tests le long du projet, nous nous sommes rendus compte du fait que l'utilisation des cartes OpenStreetMaps et des fichiers HGT permet le dessin de presque n'importe quel endroit sur la planète. Nous avons voulu essayer de généraliser notre code pour qu'il réalise les cartes les plus précises possibles pour toute latitude, longitude et aire données.
 \subsection{Éviter les déformations liées à l'utilisation de la projection CH1903: \texttt{Projection}s}
-L'utilisation de la projection CH1903, entraîne la déformation de beaucoup de régions en dehors de la Suisse. Nous avons donc ajouté trois classes héritant de \texttt{Projection}:
+L'utilisation de la projection CH1903 entraîne la déformation de beaucoup de régions en dehors de la Suisse. Nous avons donc ajouté trois classes héritant de \texttt{Projection}:
 \begin{enumerate}
     \item \texttt{LambertConformalConicProjection} implémente la projection conique conforme de Lambert, très adaptée au dessin des zones se trouvant aux latitudes moyennes comme les États-Unis, l'Europe et l'Australie. C'est la projection officielle en Belgique et Estonie et de nombreux pays, comme la France, en utilisent une variation \footnote{\url{http://fr.wikipedia.org/wiki/Projection_conique_conforme_de_Lambert}}. Son constructeur a besoin de deux parallèles de référence. Pour la plupart de l'Afrique, de l'Europe, et des États-Unis on peut utiliser les parallèles 20\degre N et 50\degre N. 
     \item \texttt{MercatorProjection} est une projection adaptée dans les régions autour de l'équateur et très utilisée pour la navigation maritime.
