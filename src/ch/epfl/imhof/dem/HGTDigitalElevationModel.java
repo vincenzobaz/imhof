@@ -22,6 +22,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     // Constante représentant un degré en radians
     private static final double ONE_DEGREE = Math.toRadians(1);
+    private final double angularResolution;
 
     private final int pointsPerLine;
 
@@ -34,7 +35,7 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final int latitudeSW;
     private final int longitudeSW;
 
-    private final InputStream stream;
+    private final FileInputStream stream;
 
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
@@ -121,16 +122,19 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         latitudeSW = latitude;
         longitudeSW = longitude;
 
-        // Ouverture et assignation du flot et mappage de la valeur des octets
-        // en mémoire
-        try (FileInputStream stream = new FileInputStream(model)) {
-            this.stream = stream;
-            buffer = stream.getChannel()
-                    .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
-        }
+        // Calcul de la résolution angulaire
+        angularResolution = ONE_DEGREE / (pointsPerLine - 1);
+
+        stream = new FileInputStream(model);
     }
 
-    @Override
+     @Override
+    public void loadBuffer() throws IOException {
+            buffer = stream.getChannel()
+                    .map(MapMode.READ_ONLY, 0, pointsPerLine*pointsPerLine*2L).asShortBuffer();
+    }
+
+   @Override
     public void close() throws IOException {
         buffer = null;
         stream.close();
@@ -146,9 +150,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
-
-        // Calcul de la résolution angulaire
-        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
 
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
