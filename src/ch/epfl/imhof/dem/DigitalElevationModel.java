@@ -1,5 +1,7 @@
 package ch.epfl.imhof.dem;
 
+import java.io.IOException;
+
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
@@ -37,4 +39,6 @@ public interface DigitalElevationModel extends AutoCloseable {
      * @return la longitude SO, en degrés
      */
     int longitudeSW();
+    
+    void loadBuffer() throws IOException;
 }
