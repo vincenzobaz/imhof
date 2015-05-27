@@ -13,6 +13,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Classe fournissant des méthodes permettant d'ajouter des éléments à une
+ * carte, notamment une légende et un quadrillage.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class BufferedMapDecorator {
     private final BufferedImage map;
     private final Graphics2D graphicContext;
@@ -20,6 +28,22 @@ public final class BufferedMapDecorator {
     private final int frameSize;
     private final Font font;
 
+    /**
+     * Construit un décorateur de carte, avec les paramètres fournis.
+     * 
+     * @param map
+     *            la carte à décorer
+     * @param dpi
+     *            la résolution de la carte à décorer
+     * @param name
+     *            le titre de la carte
+     * @param frameSize
+     *            la taille du cadre
+     * @param frameColor
+     *            la couleur du cadre
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name,
             int frameSize, Color frameColor) throws IOException {
         this.map = new BufferedImage(map.getWidth() + 2 * frameSize,
@@ -86,19 +110,42 @@ public final class BufferedMapDecorator {
                 scaleTextHeight);
     }
 
+    /**
+     * Construit un décorateur de carte, avec les paramètres fournis, et un
+     * cadre ayant une taille par défaut de 1/20 de la largeur de la carte, et
+     * une couleur blanche.
+     * 
+     * @param map
+     *            la carte à décorer
+     * @param dpi
+     *            la résolution de la carte à décorer
+     * @param name
+     *            le titre de la carte
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
             throws IOException {
         this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
     }
 
+    /**
+     * Ajoute un quadrillage à la carte.
+     * 
+     * @param bottomLeft
+     *            le coin bas-gauche de la carte
+     * @param topRight
+     *            le coin haut-droite de la carte
+     * @param resolution
+     *            la résolution de la carte
+     * @param howManyCells
+     *            le nombre de divisions horizontales du quadrillage
+     */
     public void addGrid(PointGeo bottomLeft, PointGeo topRight, int resolution,
             int howManyCells) {
         int decoratedMapWidth = map.getWidth();
         int decoratedMapHeight = map.getHeight();
         int imageWidth = decoratedMapWidth - 2 * frameSize;
-
-        graphicContext.setColor(Color.WHITE);
-        graphicContext.setStroke(new BasicStroke(0.0005f * imageWidth));
 
         double radiansPerPixel = (topRight.longitude() - bottomLeft.longitude())
                 / imageWidth;
@@ -108,7 +155,9 @@ public final class BufferedMapDecorator {
 
         double squareSizeRadian = radiansPerPixel * squareSizePixel;
 
+        graphicContext.setStroke(new BasicStroke(0.0005f * imageWidth));
         graphicContext.setFont(font);
+
         int indexForStrings = 0;
         for (int x = frameSize + squareSizePixel; x < decoratedMapWidth
                 - frameSize; x += squareSizePixel) {
@@ -142,10 +191,9 @@ public final class BufferedMapDecorator {
         }
     }
 
-    public void printOnFile(String extension, String path) throws IOException {
-        ImageIO.write(map, extension, new File(path));
-    }
-
+    /**
+     * Ajoute une légende à la carte.
+     */
     public void addLegend() {
         int w = map.getWidth();
         int h = map.getHeight();
@@ -193,8 +241,26 @@ public final class BufferedMapDecorator {
                 + h * 111 / 300);
     }
 
-    // Méthode dessinant l'élément de légende et sa description suivant les
-    // paramètres donnés
+    /**
+     * Sauvegarde la carte sous forme de fichier ayant l'extension et le nom
+     * fournis.
+     * 
+     * @param extension
+     *            l'extension du fichier
+     * @param fileName
+     *            le nom complet du fichier (avec extension)
+     * @throws IOException
+     *             lève une exception en cas d'erreur d'entrée-sortie
+     */
+    public void printOnFile(String extension, String fileName)
+            throws IOException {
+        ImageIO.write(map, extension, new File(fileName));
+    }
+
+    /**
+     * Dessine l'élément de légende et sa description suivant les paramètres
+     * donnés.
+     */
     private void drawLegend(Color color, String s, int w, int h, int n,
             int roadRatio) {
         graphicContext.setColor(color);
