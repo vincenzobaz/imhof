@@ -35,11 +35,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     private final int latitudeSW;
     private final int longitudeSW;
 
-    private final FileInputStream stream;
+    private FileInputStream stream;
+    private File hgtFile;
 
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
-    private ShortBuffer buffer;
+    private ShortBuffer buffer = null;
 
     /**
      * Construit un modèle numérique de terrain à partir du fichier HGT passé en
@@ -125,16 +126,22 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         // Calcul de la résolution angulaire
         angularResolution = ONE_DEGREE / (pointsPerLine - 1);
 
-        stream = new FileInputStream(model);
+        this.hgtFile = model;
     }
 
-     @Override
+    @Override
     public void loadBuffer() throws IOException {
-            buffer = stream.getChannel()
-                    .map(MapMode.READ_ONLY, 0, pointsPerLine*pointsPerLine*2L).asShortBuffer();
+        try (FileInputStream stream = new FileInputStream(hgtFile)) {
+            this.stream = stream;
+
+            buffer = stream
+                    .getChannel()
+                    .map(MapMode.READ_ONLY, 0,
+                            pointsPerLine * pointsPerLine * 2L).asShortBuffer();
+        }
     }
 
-   @Override
+    @Override
     public void close() throws IOException {
         buffer = null;
         stream.close();
