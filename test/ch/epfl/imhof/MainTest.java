@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public final class MainTest {
 
-    // @Test
+//     @Test
     public void interlakenTest() throws Exception {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
@@ -36,7 +36,7 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    @Test
+//    @Test
     public void besanconAndMultiDEMTest() throws Exception {
         String[] arguments = { "download", "data/N47E005.hgt", "5.9647",
                 "47.2152", "6.0720", "47.2580", "300", "besancon_MainDOW.png",
