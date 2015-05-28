@@ -41,30 +41,52 @@ L'utilisation de la projection CH1903 entraîne la déformation de beaucoup de r
 \end{enumerate}
 Les trois projections sont \textit{conformes}\footnote{\url{http://www.icsm.gov.au/mapping/map_projections.html}} c'est-à-dire qu'elles essaient de préserver les formes des objets.
 
+En supposant l'utilisation d'une projection différente de CH1903 un utilisation avancée du programme, nous avons décidé de coupler cette fonctionnalité à la suivante. Ainsi pour utiliser une des projections susmentionnées il suffit d'ajouter deux paramètres lors de l'appel de la méthode \texttt{Main.main}: une chaîne de caractères et le parcours du deuxième fichier osm.
+
+La chaîne de caractères à utiliser est indiquée dans le tableau suivant:
+
+\begin{center}
+    \begin{tabular}{c | c }
+	Projection & Chaîne de caractères \\ \hline
+	CH1903 & \texttt{CH1903} \\
+	Projection conique conforme de Lambert & \texttt{LambertConformalConic} \\
+	Projection stéréographique & \texttt{Stereographic} \\
+	Projection Mercator & \texttt{Mercator} \\
+	Projection équirectangulaire & \texttt{Equirectangular}
+    \end{tabular}
+\end{center}
+
 \subsection{Dessin de carte à l'aide de plusieurs fichiers HGT}
 L'utilisation d'un seul fichier réduit non seulement le choix de l'aire à dessiner mais aussi celui de la zone (comment faire entre deux fichiers?). Nous avons donc essayé d'implémenter le dessin en utilisant plusieurs fichiers HGT.
 
 \begin{center}
 \includegraphics[scale=0.3]{schema4files1.jpg}
+
 \includegraphics[scale=0.3]{schema4files2.jpg}
 \end{center}
 
 Les images ci-dessus illustrent les cas auxquels nous nous sommes intéressés.
 
+Pour utiliser cette fonctionnalité il suffit d'ajouter deux paramètres lors de l'appel de la méthode \texttt{Main.main}: la projection à utiliser et le parcours du deuxième fichier hgt.
+
 \subsubsection*{Mise en œuvre}
-Nous avons essayé d'abord d'utiliser les objets \texttt{DigitalElevationModel} définis comme décrit lors de l'étape 11, mais ceci posait un problème de mémoire: instancier plusieurs objets de ce type implique de charger en mémoire tout le contenu du fichier hgt ce qui bloque l'exécution du programme, même en augmentant la quantité de mémoire utilisable par la Machine Virtuelle Java à travers le paramètre \texttt{-Xmx}. Nos tests nous montrent que même avec 8GB la création de 4 objets est impossible.
+Nous utilisons les objets \texttt{DigitalElevationModel} définis comme décrit lors de l'étape 11, mais ceci posait un problème de mémoire: instancier plusieurs objets de ce type implique charger en mémoire tout le contenu du fichier hgt ce qui bloque l'exécution du programme, même en augmentant la quantité de mémoire utilisable par la Machine Virtuelle Java à travers le paramètre \texttt{-Xmx}. Nos tests nous montrent que même avec 8GB la création de 4 objets est impossible. Nous avons donc dû nous limiter à utiliser deux fichiers.
 
-Nous avons alors décidé de modifier \texttt{DigitalElevationModel} pour fournir une méthode \texttt{loadBuffer()} qui charge en mémoire le contenu du fichier dont la référence est stockée dans l'objet implémentant cette interface. Ceci nous permet de décider quand charger les données en mémoire et quand les retirer de celle-ci à l'aide de la méthode \texttt{close()}.
+Pour ce faire nous avons crée la classe \texttt{MultiHGTDigitalElevationModel} en appliquant le patron de conception \textit{Composite}: la classe contient deux objets \texttt{HGTDigitalElevationModel} et elle implémente l'interface \texttt{DigitalElevationModel}.
 
-C'est alors la classe \texttt{ReliefShader} qui s'occupe de gérer les fichiers HGT qu'elle reçoit en fonction de leur nombre. Elle dessine les quatre portions d'images de la carte se trouvant sur les quatre fichiers différents une par une. Pour ce faire nous avons utilisé deux fonctions pour projeter les points du repère de l'image à celui réel et vice-versa afin de pouvoir calculer les distances indiquées par les flèches rouges dans l'image et donc pouvoir choisir le fichier à utiliser et les dimensions de la sous-image à dessiner.
+\subsubsection*{Problèmes et inconvénients de cette solution}
+Cette solution nous impose une grande limite: l'utilisation de seulement deux fichiers HGT. Nous avons essayé de dessiner des cartes par étapes: en utilisant un ou deux \texttt{DigitalElevationModel} mais nous avons rencontré de nombreux problèmes au niveau des frontières des fichiers.
+Nous croyons que les calculs de projection et de conversion entre différentes unités de mesure introduisent des imprécisions qui rendent impossible cette approche.
+% Malgré nos efforts, nous ne comprenons pas pourquoi le code écrit ne fonctionne pas. Le problème semble naître dans les frontières des fichiers HGT: les hauteurs des points se trouvant à ces coordonnées ne semblent pas êtres contenus dans les fichiers alors qu'ils devraient y être, et en double (une fois sur chaque fichier vu que ceux-ci se chevauchent).
 
-\subsubsection*{Problèmes et inconvénients de cette implémentation}
-Malgré nos efforts, nous ne comprenons pas pourquoi le code écrit ne fonctionne pas. Le problème semble naître dans les frontières des fichiers HGT: les hauteurs des points se trouvant à ces coordonnées ne semblent pas êtres contenus dans les fichiers alors qu'ils devraient y être, et en double (une fois sur chaque fichier vu que ceux-ci se chevauchent).
-
-En outre cette solution nous impose de gérer des erreurs d'entrées sorties dans \texttt{ReliefShader} qui n'est qu'une classe de dessin.
+% En outre cette solution nous impose de gérer des erreurs d'entrées sorties dans \texttt{ReliefShader} qui n'est qu'une classe de dessin.
 
 Malgré ces aspects nous avons voulu essayer car pouvoir choisir librement la région à dessiner nous semblait important.
 
 \subsection{Téléchargement des fichiers OpenStreetMaps}
 Dans la classe \texttt{Main} nous fournissons une petite méthode permettant de télécharger les cartes OSM à travers la \textit{Overpass API}\footnote{\url{http://wiki.openstreetmap.org/wiki/Overpass_API}} conseillée pour le téléchargement de fichiers de grosses dimensions sans impacter les performances de l'API principale de OpenStreetMaps, qui est limitée à des régions carrées de maximum 0.5\degre.
+
+Pour l'utiliser il suffit de remplacer, dans l'appel de la méthode \texttt{Main.main}, le parcours du fichier osm par le mot \textit{download}.
+
+Nous aurions voulu aussi implémenter le téléchargement automatique des fichiers hgt. Cependant le site \url{http://viewfinderpanoramas.org/} n'offre pas d'API pour ce faire et un téléchargement à travers le link direct aurait été une solution improvisée et pas forcement en accord avec l'auteur du site.
 \end{document}
