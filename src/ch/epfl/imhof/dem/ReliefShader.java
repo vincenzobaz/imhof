@@ -3,11 +3,8 @@ package ch.epfl.imhof.dem;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.function.Function;
 
-import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.projection.Projection;
@@ -24,11 +21,8 @@ import ch.epfl.imhof.projection.Projection;
  */
 public final class ReliefShader {
     private final Projection projection;
-    private final DigitalElevationModel[] models;
+    private final DigitalElevationModel model;
     private final Vector3D lightSource;
-    public static final byte DEM_DISPOSITION_HORIZONTAL = 0;
-    public static final byte DEM_DISPOSITION_VERTICAL = 1;
-    private final byte disposition;
 
     /**
      * Construit un dessinateur de relief ombré.
@@ -43,32 +37,11 @@ public final class ReliefShader {
      *            le vecteur à trois dimensions représentant la direction de la
      *            source lumineuse
      */
-    public ReliefShader(Projection projection, Vector3D lightSource,
-            byte disposition, DigitalElevationModel... models) {
-        this.disposition = disposition;
+    public ReliefShader(Projection projection, DigitalElevationModel model,
+            Vector3D lightSource) {
         this.projection = projection;
-        this.models = new DigitalElevationModel[models.length];
-        for (int i = 0; i < models.length; i++) {
-            this.models[i] = models[i];
-        }
+        this.model = model;
         this.lightSource = lightSource;
-    }
-
-    // 1 = haut guache , 2 = haut droite , 3 = bas gauche , 4 = bas droite
-    public ReliefShader(Projection projection, Vector3D lightSource,
-            DigitalElevationModel... models) {
-        if (models.length != 4 && models.length != 2 && models.length != 1)
-            throw new IllegalArgumentException();
-        this.projection = projection;
-        this.lightSource = lightSource;
-        this.models = new DigitalElevationModel[models.length];
-        for (int i = 0; i < models.length; i++) {
-            this.models[i] = models[i];
-        }
-        disposition = 4;
-        if (models.length == 2 && disposition == 4)
-            throw new IllegalArgumentException(
-                    "Utiliser le deuxième constructeur dans le cas de deux fichiers hgt");
     }
 
     /**
@@ -88,10 +61,12 @@ public final class ReliefShader {
      *         <code>bottomLeft</code> et haut-droite <code>topRight</code>, de
      *         largeur <code>width</code> et hauteur <code>height</code>, flouté
      *         avec un rayon de floutage <code>radius</code>
-     * @throws Exception
+     * @throws IllegalArgumentException
+     *             lève une exception si le rayon de floutage est négatif
      */
     public BufferedImage shadedRelief(Point bottomLeft, Point topRight,
-            int width, int height, float radius) throws Exception {
+            int width, int height, float radius)
+            throws IllegalArgumentException {
         if (radius < 0) {
             throw new IllegalArgumentException(
                     "Le rayon de floutage doit être positif.");
@@ -99,16 +74,9 @@ public final class ReliefShader {
 
         // Si le rayon de floutage est nul, on produit une image non-floutée
         if (radius == 0f) {
-            Function<Point, Point> imageToPlan = Point.alignedCoordinateChange(
-                    new Point(0d, height - 1), bottomLeft, new Point(width - 1,
-                            0d), topRight);
-            Function<Point, Point> planToImage = Point.alignedCoordinateChange(
-                    bottomLeft, new Point(0d, height - 1), topRight, new Point(
-                            width - 1, 0d));
-
-            return rawMultipleFiles(width, height, imageToPlan, planToImage,
-                    projection.inverse(bottomLeft),
-                    projection.inverse(topRight));
+            return raw(width, height, Point.alignedCoordinateChange(new Point(
+                    0d, height - 1), bottomLeft, new Point(width - 1, 0d),
+                    topRight));
         } else {
             // Si le rayon de floutage n'est pas nul, on produit un tableau
             // contenant les valeurs correspondantes au rayon de floutage,
@@ -121,19 +89,11 @@ public final class ReliefShader {
             // getSubImage (extraction de l'image floutée avec exclusion de la
             // zone non floutée)
             int bufferZoneSize = (gaussValues.length - 1) / 2;
-            Function<Point, Point> imageToPlan = Point.alignedCoordinateChange(
-                    new Point(bufferZoneSize, height + bufferZoneSize - 1),
-                    bottomLeft, new Point(width + bufferZoneSize - 1,
-                            bufferZoneSize), topRight);
-
-            Function<Point, Point> planToImage = Point.alignedCoordinateChange(
-                    bottomLeft, new Point(bufferZoneSize, height
-                            + bufferZoneSize - 1), topRight, new Point(width
-                            + bufferZoneSize - 1, bufferZoneSize));
-            BufferedImage rawImage = rawMultipleFiles(width + 2
-                    * bufferZoneSize, height + 2 * bufferZoneSize, imageToPlan,
-                    planToImage, projection.inverse(bottomLeft),
-                    projection.inverse(topRight));
+            BufferedImage rawImage = raw(width + 2 * bufferZoneSize, height + 2
+                    * bufferZoneSize, Point.alignedCoordinateChange(new Point(
+                    bufferZoneSize, height + bufferZoneSize - 1), bottomLeft,
+                    new Point(width + bufferZoneSize - 1, bufferZoneSize),
+                    topRight));
 
             // On peut maintenant flouter notre image en utilisant l'image non
             // floutée et le tableau de valeurs construits avant
@@ -158,16 +118,16 @@ public final class ReliefShader {
      *            la fonction permettant d'effectuer un changement de
      *            coordonnées entre le repère du relief et celui de l'image
      * @return une image de relief
-     * @throws Exception
      */
-    private void raw(int sX, int sY, int width, int height,
-            Function<Point, Point> imageToPlan, DigitalElevationModel model,
-            BufferedImage image) throws Exception {
-        model.loadBuffer();
+    private BufferedImage raw(int width, int height,
+            Function<Point, Point> imageToPlan) {
+        BufferedImage rawRelief = new BufferedImage(width, height,
+                BufferedImage.TYPE_INT_RGB);
+
         // On calcule la couleur de chaque pixel à partir de l'altitude du
         // point correspondant à ce pixel
-        for (int x = sX; x < width; ++x) {
-            for (int y = sY; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
                 Vector3D normal = model.normalAt(projection.inverse(imageToPlan
                         .apply(new Point(x, y))));
                 double cosTheta = lightSource.scalarProduct(normal)
@@ -176,58 +136,10 @@ public final class ReliefShader {
                 int blueLevel = (int) (0.5 * (0.7 * cosTheta + 1) * 255.9999);
                 int rgb = blueLevel | redAndGreenLevel << 8
                         | redAndGreenLevel << 16;
-                image.setRGB(x, y, rgb);
+                rawRelief.setRGB(x, y, rgb);
             }
         }
-        model.close();
-    }
-
-    private BufferedImage rawMultipleFiles(int width, int height,
-            Function<Point, Point> imageToPlan,
-            Function<Point, Point> planToImage, PointGeo BL, PointGeo TR)
-            throws Exception {
-        BufferedImage rawRelief = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_BGR);
-        if (models.length == 1) {
-            raw(0, 0, width, height, imageToPlan, models[0], rawRelief);
-            return rawRelief;
-        } else if (models.length == 4) {
-            // calcul de la latiude et de la longitude limite en pixel
-            int yCrit = (int) planToImage.apply(
-                    projection.project(new PointGeo(BL.longitude(), Math
-                            .toRadians(models[0].latitudeSW())))).y();
-            int xCrit = (int) Math.ceil(planToImage.apply(
-                    projection.project(new PointGeo(Math.toRadians(models[1]
-                            .longitudeSW()), TR.latitude()))).x());
-            // haut et droite exclues
-            raw(0, 0, xCrit - 1, yCrit, imageToPlan, models[0], rawRelief);
-            raw(xCrit, 0, width - xCrit, yCrit, imageToPlan, models[1],
-                    rawRelief);
-            raw(0, yCrit + 1, xCrit - 1, height - yCrit, imageToPlan,
-                    models[2], rawRelief);
-            raw(xCrit, yCrit, width - xCrit, height - yCrit, imageToPlan,
-                    models[3], rawRelief);
-            return rawRelief;
-        } else {
-            if (disposition == DEM_DISPOSITION_HORIZONTAL) {
-                int xCrit = (int) Math.ceil(planToImage.apply(
-                        projection.project(new PointGeo(Math
-                                .toRadians(models[0].longitudeSW()), BL
-                                .latitude()))).x());
-                raw(0, 0, xCrit - 1, height, imageToPlan, models[0], rawRelief);
-                raw(xCrit, 0, width - xCrit, height, imageToPlan, models[1],
-                        rawRelief);
-                return rawRelief;
-            } else {
-                int yCrit = (int) Math.ceil(planToImage.apply(
-                        projection.project(new PointGeo(BL.longitude(), Math
-                                .toRadians(models[0].latitudeSW())))).y());
-                raw(0, 0, width, yCrit, imageToPlan, models[0], rawRelief);
-                raw(0, yCrit + 1, width, height - yCrit, imageToPlan,
-                        models[1], rawRelief);
-                return rawRelief;
-            }
-        }
+        return rawRelief;
     }
 
     /**

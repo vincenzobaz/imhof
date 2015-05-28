@@ -28,23 +28,23 @@ public final class MainTest {
         Main.main(arguments);
     }
 
-    // @Test
+//     @Test
     public void saintclaudeTest() throws Exception {
-        String[] arguments = { "data/saintclaude.osm.gz", "data/N46E005.hgt",
+        String[] arguments = { "download", "data/N46E005.hgt",
                 "5.8136", "46.3662", "5.9209", "46.4097", "300",
                 "saintclaude_Main.png" };
         Main.main(arguments);
     }
 
-//    @Test
+    @Test
     public void besanconAndMultiDEMTest() throws Exception {
-        String[] arguments = { "download", "data/N47E005.hgt",
-                "5.9647", "47.2152", "6.0720", "47.2580", "300",
-                "besancon_MainDOW.png", "data/N47E006.hgt" };
+        String[] arguments = { "download", "data/N47E005.hgt", "5.9647",
+                "47.2152", "6.0720", "47.2580", "300", "besancon_MainDOW.png",
+                "LambertConformalConic", "data/N47E006.hgt" };
         Main.main(arguments);
     }
 
-//     @Test
+    // @Test
     public void fourZonesDEMTest() throws Exception {
         String[] arguments = { "data/croiseedeschemins.osm.gz",
                 "data/N46E006.hgt", "6.95", "46.95", "7.05", "47.05", "200",
@@ -52,4 +52,13 @@ public final class MainTest {
                 "data/N47E007.hgt" };
         Main.main(arguments);
     }
+
+    // @Test
+    public void twoZonesVertical() throws Exception {
+        String[] arguments = { "download", "data/N46E006.hgt", "6.5594",
+                "46.5032", "6.6508", "47.6", "200", "twoFiles.png",
+                "data/N47E006.hgt" };
+        Main.main(arguments);
+    }
+
 }

@@ -22,7 +22,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     // Constante représentant un degré en radians
     private static final double ONE_DEGREE = Math.toRadians(1);
-    private final double angularResolution;
 
     private final int pointsPerLine;
 
@@ -32,15 +31,14 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // la méthode {@link ch.epfl.imhof.dem.HGTDigitalElevationModel#normalAlt
     // normalAlt} on aurait eu besoin de les re-extraire pour éviter de trop
     // nombreux appels aux accesseurs
-    private final int latitudeSW;
-    private final int longitudeSW;
+    private final double latitudeSW;
+    private final double longitudeSW;
 
-    private FileInputStream stream;
-    private File hgtFile;
+    private final InputStream stream;
 
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
     // redéfinition de la méthode close.
-    private ShortBuffer buffer = null;
+    private ShortBuffer buffer;
 
     /**
      * Construit un modèle numérique de terrain à partir du fichier HGT passé en
@@ -120,24 +118,15 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         pointsPerLine = (int) points;
 
         // Assignation de la longitude et de la latitude du coin sud-ouest
-        latitudeSW = latitude;
-        longitudeSW = longitude;
+        latitudeSW = Math.toRadians(latitude);
+        longitudeSW = Math.toRadians(longitude);
 
-        // Calcul de la résolution angulaire
-        angularResolution = ONE_DEGREE / (pointsPerLine - 1);
-
-        this.hgtFile = model;
-    }
-
-    @Override
-    public void loadBuffer() throws IOException {
-        try (FileInputStream stream = new FileInputStream(hgtFile)) {
+        // Ouverture et assignation du flot et mappage de la valeur des octets
+        // en mémoire
+        try (FileInputStream stream = new FileInputStream(model)) {
             this.stream = stream;
-
-            buffer = stream
-                    .getChannel()
-                    .map(MapMode.READ_ONLY, 0,
-                            pointsPerLine * pointsPerLine * 2L).asShortBuffer();
+            buffer = stream.getChannel()
+                    .map(MapMode.READ_ONLY, 0, model.length()).asShortBuffer();
         }
     }
 
@@ -150,22 +139,24 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
         // Vérification de l'appartenance du point à la zone du fichier HGT
-        if (Math.toDegrees(point.latitude()) < latitudeSW
-                || Math.toDegrees(point.latitude()) > latitudeSW + 1
-                || Math.toDegrees(point.longitude()) < longitudeSW
-                || Math.toDegrees(point.longitude()) > longitudeSW + 1) {
+        if (point.latitude() < latitudeSW
+                || point.latitude() > latitudeSW + ONE_DEGREE
+                || point.longitude() < longitudeSW
+                || point.longitude() > longitudeSW + ONE_DEGREE) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
+        // Calcul de la résolution angulaire
+        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
+
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
         // du fichier HGT
-        int i = (int) Math.floor((point.longitude() - Math
-                .toRadians(longitudeSW)) / angularResolution);
-        int j = (int) Math
-                .floor((point.latitude() - Math.toRadians(latitudeSW))
-                        / angularResolution);
+        int i = (int) Math.floor((point.longitude() - longitudeSW)
+                / angularResolution);
+        int j = (int) Math.floor((point.latitude() - latitudeSW)
+                / angularResolution);
 
         // On utilise les formules données pour calculer les coordonnées du
         // vecteur normal au point considéré
@@ -184,16 +175,6 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
-    @Override
-    public int latitudeSW() {
-        return latitudeSW;
-    }
-
-    @Override
-    public int longitudeSW() {
-        return longitudeSW;
-    }
-
     /**
      * Retourne l'altitude du point situé aux coordonnées passées en argument
      * dans le fichier HGT.
@@ -206,5 +187,14 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      */
     private short altitudeAt(int i, int j) {
         return buffer.get(pointsPerLine * (pointsPerLine - j - 1) + i);
+    }
+    @Override
+    public double latitudeSW() {
+        return latitudeSW;
+    }
+
+    @Override
+    public double longitudeSW() {
+        return longitudeSW;
     }
 }

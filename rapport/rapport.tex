@@ -45,10 +45,11 @@ Les trois projections sont \textit{conformes}\footnote{\url{http://www.icsm.gov.
 L'utilisation d'un seul fichier réduit non seulement le choix de l'aire à dessiner mais aussi celui de la zone (comment faire entre deux fichiers?). Nous avons donc essayé d'implémenter le dessin en utilisant plusieurs fichiers HGT.
 
 \begin{center}
-\includegraphics[scale=0.3]{schema4files.jpg}
+\includegraphics[scale=0.3]{schema4files1.jpg}
+\includegraphics[scale=0.3]{schema4files2.jpg}
 \end{center}
 
-L'image ci-dessus illustre le cas auquel nous nous sommes intéressés. Arriver à définir le comportement pour le cas de 4 fichiers permet aussi de définir sans difficultés, des méthodes pour dessiner en utilisant 2 fichiers.
+Les images ci-dessus illustrent les cas auxquels nous nous sommes intéressés.
 
 \subsubsection*{Mise en œuvre}
 Nous avons essayé d'abord d'utiliser les objets \texttt{DigitalElevationModel} définis comme décrit lors de l'étape 11, mais ceci posait un problème de mémoire: instancier plusieurs objets de ce type implique de charger en mémoire tout le contenu du fichier hgt ce qui bloque l'exécution du programme, même en augmentant la quantité de mémoire utilisable par la Machine Virtuelle Java à travers le paramètre \texttt{-Xmx}. Nos tests nous montrent que même avec 8GB la création de 4 objets est impossible.

@@ -3,11 +3,27 @@
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
-public class MultiDigitalElevationModel  {
+/**
+ * Classe représentant un modèle numérique de terrain stocké dans deux fichiers
+ * au format GT.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
+
+public class MultiHGTDigitalElevationModel implements DigitalElevationModel {
     private final HGTDigitalElevationModel firstDEM;
     private final HGTDigitalElevationModel secondDEM;
 
-    public MultiDigitalElevationModel(HGTDigitalElevationModel firstDEM,
+    /**
+     * Construit un objet MultiHGTDigitalElevationModel à partir de deux objets
+     * HGTDigitalElevationModel
+     * 
+     * @param firstDEM
+     * @param secondDEM
+     */
+    public MultiHGTDigitalElevationModel(HGTDigitalElevationModel firstDEM,
             HGTDigitalElevationModel secondDEM) {
         this.firstDEM = firstDEM;
         this.secondDEM = secondDEM;
@@ -26,12 +42,12 @@ public class MultiDigitalElevationModel  {
     }
 
     @Override
-    public int latitudeSW() {
+    public double latitudeSW() {
         return firstDEM.latitudeSW();
     }
 
     @Override
-    public int longitudeSW() {
+    public double longitudeSW() {
         return firstDEM.longitudeSW();
     }
 
@@ -41,3 +57,4 @@ public class MultiDigitalElevationModel  {
                 && Math.toDegrees(point.longitude()) >= firstDEM.longitudeSW() && Math
                 .toDegrees(point.longitude()) < firstDEM.longitudeSW() + 1);
     }
+}

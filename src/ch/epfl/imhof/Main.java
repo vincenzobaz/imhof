@@ -1,24 +1,17 @@
 ﻿package ch.epfl.imhof;
 
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import javax.imageio.ImageIO;
-
 import ch.epfl.imhof.dem.DigitalElevationModel;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.dem.HGTDigitalElevationModel;
-import ch.epfl.imhof.dem.MultiDigitalElevationModel;
+import ch.epfl.imhof.dem.MultiHGTDigitalElevationModel;
 import ch.epfl.imhof.dem.ReliefShader;
 import ch.epfl.imhof.geometry.Point;
 import ch.epfl.imhof.osm.OSMMap;
@@ -27,7 +20,11 @@ import ch.epfl.imhof.osm.OSMToGeoTransformer;
 import ch.epfl.imhof.painting.Color;
 import ch.epfl.imhof.painting.Java2DCanvas;
 import ch.epfl.imhof.projection.CH1903Projection;
+import ch.epfl.imhof.projection.EquirectangularProjection;
+import ch.epfl.imhof.projection.LambertConformalConicProjection;
+import ch.epfl.imhof.projection.MercatorProjection;
 import ch.epfl.imhof.projection.Projection;
+import ch.epfl.imhof.projection.StereographicProjection;
 
 /**
  * Classe contenant la méthode principale du projet.
@@ -37,9 +34,6 @@ import ch.epfl.imhof.projection.Projection;
  *
  */
 public final class Main {
-    // Projection utilisée pour projeter les points dans le repère cartésien
-    private static final Projection CH1903 = new CH1903Projection();
-
     // Vecteur représentant la source lumineuse du relief ombré
     private static final Vector3D LIGHT_SOURCE = new Vector3D(-1d, 1d, 1d);
 
@@ -52,7 +46,8 @@ public final class Main {
      *            validation des arguments, mais il devrait contenir:
      *            <ul>
      *            <li>args[0]: le nom (chemin) d'un fichier OSM compressé avec
-     *            gzip contenant les données de la carte à dessiner,
+     *            gzip contenant les données de la carte à dessiner, uiliser
+     *            download si on souhaite le télécharger
      *            <li>args[1]: le nom (chemin) d'un fichier HGT couvrant la
      *            totalité de la zone de la carte à dessiner, zone tampon
      *            incluse,
@@ -67,10 +62,23 @@ public final class Main {
      *            <li>args[6]: la résolution de l'image à dessiner, en points
      *            par pouce (dpi),
      *            <li>args[7]: le nom (chemin) du fichier PNG à générer.
+     *            <li>args[8]: la projection à utiliser:
+     *            <ul>
+     *            <li>Stereographic
+     *            <li>LambertConformalConic
+     *            <li>Equirectangular
+     *            <li>CH1903
+     *            <li>Mercator
+     *            </ul>
+     *            Si aucun n'est fourni, alors CH1903 est utilisée.
+     *            <li>Deuxième fichier hgt couvrant la zone au nord ou à l'est
+     *            du premier (args[1])
      *            </ul>
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        // Projection utilisée pour projeter les points dans le repère cartésien
+        Projection projection = new CH1903Projection();
 
         // On construit les deux points de type WGS 84 correspondant aux coins
         // bas-gauche et haut-droite de la zone à dessiner
@@ -90,9 +98,32 @@ public final class Main {
                 * (topRight.latitude() - bottomLeft.latitude()) * Earth.RADIUS
                 / 25000d);
 
+        // Choix de la projection à utiliser
+        if (args.length > 8) {
+            switch (args[8]) {
+            case "CH1903":
+                break;
+            case "LambertConformalConic":
+                projection = new LambertConformalConicProjection(20, 50);
+                break;
+            case "Mercator":
+                projection = new MercatorProjection();
+                break;
+            case "Stereographic":
+                projection = new StereographicProjection();
+                break;
+            case "Equirectangular":
+                projection = new EquirectangularProjection();
+                break;
+            default:
+                throw new IllegalArgumentException("Nom de projection invalide");
+            }
+
+        }
+
         // Projection des points du système WGS84 dans un repère cartésien
-        Point projectedTopRight = CH1903.project(topRight);
-        Point projectedBottomLeft = CH1903.project(bottomLeft);
+        Point projectedTopRight = projection.project(topRight);
+        Point projectedBottomLeft = projection.project(bottomLeft);
 
         // Calcul de la largeur de l'image
         int width = (int) Math
@@ -100,68 +131,60 @@ public final class Main {
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
 
+        // Lecture du fichier OSM et création d'un objet OSMMap qui
+        // est ensuite converti en map et dessiné sur une toile
         OSMMap osmMap;
-        // Si on reçoit la châine de charactères "download" comme premier
-        // élément du tableau args on télécharge la carte osm sinon on utilise
-        // le parcours fourni
         if (args[0].equals("download")) {
             osmMap = OSMMapReader.readOSMFile(
                     download(args[2], args[3], args[4], args[5]), false);
         } else {
             osmMap = OSMMapReader.readOSMFile(args[0], true);
         }
-
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
-                CH1903);
+                projection);
         Map map = osmToGeoTransformer.transform(osmMap);
         Java2DCanvas canvas = new Java2DCanvas(projectedBottomLeft,
                 projectedTopRight, width, height, dpi, Color.WHITE);
         SwissPainter.painter().drawMap(map, canvas);
 
         // Création d'un modèle de relief
-        DigitalElevationModel dem;
-        BufferedImage relief = null;
-
+        DigitalElevationModel dem = null;
         switch (args.length) {
         case 8:
-            dem = new HGTDigitalElevationModel(new File(args[1]));
-            relief = relief(projectedBottomLeft, projectedTopRight, width,
-                    height, pixelPerMeterResolution, dem);
-            dem.close();
-            break;
         case 9:
-            DigitalElevationModel dem1 = new HGTDigitalElevationModel(new File(
-                    args[1]));
-            DigitalElevationModel dem2 = new HGTDigitalElevationModel(new File(
-                    args[8]));
-            if (dem1.latitudeSW() == dem2.latitudeSW())
-                relief = relief(projectedBottomLeft, projectedTopRight, width,
-                        height, pixelPerMeterResolution,
-                        new HGTDigitalElevationModel(new File(args[1])),
-                        new HGTDigitalElevationModel(new File(args[8])));
+            dem = new HGTDigitalElevationModel(new File(args[1]));
             break;
-        case 11:
-            relief = relief(projectedBottomLeft, projectedTopRight, width,
-                    height, pixelPerMeterResolution,
+        case 10:
+            dem = new MultiHGTDigitalElevationModel(
                     new HGTDigitalElevationModel(new File(args[1])),
-                    new HGTDigitalElevationModel(new File(args[8])),
-                    new HGTDigitalElevationModel(new File(args[9])),
-                    new HGTDigitalElevationModel(new File(args[10])));
+                    new HGTDigitalElevationModel(new File(args[9])));
             break;
         }
+
+        // Création d'un "dessinateur de reliefs" ayant une source lumineuse au
+        // nord-ouest
+        ReliefShader reliefShader = new ReliefShader(projection, dem,
+                LIGHT_SOURCE);
+
+        // Dessin du relief flouté
+        BufferedImage relief = reliefShader.shadedRelief(projectedBottomLeft,
+                projectedTopRight, width, height,
+                0.0017f * pixelPerMeterResolution);
+
+        // HGTDigitalElevation model implemente AutoCloseable, mais comme on ne
+        // l'utilise pas dans un bloc try-catch, on doit le fermer manuellement
+        dem.close();
 
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
 
-        ImageIO.write(finalImage, "png", new File("test4zones.png"));
-
-        // BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-        // finalImage, dpi, args[7]);
-        // imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
-        // imageToDecorate.addLegend();
+        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
+                finalImage, dpi, args[7]);
+        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
+        imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque
-        // imageToDecorate.printOnFile("png", args[7]);
+        imageToDecorate.printOnFile("png", args[7]);
     }
 
     /**
@@ -190,20 +213,17 @@ public final class Main {
         return result;
     }
 
-    private static BufferedImage relief(Point bottomLeft, Point topRight,
-            int width, int height, int resolution, DigitalElevationModel... dem)
-            throws Exception {
-        ReliefShader reliefShader;
-        if (dem[1].latitudeSW() == dem[0].latitudeSW())
-            reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE,
-                    ReliefShader.DEM_DISPOSITION_HORIZONTAL, dem);
-        else
-            reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE,
-                    ReliefShader.DEM_DISPOSITION_VERTICAL, dem);
-        return reliefShader.shadedRelief(bottomLeft, topRight, width, height,
-                0.0017f * resolution);
-    }
-
+    /**
+     * Télécharge un fichier osm à travers la Overpass XAPI de OpenStreetMaps et
+     * retourne le nom du fichier.
+     * 
+     * @param longitudeWest
+     * @param latitudeSud
+     * @param longitudeEast
+     * @param latitudeNorth
+     * @return le nom du fichier téléchargé
+     * @throws IOException
+     */
     private static String download(String longitudeWest, String latitudeSud,
             String longitudeEast, String latitudeNorth) throws IOException {
         URL url = new URL(
@@ -211,9 +231,13 @@ public final class Main {
                         + longitudeWest + "," + latitudeSud + ","
                         + longitudeEast + "," + latitudeNorth + "]");
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        FileOutputStream osmFile = new FileOutputStream("osmMap.osm");
+        String fileName = longitudeWest + "," + latitudeSud + ","
+                + longitudeEast + "," + latitudeNorth + ".osm";
+        FileOutputStream osmFile = new FileOutputStream(fileName);
         osmFile.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        return "osmMap.osm";
+        rbc.close();
+        osmFile.close();
+        return fileName;
 
     }
 }

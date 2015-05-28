@@ -1,7 +1,5 @@
 package ch.epfl.imhof.dem;
 
-import java.io.IOException;
-
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.Vector3D;
 
@@ -31,14 +29,13 @@ public interface DigitalElevationModel extends AutoCloseable {
      * 
      * @return la latitude SO, en degrés
      */
-    int latitudeSW();
+    double latitudeSW();
 
     /**
      * Retourne la longitude du coin sud-ouest du fichier HGT.
      * 
      * @return la longitude SO, en degrés
      */
-    int longitudeSW();
+    double longitudeSW();
     
-    void loadBuffer() throws IOException;
 }
