@@ -41,4 +41,3 @@ public class MultiDigitalElevationModel  {
                 && Math.toDegrees(point.longitude()) >= firstDEM.longitudeSW() && Math
                 .toDegrees(point.longitude()) < firstDEM.longitudeSW() + 1);
     }
-}

@@ -5,6 +5,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 import javax.imageio.ImageIO;
 
@@ -93,9 +100,17 @@ public final class Main {
                         / (projectedTopRight.y() - projectedBottomLeft.y())
                         * height);
 
-        // Lecture du fichier OSM et création d'un objet OSMMap qui
-        // est ensuite converti en map et dessiné sur une toile
-        OSMMap osmMap = OSMMapReader.readOSMFile(args[0], true);
+        OSMMap osmMap;
+        // Si on reçoit la châine de charactères "download" comme premier
+        // élément du tableau args on télécharge la carte osm sinon on utilise
+        // le parcours fourni
+        if (args[0].equals("download")) {
+            osmMap = OSMMapReader.readOSMFile(
+                    download(args[2], args[3], args[4], args[5]), false);
+        } else {
+            osmMap = OSMMapReader.readOSMFile(args[0], true);
+        }
+
         OSMToGeoTransformer osmToGeoTransformer = new OSMToGeoTransformer(
                 CH1903);
         Map map = osmToGeoTransformer.transform(osmMap);
@@ -114,15 +129,17 @@ public final class Main {
                     height, pixelPerMeterResolution, dem);
             dem.close();
             break;
-            /*
-        case 9: dem = new MultiDigitalElevationModel(new HGTDigitalElevationModel(
-                    new File(args[1])), new HGTDigitalElevationModel(new File(
-                    args[8])));
-            relief = relief(projectedBottomLeft, projectedTopRight, width,
-                    height, pixelPerMeterResolution, dem);
-            dem.close();
+        case 9:
+            DigitalElevationModel dem1 = new HGTDigitalElevationModel(new File(
+                    args[1]));
+            DigitalElevationModel dem2 = new HGTDigitalElevationModel(new File(
+                    args[8]));
+            if (dem1.latitudeSW() == dem2.latitudeSW())
+                relief = relief(projectedBottomLeft, projectedTopRight, width,
+                        height, pixelPerMeterResolution,
+                        new HGTDigitalElevationModel(new File(args[1])),
+                        new HGTDigitalElevationModel(new File(args[8])));
             break;
-            */
         case 11:
             relief = relief(projectedBottomLeft, projectedTopRight, width,
                     height, pixelPerMeterResolution,
@@ -135,16 +152,16 @@ public final class Main {
 
         // Composition de l'image du relief et de celle de la carte
         BufferedImage finalImage = combine(relief, canvas.image());
-        
+
         ImageIO.write(finalImage, "png", new File("test4zones.png"));
 
-//        BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
-//                finalImage, dpi, args[7]);
-//        imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
-//        imageToDecorate.addLegend();
+        // BufferedMapDecorator imageToDecorate = new BufferedMapDecorator(
+        // finalImage, dpi, args[7]);
+        // imageToDecorate.addGrid(bottomLeft, topRight, dpi, 7);
+        // imageToDecorate.addLegend();
 
         // Sauvegarde de l'image obtenue sur disque
-//        imageToDecorate.printOnFile("png", args[7]);
+        // imageToDecorate.printOnFile("png", args[7]);
     }
 
     /**
@@ -176,8 +193,27 @@ public final class Main {
     private static BufferedImage relief(Point bottomLeft, Point topRight,
             int width, int height, int resolution, DigitalElevationModel... dem)
             throws Exception {
-        ReliefShader reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE, dem);
+        ReliefShader reliefShader;
+        if (dem[1].latitudeSW() == dem[0].latitudeSW())
+            reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE,
+                    ReliefShader.DEM_DISPOSITION_HORIZONTAL, dem);
+        else
+            reliefShader = new ReliefShader(CH1903, LIGHT_SOURCE,
+                    ReliefShader.DEM_DISPOSITION_VERTICAL, dem);
         return reliefShader.shadedRelief(bottomLeft, topRight, width, height,
                 0.0017f * resolution);
+    }
+
+    private static String download(String longitudeWest, String latitudeSud,
+            String longitudeEast, String latitudeNorth) throws IOException {
+        URL url = new URL(
+                "http://overpass.osm.rambler.ru/cgi/xapi_meta?*[bbox="
+                        + longitudeWest + "," + latitudeSud + ","
+                        + longitudeEast + "," + latitudeNorth + "]");
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream osmFile = new FileOutputStream("osmMap.osm");
+        osmFile.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        return "osmMap.osm";
+
     }
 }

@@ -38,9 +38,9 @@ public final class MainTest {
 
 //    @Test
     public void besanconAndMultiDEMTest() throws Exception {
-        String[] arguments = { "data/besancon.osm.gz", "data/N47E005.hgt",
+        String[] arguments = { "download", "data/N47E005.hgt",
                 "5.9647", "47.2152", "6.0720", "47.2580", "300",
-                "besancon_Main.png", "data/N47E006.hgt" };
+                "besancon_MainDOW.png", "data/N47E006.hgt" };
         Main.main(arguments);
     }
 

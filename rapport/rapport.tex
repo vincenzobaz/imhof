@@ -36,13 +36,13 @@ En écrivant des tests le long du projet, nous nous sommes rendus compte du fait
 L'utilisation de la projection CH1903 entraîne la déformation de beaucoup de régions en dehors de la Suisse. Nous avons donc ajouté trois classes héritant de \texttt{Projection}:
 \begin{enumerate}
     \item \texttt{LambertConformalConicProjection} implémente la projection conique conforme de Lambert, très adaptée au dessin des zones se trouvant aux latitudes moyennes comme les États-Unis, l'Europe et l'Australie. C'est la projection officielle en Belgique et Estonie et de nombreux pays, comme la France, en utilisent une variation \footnote{\url{http://fr.wikipedia.org/wiki/Projection_conique_conforme_de_Lambert}}. Son constructeur a besoin de deux parallèles de référence. Pour la plupart de l'Afrique, de l'Europe, et des États-Unis on peut utiliser les parallèles 20\degre N et 50\degre N. 
-    \item \texttt{MercatorProjection} est une projection adaptée dans les régions autour de l'équateur et très utilisée pour la navigation maritime.
-    \item \texttt{StereoGraphicProjection} Projection adaptée pour les aires autour de l'équateur ou pour le dessin de petites cartes continentales.
+    \item \texttt{MercatorProjection} est une projection adaptée dans les régions autour des l'équateur et très utilisée pour la navigation maritime.
+    \item \texttt{StereoGraphicProjection} Projection adaptée pour les aires autour des pôles ou pour le dessin de petites cartes continentales.
 \end{enumerate}
 Les trois projections sont \textit{conformes}\footnote{\url{http://www.icsm.gov.au/mapping/map_projections.html}} c'est-à-dire qu'elles essaient de préserver les formes des objets.
 
 \subsection{Dessin de carte à l'aide de plusieurs fichiers HGT}
-L'utilisation d'un seul fichier réduit non seulement le choix de l'aire à dessiner mais aussi celui de la zone (comment faire entre deux fichiers?). Nous avons donc essayé d'implémenter le dessin en utilisant plusieurs fichier HGT.
+L'utilisation d'un seul fichier réduit non seulement le choix de l'aire à dessiner mais aussi celui de la zone (comment faire entre deux fichiers?). Nous avons donc essayé d'implémenter le dessin en utilisant plusieurs fichiers HGT.
 
 \begin{center}
 \includegraphics[scale=0.3]{schema4files.jpg}
@@ -55,7 +55,7 @@ Nous avons essayé d'abord d'utiliser les objets \texttt{DigitalElevationModel} 
 
 Nous avons alors décidé de modifier \texttt{DigitalElevationModel} pour fournir une méthode \texttt{loadBuffer()} qui charge en mémoire le contenu du fichier dont la référence est stockée dans l'objet implémentant cette interface. Ceci nous permet de décider quand charger les données en mémoire et quand les retirer de celle-ci à l'aide de la méthode \texttt{close()}.
 
-C'est alors la classe \texttt{ReliefShader} qui s'occupe de gérer les fichiers HGT qu'elle reçoit en fonction de leur nombre. Elle dessine les quatre portions d'images de la carte se trouvant sur les quatre fichier différents une par une. Pour ce faire nous avons utilisé deux fonctions pour projeter les points du repère de l'image à celui réel et vice-versa afin de pouvoir calculer les distances indiqués par les flèches rouges dans l'image et donc pouvoir choisir le fichier à utiliser.
+C'est alors la classe \texttt{ReliefShader} qui s'occupe de gérer les fichiers HGT qu'elle reçoit en fonction de leur nombre. Elle dessine les quatre portions d'images de la carte se trouvant sur les quatre fichiers différents une par une. Pour ce faire nous avons utilisé deux fonctions pour projeter les points du repère de l'image à celui réel et vice-versa afin de pouvoir calculer les distances indiqués par les flèches rouges dans l'image et donc pouvoir choisir le fichier à utiliser et les dimensions de la sous-image à dessiner.
 
 \subsubsection*{Problèmes et inconvénients de cette implémentation}
 Malgré nos efforts, nous ne comprenons pas pourquoi le code écrit ne fonctionne pas. Le problème semble naître dans les frontières des fichiers HGT: les hauteurs des points se trouvant à ces coordonnées ne semblent pas êtres contenus dans les fichiers alors qu'ils devraient y être, et en double (une fois sur chaque fichier vu que ceux-ci se chevauchent).
