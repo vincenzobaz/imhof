@@ -193,18 +193,18 @@ public final class ReliefShader {
             return rawRelief;
         } else if (models.length == 4) {
             // calcul de la latiude et de la longitude limite en pixel
-            int yCrit = (int) Math.ceil(planToImage.apply(
+            int yCrit = (int) planToImage.apply(
                     projection.project(new PointGeo(BL.longitude(), Math
-                            .toRadians(models[2].latitudeSW() + 1)))).x());
+                            .toRadians(models[0].latitudeSW())))).y();
             int xCrit = (int) Math.ceil(planToImage.apply(
-                    projection.project(new PointGeo(Math.toRadians(models[3]
-                            .longitudeSW()), BL.latitude()))).y());
+                    projection.project(new PointGeo(Math.toRadians(models[1]
+                            .longitudeSW()), TR.latitude()))).x());
             // haut et droite exclues
             raw(0, 0, xCrit - 1, yCrit, imageToPlan, models[0], rawRelief);
             raw(xCrit, 0, width - xCrit, yCrit, imageToPlan, models[1],
                     rawRelief);
             raw(0, yCrit + 1, xCrit - 1, height - yCrit, imageToPlan,
-                    models[3], rawRelief);
+                    models[2], rawRelief);
             raw(xCrit, yCrit, width - xCrit, height - yCrit, imageToPlan,
                     models[3], rawRelief);
             return rawRelief;
