@@ -3,16 +3,30 @@ package ch.epfl.imhof.projection;
 import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.geometry.Point;
 
-public class LambertConformalConicProjection implements Projection {
+/**
+ * Classe permettant d'utiliser la projection de Lambert.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
+public final class LambertConformalConicProjection implements Projection {
     private final double referenceLongitude;
     private final double referenceLatitude;
     private final double n;
     private final double F;
     private final double rhoZero;
 
+    /**
+     * Construit une nouvelle projection de Lambert avec les paramètres donnés.
+     * 
+     * @param referenceLongitude
+     * @param referenceLatitude
+     * @param standardPar1
+     * @param standardPar2
+     */
     public LambertConformalConicProjection(double referenceLongitude,
-            double referenceLatitude, double standardPar1,
-            double standardPar2) {
+            double referenceLatitude, double standardPar1, double standardPar2) {
         this.referenceLatitude = Math.toRadians(referenceLatitude);
         this.referenceLongitude = Math.toRadians(referenceLongitude);
         double standardParallel1 = Math.toRadians(standardPar1);
@@ -30,8 +44,10 @@ public class LambertConformalConicProjection implements Projection {
                         (1 / Math.tan(Math.PI / 4d + referenceLatitude / 2d)),
                         n);
     }
-    public LambertConformalConicProjection(double standardPar1, double standardPar2){
-        this(0,0,standardPar1, standardPar2);
+
+    public LambertConformalConicProjection(double standardPar1,
+            double standardPar2) {
+        this(0, 0, standardPar1, standardPar2);
     }
 
     @Override
@@ -56,5 +72,4 @@ public class LambertConformalConicProjection implements Projection {
                 / 2d;
         return new PointGeo(longitude, latitude);
     }
-
 }

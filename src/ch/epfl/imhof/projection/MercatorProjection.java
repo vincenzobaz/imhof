@@ -4,6 +4,13 @@ import ch.epfl.imhof.PointGeo;
 import ch.epfl.imhof.dem.Earth;
 import ch.epfl.imhof.geometry.Point;
 
+/**
+ * Classe permettant d'utiliser la projection de Mercator.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
 public final class MercatorProjection implements Projection {
 
     @Override
@@ -21,5 +28,4 @@ public final class MercatorProjection implements Projection {
                 - Math.PI / 2d;
         return new PointGeo(longitude, latitude);
     }
-
 }

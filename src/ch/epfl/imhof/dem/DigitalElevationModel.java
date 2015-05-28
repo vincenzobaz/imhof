@@ -29,13 +29,12 @@ public interface DigitalElevationModel extends AutoCloseable {
      * 
      * @return la latitude SO, en degrés
      */
-    double latitudeSW();
+    int latitudeSW();
 
     /**
      * Retourne la longitude du coin sud-ouest du fichier HGT.
      * 
      * @return la longitude SO, en degrés
      */
-    double longitudeSW();
-    
+    int longitudeSW();
 }

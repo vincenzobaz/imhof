@@ -5,23 +5,25 @@ import ch.epfl.imhof.Vector3D;
 
 /**
  * Classe représentant un modèle numérique de terrain stocké dans deux fichiers
- * au format GT.
+ * au format HGT.
  * 
  * @author Vincenzo Bazzucchi (249733)
  * @author Nicolas Phan Van (239293)
  *
  */
-
-public class MultiHGTDigitalElevationModel implements DigitalElevationModel {
+public final class MultiHGTDigitalElevationModel implements
+        DigitalElevationModel {
     private final HGTDigitalElevationModel firstDEM;
     private final HGTDigitalElevationModel secondDEM;
 
     /**
      * Construit un objet MultiHGTDigitalElevationModel à partir de deux objets
-     * HGTDigitalElevationModel
+     * HGTDigitalElevationModel.
      * 
      * @param firstDEM
+     *            le premier modèle de terrain
      * @param secondDEM
+     *            le second modèle de terrain
      */
     public MultiHGTDigitalElevationModel(HGTDigitalElevationModel firstDEM,
             HGTDigitalElevationModel secondDEM) {
@@ -42,12 +44,12 @@ public class MultiHGTDigitalElevationModel implements DigitalElevationModel {
     }
 
     @Override
-    public double latitudeSW() {
+    public int latitudeSW() {
         return firstDEM.latitudeSW();
     }
 
     @Override
-    public double longitudeSW() {
+    public int longitudeSW() {
         return firstDEM.longitudeSW();
     }
 

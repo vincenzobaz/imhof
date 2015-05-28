@@ -19,11 +19,8 @@ import ch.epfl.imhof.Vector3D;
  *
  */
 public final class HGTDigitalElevationModel implements DigitalElevationModel {
-
-    // Constante représentant un degré en radians
-    private static final double ONE_DEGREE = Math.toRadians(1);
-
     private final int pointsPerLine;
+    private final double angularResolution;
 
     // Latitude et longitude du point bas-gauche dans le fichier, correspondant
     // au poit sud-ouest (south-west). On préfère stocker ces deux valeurs
@@ -31,9 +28,8 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
     // la méthode {@link ch.epfl.imhof.dem.HGTDigitalElevationModel#normalAlt
     // normalAlt} on aurait eu besoin de les re-extraire pour éviter de trop
     // nombreux appels aux accesseurs
-    private final double latitudeSW;
-    private final double longitudeSW;
-
+    private final int latitudeSW;
+    private final int longitudeSW;
     private final InputStream stream;
 
     // Le buffer n'est pas en final, on a besoin de le réaffecter à null dans la
@@ -117,9 +113,12 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         }
         pointsPerLine = (int) points;
 
+        // Calcul de la résolution angulaire
+        angularResolution = Math.toRadians(1) / (pointsPerLine - 1);
+
         // Assignation de la longitude et de la latitude du coin sud-ouest
-        latitudeSW = Math.toRadians(latitude);
-        longitudeSW = Math.toRadians(longitude);
+        latitudeSW = latitude;
+        longitudeSW = longitude;
 
         // Ouverture et assignation du flot et mappage de la valeur des octets
         // en mémoire
@@ -138,24 +137,24 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
 
     @Override
     public Vector3D normalAt(PointGeo point) throws IllegalArgumentException {
+        double latitude = point.latitude();
+        double longitude = point.longitude();
+
         // Vérification de l'appartenance du point à la zone du fichier HGT
-        if (point.latitude() < latitudeSW
-                || point.latitude() > latitudeSW + ONE_DEGREE
-                || point.longitude() < longitudeSW
-                || point.longitude() > longitudeSW + ONE_DEGREE) {
+        if (Math.toDegrees(latitude) < latitudeSW
+                || Math.toDegrees(latitude) > latitudeSW + 1
+                || Math.toDegrees(longitude) < longitudeSW
+                || Math.toDegrees(longitude) > longitudeSW + 1) {
             throw new IllegalArgumentException(
                     "Le point fourni ne fait pas partie de la zone couverte par le MNT.");
         }
 
-        // Calcul de la résolution angulaire
-        double angularResolution = ONE_DEGREE / (pointsPerLine - 1);
-
         // Calcul des coordonnées du coin bas-gauche du carré dans lequel se
         // situe le point, dans le repère ayant pour origine le coin sud-ouest
         // du fichier HGT
-        int i = (int) Math.floor((point.longitude() - longitudeSW)
+        int i = (int) Math.floor((longitude - Math.toRadians(longitudeSW))
                 / angularResolution);
-        int j = (int) Math.floor((point.latitude() - latitudeSW)
+        int j = (int) Math.floor((latitude - Math.toRadians(latitudeSW))
                 / angularResolution);
 
         // On utilise les formules données pour calculer les coordonnées du
@@ -175,6 +174,16 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
         return new Vector3D(0.5 * s * (zC - zA), 0.5 * s * (zD - zB), s * s);
     }
 
+    @Override
+    public int latitudeSW() {
+        return latitudeSW;
+    }
+
+    @Override
+    public int longitudeSW() {
+        return longitudeSW;
+    }
+
     /**
      * Retourne l'altitude du point situé aux coordonnées passées en argument
      * dans le fichier HGT.
@@ -187,14 +196,5 @@ public final class HGTDigitalElevationModel implements DigitalElevationModel {
      */
     private short altitudeAt(int i, int j) {
         return buffer.get(pointsPerLine * (pointsPerLine - j - 1) + i);
-    }
-    @Override
-    public double latitudeSW() {
-        return latitudeSW;
-    }
-
-    @Override
-    public double longitudeSW() {
-        return longitudeSW;
     }
 }

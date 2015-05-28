@@ -126,7 +126,7 @@ public final class BufferedMapDecorator {
      */
     public BufferedMapDecorator(BufferedImage map, int dpi, String name)
             throws IOException {
-        this(map, dpi, name, map.getWidth() / 20, new Color(0.9922f, 0.9961f, 0.8118f));
+        this(map, dpi, name, map.getWidth() / 20, Color.WHITE);
     }
 
     /**

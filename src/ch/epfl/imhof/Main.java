@@ -46,7 +46,7 @@ public final class Main {
      *            validation des arguments, mais il devrait contenir:
      *            <ul>
      *            <li>args[0]: le nom (chemin) d'un fichier OSM compressé avec
-     *            gzip contenant les données de la carte à dessiner, uiliser
+     *            gzip contenant les données de la carte à dessiner, utiliser
      *            download si on souhaite le télécharger
      *            <li>args[1]: le nom (chemin) d'un fichier HGT couvrant la
      *            totalité de la zone de la carte à dessiner, zone tampon
@@ -77,9 +77,6 @@ public final class Main {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        // Projection utilisée pour projeter les points dans le repère cartésien
-        Projection projection = new CH1903Projection();
-
         // On construit les deux points de type WGS 84 correspondant aux coins
         // bas-gauche et haut-droite de la zone à dessiner
         PointGeo topRight = new PointGeo(Math.toRadians(Double
@@ -98,10 +95,14 @@ public final class Main {
                 * (topRight.latitude() - bottomLeft.latitude()) * Earth.RADIUS
                 / 25000d);
 
+        // Projection utilisée pour projeter les points dans le repère cartésien
+        Projection projection = null;
+
         // Choix de la projection à utiliser
         if (args.length > 8) {
             switch (args[8]) {
             case "CH1903":
+                projection = new CH1903Projection();
                 break;
             case "LambertConformalConic":
                 projection = new LambertConformalConicProjection(20, 50);
@@ -116,9 +117,11 @@ public final class Main {
                 projection = new EquirectangularProjection();
                 break;
             default:
-                throw new IllegalArgumentException("Nom de projection invalide");
+                throw new IllegalArgumentException(
+                        "Nom de projection invalide.");
             }
-
+        } else {
+            projection = new CH1903Projection();
         }
 
         // Projection des points du système WGS84 dans un repère cartésien
@@ -214,15 +217,8 @@ public final class Main {
     }
 
     /**
-     * Télécharge un fichier osm à travers la Overpass XAPI de OpenStreetMaps et
+     * Télécharge un fichier osm à travers la Overpass API de OpenStreetMap et
      * retourne le nom du fichier.
-     * 
-     * @param longitudeWest
-     * @param latitudeSud
-     * @param longitudeEast
-     * @param latitudeNorth
-     * @return le nom du fichier téléchargé
-     * @throws IOException
      */
     private static String download(String longitudeWest, String latitudeSud,
             String longitudeEast, String latitudeNorth) throws IOException {
@@ -238,6 +234,5 @@ public final class Main {
         rbc.close();
         osmFile.close();
         return fileName;
-
     }
 }

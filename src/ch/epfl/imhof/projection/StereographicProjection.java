@@ -8,7 +8,14 @@ import static java.lang.Math.cos;
 import static java.lang.Math.atan;
 import static java.lang.Math.asin;
 
-public class StereographicProjection implements Projection {
+/**
+ * Classe permettant d'utiliser une projection stéréographique.
+ * 
+ * @author Vincenzo Bazzucchi (249733)
+ * @author Nicolas Phan Van (239293)
+ *
+ */
+public final class StereographicProjection implements Projection {
     private final double centralLatitude;
     private final double centralLongitude;
 
