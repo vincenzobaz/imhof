@@ -30,8 +30,9 @@ public final class MainTest {
 
     // @Test
     public void saintclaudeTest() throws Exception {
-        String[] arguments = { "download", "data/N46E005.hgt", "5.8136",
-                "46.3662", "5.9209", "46.4097", "300", "saintclaude_Main.png" };
+        String[] arguments = { "data/saintclaude.osm.gz", "data/N46E005.hgt",
+                "5.8136", "46.3662", "5.9209", "46.4097", "300",
+                "saintclaude_Main.png" };
         Main.main(arguments);
     }
 
@@ -54,9 +55,16 @@ public final class MainTest {
 
     @Test
     public void twoZonesVertical() throws Exception {
-        String[] arguments = { "download", "data/N46E006.hgt", "6.5594",
-                "46.9", "6.6508", "47.1", "200", "twoFiles.png", "CH1903",
-                "data/N47E006.hgt" };
+        String[] arguments = { "data/twofiles.osm.gz", "data/N46E006.hgt",
+                "6.5594", "46.9", "6.6508", "47.1", "200", "twoFiles.png",
+                "CH1903", "data/N47E006.hgt" };
+        Main.main(arguments);
+    }
+
+    // @Test
+    public void comoTest() throws Exception {
+        String[] arguments = { "data/como.osm.gz", "data/N45E009.hgt",
+                "9.0439", "45.7921", "9.1119", "45.8302", "300", "como.png" };
         Main.main(arguments);
     }
 }

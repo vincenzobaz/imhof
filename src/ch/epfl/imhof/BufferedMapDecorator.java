@@ -85,13 +85,13 @@ public final class BufferedMapDecorator {
                 new float[] { dpm * 250f, dpm * 250f }, 0f));
         Path2D scale = new Path2D.Float();
         double scaleHeight = h - 1.5 * frameSize;
-        double baseScaleX = w * 4 / 5;
+        double baseScaleX = w - 2 * frameSize;
         scale.moveTo(baseScaleX, scaleHeight);
-        scale.lineTo(baseScaleX + 750 * dpm, scaleHeight);
+        scale.lineTo(baseScaleX - 750 * dpm, scaleHeight);
         graphicContext.draw(scale);
         scale.reset();
-        scale.moveTo(baseScaleX + 250f * dpm, scaleHeight);
-        scale.lineTo(baseScaleX + 1000f * dpm, scaleHeight);
+        scale.moveTo(baseScaleX - 250f * dpm, scaleHeight);
+        scale.lineTo(baseScaleX - 1000f * dpm, scaleHeight);
         graphicContext.setColor(Color.WHITE);
         graphicContext.draw(scale);
 
@@ -99,14 +99,14 @@ public final class BufferedMapDecorator {
         graphicContext.setFont(font);
         graphicContext.setColor(Color.BLACK);
         int scaleTextHeight = h - 13 * frameSize / 10;
-        graphicContext.drawString("0", (int) baseScaleX, scaleTextHeight);
-        graphicContext.drawString("250m", (int) (baseScaleX + 250 * dpm),
+        graphicContext.drawString("1 km", (int) baseScaleX, scaleTextHeight);
+        graphicContext.drawString("750m", (int) (baseScaleX - 250 * dpm),
                 scaleTextHeight);
-        graphicContext.drawString("500m", (int) (baseScaleX + 500 * dpm),
+        graphicContext.drawString("500m", (int) (baseScaleX - 500 * dpm),
                 scaleTextHeight);
-        graphicContext.drawString("750m", (int) (baseScaleX + 750 * dpm),
+        graphicContext.drawString("250m", (int) (baseScaleX - 750 * dpm),
                 scaleTextHeight);
-        graphicContext.drawString("1 km", (int) (baseScaleX + 1000 * dpm),
+        graphicContext.drawString("0", (int) (baseScaleX - 1000 * dpm),
                 scaleTextHeight);
     }
 
