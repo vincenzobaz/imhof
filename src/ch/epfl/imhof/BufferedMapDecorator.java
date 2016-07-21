@@ -1,4 +1,4 @@
-﻿package ch.epfl.imhof;
+package ch.epfl.imhof;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
