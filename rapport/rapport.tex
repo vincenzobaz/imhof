@@ -1,0 +1,92 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hhline}
+\usepackage{multicol}
+
+\author{Vincenzo Bazzucchi (249733) et Nicolas Phan Van (239293)}
+\title{Rapport de Bonus}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Amélioration graphique: \texttt{BufferedMapDecorator}}
+\subsubsection*{Description}
+Nous avons décidé de décorer notre carte pour la rendre plus semblable aux cartes topographiques auxquelles nous sommes habitués.
+En particulier toute carte possède une légende, une indication de l'échelle et un quadrillage de lignes verticales et horizontales indiquant longitude et latitude. Nous avons été bien attentifs à ce que toutes les composantes dessinées soit calculées en fonction de la taille de l'image, afin que tout soit toujours visible et lisible.
+\subsubsection{Mise en œuvre}
+Nous avons décidé de déléguer la décoration de la carte à une classe, \texttt{BufferedMapDecorator} qui, malgré son nom, ne constitue pas une application du patron \textit{Decorator}.
+
+Elle fournit deux constructeurs: un permettant de choisir un certain nombre de paramètres et l'autre en demandant moins et utilisant des valeurs par défaut.
+Le constructeur se charge d'ajouter un cadre à l'image, dessine le logo EPFL et écrit le titre de la carte, mais surtout il dessine l'indicateur de l'échelle.
+La classe fournit en outre une méthode \texttt{addGrid} qui dessine un quadrillage indiquant latitude et longitude. Pour ce faire on demandé à l'utilisateur les points bas gauche et haut droite de la carte, ainsi que sa résolution et le nombre de subdivisions désirées, paramètres nécessaires pour le calcul des dimensions des objets.
+
+La classe possède aussi une méthode \texttt{addLegend} qui dessine la légende de la carte.
+
+Enfin nous proposons une méthode permettant d'écrire l'image en mémoire sur fichier.
+
+\section{Ajout de fonctionnalités}
+En écrivant des tests le long du projet, nous nous sommes rendus compte du fait que l'utilisation des cartes OpenStreetMaps et des fichiers HGT permet le dessin de presque n'importe quel endroit sur la planète. Nous avons voulu essayer de généraliser notre code pour qu'il réalise les cartes les plus précises possibles pour toute latitude, longitude et aire données.
+\subsection{Éviter les déformations liées à l'utilisation de la projection CH1903: \texttt{Projection}s}
+L'utilisation de la projection CH1903 entraîne la déformation de beaucoup de régions en dehors de la Suisse. Nous avons donc ajouté trois classes héritant de \texttt{Projection}:
+\begin{enumerate}
+    \item \texttt{LambertConformalConicProjection} implémente la projection conique conforme de Lambert, très adaptée au dessin des zones se trouvant aux latitudes moyennes comme les États-Unis, l'Europe et l'Australie. C'est la projection officielle en Belgique et Estonie et de nombreux pays, comme la France, en utilisent une variation \footnote{\url{http://fr.wikipedia.org/wiki/Projection_conique_conforme_de_Lambert}}. Son constructeur a besoin de deux parallèles de référence. Pour la plupart de l'Afrique, de l'Europe, et des États-Unis on peut utiliser les parallèles 20\degre N et 50\degre N. 
+    \item \texttt{MercatorProjection} est une projection adaptée dans les régions autour de l'équateur et très utilisée pour la navigation maritime.
+    \item \texttt{StereoGraphicProjection} Projection adaptée pour les aires autour des pôles ou pour le dessin de petites cartes continentales.
+\end{enumerate}
+Les trois projections sont \textit{conformes}\footnote{\url{http://www.icsm.gov.au/mapping/map_projections.html}} c'est-à-dire qu'elles essaient de préserver les formes des objets.
+
+En supposant l'utilisation d'une projection différente de CH1903 un utilisation avancée du programme, nous avons décidé de coupler cette fonctionnalité à la suivante. Ainsi pour utiliser une des projections susmentionnées il suffit d'ajouter deux paramètres lors de l'appel de la méthode \texttt{Main.main}: une chaîne de caractères et le parcours du deuxième fichier osm.
+
+La chaîne de caractères à utiliser est indiquée dans le tableau suivant:
+
+\begin{center}
+    \begin{tabular}{c | c }
+	Projection & Chaîne de caractères \\ \hline
+	CH1903 & \texttt{CH1903} \\
+	Projection conique conforme de Lambert & \texttt{LambertConformalConic} \\
+	Projection stéréographique & \texttt{Stereographic} \\
+	Projection Mercator & \texttt{Mercator} \\
+	Projection équirectangulaire & \texttt{Equirectangular}
+    \end{tabular}
+\end{center}
+
+\subsection{Dessin de carte à l'aide de plusieurs fichiers HGT}
+L'utilisation d'un seul fichier réduit non seulement le choix de l'aire à dessiner mais aussi celui de la zone (comment faire entre deux fichiers?). Nous avons donc essayé d'implémenter le dessin en utilisant plusieurs fichiers HGT.
+
+\begin{center}
+\includegraphics[scale=0.3]{schema4files1.jpg}
+
+\includegraphics[scale=0.3]{schema4files2.jpg}
+\end{center}
+
+Les images ci-dessus illustrent les cas auxquels nous nous sommes intéressés.
+
+Pour utiliser cette fonctionnalité il suffit d'ajouter deux paramètres lors de l'appel de la méthode \texttt{Main.main}: la projection à utiliser et le parcours du deuxième fichier hgt.
+
+\subsubsection*{Mise en œuvre}
+Nous utilisons les objets \texttt{DigitalElevationModel} définis comme décrit lors de l'étape 11, mais ceci posait un problème de mémoire: instancier plusieurs objets de ce type implique charger en mémoire tout le contenu du fichier hgt ce qui bloque l'exécution du programme, même en augmentant la quantité de mémoire utilisable par la Machine Virtuelle Java à travers le paramètre \texttt{-Xmx}. Nos tests nous montrent que même avec 8GB la création de 4 objets est impossible. Nous avons donc dû nous limiter à utiliser deux fichiers.
+
+Pour ce faire nous avons crée la classe \texttt{MultiHGTDigitalElevationModel} en appliquant le patron de conception \textit{Composite}: la classe contient deux objets \texttt{HGTDigitalElevationModel} et elle implémente l'interface \texttt{DigitalElevationModel}.
+
+\subsubsection*{Problèmes et inconvénients de cette solution}
+Cette solution nous impose une grande limite: l'utilisation de seulement deux fichiers HGT. Nous avons essayé de dessiner des cartes par étapes: en utilisant un ou deux \texttt{DigitalElevationModel} mais nous avons rencontré de nombreux problèmes au niveau des frontières des fichiers.
+Nous croyons que les calculs de projection et de conversion entre différentes unités de mesure introduisent des imprécisions qui rendent impossible cette approche.
+% Malgré nos efforts, nous ne comprenons pas pourquoi le code écrit ne fonctionne pas. Le problème semble naître dans les frontières des fichiers HGT: les hauteurs des points se trouvant à ces coordonnées ne semblent pas êtres contenus dans les fichiers alors qu'ils devraient y être, et en double (une fois sur chaque fichier vu que ceux-ci se chevauchent).
+
+% En outre cette solution nous impose de gérer des erreurs d'entrées sorties dans \texttt{ReliefShader} qui n'est qu'une classe de dessin.
+
+Malgré ces aspects nous avons voulu essayer car pouvoir choisir librement la région à dessiner nous semblait important.
+
+\subsection{Téléchargement des fichiers OpenStreetMaps}
+Dans la classe \texttt{Main} nous fournissons une petite méthode permettant de télécharger les cartes OSM à travers la \textit{Overpass API}\footnote{\url{http://wiki.openstreetmap.org/wiki/Overpass_API}} conseillée pour le téléchargement de fichiers de grosses dimensions sans impacter les performances de l'API principale de OpenStreetMaps, qui est limitée à des régions carrées de maximum 0.5\degre.
+
+Pour l'utiliser il suffit de remplacer, dans l'appel de la méthode \texttt{Main.main}, le parcours du fichier osm par le mot \textit{download}.
+
+Nous aurions voulu aussi implémenter le téléchargement automatique des fichiers hgt. Cependant le site \url{http://viewfinderpanoramas.org/} n'offre pas d'API pour ce faire et un téléchargement à travers le link direct aurait été une solution improvisée et pas forcement en accord avec l'auteur du site.
+\end{document}

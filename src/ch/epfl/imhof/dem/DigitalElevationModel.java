@@ -23,4 +23,18 @@ public interface DigitalElevationModel extends AutoCloseable {
      *             demandée ne fait pas partie de la zone couverte par le MNT
      */
     Vector3D normalAt(PointGeo point) throws IllegalArgumentException;
+
+    /**
+     * Retourne la latitude du coin sud-ouest du fichier HGT.
+     * 
+     * @return la latitude SO, en degrés
+     */
+    int latitudeSW();
+
+    /**
+     * Retourne la longitude du coin sud-ouest du fichier HGT.
+     * 
+     * @return la longitude SO, en degrés
+     */
+    int longitudeSW();
 }

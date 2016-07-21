@@ -1,17 +1,14 @@
 package ch.epfl.imhof;
 
-import java.io.IOException;
-
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 public final class MainTest {
 
-     @Test
+    // @Test
     public void interlakenTest() throws Exception {
         String[] arguments = { "data/interlaken.osm.gz", "data/N46E007.hgt",
                 "7.8122", "46.6645", "7.9049", "46.7061", "300",
-                "putainDeCadreInterlaken.png" };
+                "interlaken_Main.png" };
         Main.main(arguments);
     }
 
@@ -43,16 +40,31 @@ public final class MainTest {
     public void besanconAndMultiDEMTest() throws Exception {
         String[] arguments = { "data/besancon.osm.gz", "data/N47E005.hgt",
                 "5.9647", "47.2152", "6.0720", "47.2580", "300",
-                "besancon_Main.png", "data/N47E006.hgt" };
+                "besancon_Main.png", "CH1903", "data/N47E006.hgt" };
         Main.main(arguments);
     }
 
-//    @Test
+    // @Test
     public void fourZonesDEMTest() throws Exception {
-        String[] arguments = { "data/chauxdefond.osm.gz", "data/N46E006.hgt",
-                "6.7223", "46.9463", "7.1514", "47.1180", "300",
+        String[] arguments = { "data/croiseedeschemins.osm.gz",
+                "data/N46E006.hgt", "6.95", "46.95", "7.05", "47.05", "200",
                 "forest_Main.png", "data/N46E007.hgt", "data/N47E006.hgt",
                 "data/N47E007.hgt" };
+        Main.main(arguments);
+    }
+
+    @Test
+    public void twoZonesVertical() throws Exception {
+        String[] arguments = { "data/twofiles.osm.gz", "data/N46E006.hgt",
+                "6.5594", "46.9", "6.6508", "47.1", "200", "twoFiles.png",
+                "CH1903", "data/N47E006.hgt" };
+        Main.main(arguments);
+    }
+
+    // @Test
+    public void comoTest() throws Exception {
+        String[] arguments = { "data/como.osm.gz", "data/N45E009.hgt",
+                "9.0439", "45.7921", "9.1119", "45.8302", "300", "como.png" };
         Main.main(arguments);
     }
 }
