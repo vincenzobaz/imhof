@@ -1,3 +1,5 @@
+# imhof
+
 Draw maps using OpenStreetMaps data and HGT data.
 
 This project was realized for the course "Practice of Object Oriented Programming" taught at EPFL. As such, it was meant as a learning experience.
