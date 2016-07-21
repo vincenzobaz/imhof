@@ -11,4 +11,5 @@ Many interesting topics were covered by the project, including:
 
 and many more smaller aspects of working on an object oriented project.
 
-An exhaustive [javadoc] is available.
+An exhaustive [javadoc](javadoc/index.html) is available in French as it was the language used to teach the course.
+
